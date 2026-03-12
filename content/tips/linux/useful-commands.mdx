@@ -1,0 +1,65 @@
+---
+title: "よく使う Linux コマンド集"
+description: "日常的に使う Linux コマンドのリファレンス"
+category: "linux"
+tags: ["command", "shell"]
+created: "2026-03-12"
+updated: "2026-03-12"
+---
+
+## ファイル操作
+
+### ファイル検索
+
+```bash
+# 名前で検索
+find /var/log -name "*.log" -mtime -7
+
+# 内容で検索（再帰的にgrep）
+grep -r "error" /var/log/ --include="*.log"
+
+# ファイルサイズで検索（100MB以上）
+find / -size +100M -type f
+```
+
+### ディスク使用量
+
+```bash
+# ディレクトリごとの使用量（ソート付き）
+du -sh /var/* | sort -rh | head -10
+
+# ファイルシステムの空き容量
+df -h
+```
+
+## テキスト処理
+
+### awk で特定列を抽出
+
+```bash
+# 3列目を抽出
+awk '{print $3}' access.log
+
+# CSVの2列目を集計
+awk -F',' '{sum += $2} END {print sum}' data.csv
+```
+
+### sed で置換
+
+```bash
+# ファイル内の文字列を一括置換
+sed -i 's/old_text/new_text/g' config.txt
+
+# 特定行を削除
+sed -i '5d' file.txt
+```
+
+## プロセス管理
+
+```bash
+# ポートを使っているプロセスを特定
+lsof -i :3000
+
+# メモリ使用量の多いプロセスTOP10
+ps aux --sort=-%mem | head -10
+```

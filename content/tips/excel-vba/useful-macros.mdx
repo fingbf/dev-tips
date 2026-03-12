@@ -1,0 +1,71 @@
+---
+title: "よく使う Excel VBA マクロ集"
+description: "業務で頻出する Excel VBA パターン"
+category: "excel-vba"
+tags: ["vba", "macro", "excel"]
+created: "2026-03-12"
+updated: "2026-03-12"
+---
+
+## セル操作
+
+### 最終行の取得
+
+```vba
+Sub GetLastRow()
+    Dim lastRow As Long
+    lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+    MsgBox "最終行: " & lastRow
+End Sub
+```
+
+### 範囲のコピー＆ペースト（値のみ）
+
+```vba
+Sub CopyValues()
+    Range("A1:D10").Copy
+    Range("F1").PasteSpecial xlPasteValues
+    Application.CutCopyMode = False
+End Sub
+```
+
+## ファイル操作
+
+### CSVファイルの読み込み
+
+```vba
+Sub ImportCSV()
+    Dim filePath As String
+    filePath = Application.GetOpenFilename("CSV Files,*.csv")
+    
+    If filePath = "False" Then Exit Sub
+    
+    With ActiveSheet.QueryTables.Add( _
+        Connection:="TEXT;" & filePath, _
+        Destination:=Range("A1"))
+        .TextFileCommaDelimiter = True
+        .TextFileParseType = xlDelimited
+        .Refresh
+    End With
+End Sub
+```
+
+### ブックを巡回して集計
+
+```vba
+Sub ConsolidateBooks()
+    Dim folderPath As String
+    Dim fileName As String
+    Dim wb As Workbook
+    
+    folderPath = "C:\Reports\"
+    fileName = Dir(folderPath & "*.xlsx")
+    
+    Do While fileName <> ""
+        Set wb = Workbooks.Open(folderPath & fileName)
+        ' ここで集計処理
+        wb.Close SaveChanges:=False
+        fileName = Dir()
+    Loop
+End Sub
+```

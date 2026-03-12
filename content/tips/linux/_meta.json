@@ -1,0 +1,6 @@
+{
+  "name": "Linux",
+  "description": "Linux コマンド, シェルスクリプトの Tips",
+  "icon": "terminal",
+  "order": 7
+}

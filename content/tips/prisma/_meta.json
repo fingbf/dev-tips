@@ -1,0 +1,6 @@
+{
+  "name": "Prisma / DB",
+  "description": "Prisma ORM, データベース関連の Tips",
+  "icon": "database",
+  "order": 4
+}

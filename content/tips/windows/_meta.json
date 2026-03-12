@@ -1,0 +1,6 @@
+{
+  "name": "Windows",
+  "description": "バッチファイル, PowerShell の Tips",
+  "icon": "monitor",
+  "order": 9
+}

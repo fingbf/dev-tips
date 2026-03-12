@@ -1,0 +1,50 @@
+---
+title: "Stream API チートシート"
+description: "Java Stream API のよく使うパターン集"
+category: "java"
+tags: ["java8", "stream", "lambda"]
+created: "2026-03-12"
+updated: "2026-03-12"
+---
+
+## Stream API の基本
+
+Java 8 以降の Stream API を使ったコレクション操作パターン。
+
+### フィルタ + マップ + 収集
+
+```java
+List<String> names = users.stream()
+    .filter(u -> u.getAge() >= 18)
+    .map(User::getName)
+    .collect(Collectors.toList());
+```
+
+### グルーピング
+
+```java
+Map<String, List<User>> byCity = users.stream()
+    .collect(Collectors.groupingBy(User::getCity));
+```
+
+### 合計・平均
+
+```java
+int total = orders.stream()
+    .mapToInt(Order::getAmount)
+    .sum();
+
+OptionalDouble avg = orders.stream()
+    .mapToInt(Order::getAmount)
+    .average();
+```
+
+### flatMap で入れ子を平坦化
+
+```java
+List<String> allTags = articles.stream()
+    .flatMap(a -> a.getTags().stream())
+    .distinct()
+    .sorted()
+    .collect(Collectors.toList());
+```

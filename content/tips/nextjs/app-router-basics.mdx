@@ -1,0 +1,50 @@
+---
+title: "App Router の基本構成"
+description: "Next.js App Router のファイル規約とルーティングの基礎"
+category: "nextjs"
+tags: ["app-router", "routing"]
+created: "2026-03-12"
+updated: "2026-03-12"
+---
+
+## App Router のファイル規約
+
+Next.js App Router では、`app/` ディレクトリ配下のフォルダ構造がそのままURLパスになる。
+
+### 主要なファイル規約
+
+| ファイル | 用途 |
+|---------|------|
+| `page.tsx` | ルートのUIを定義 |
+| `layout.tsx` | 共通レイアウト |
+| `loading.tsx` | ローディングUI |
+| `error.tsx` | エラーUI |
+| `not-found.tsx` | 404ページ |
+
+### 基本例
+
+```tsx
+// app/tips/[slug]/page.tsx
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function TipPage({ params }: Props) {
+  const { slug } = await params;
+  return <h1>{slug}</h1>;
+}
+```
+
+### 動的ルーティング
+
+`[param]` でフォルダ名を囲むと動的セグメントになる。
+
+```
+app/
+├── page.tsx           → /
+├── about/
+│   └── page.tsx       → /about
+└── tips/
+    └── [slug]/
+        └── page.tsx   → /tips/hello-world
+```

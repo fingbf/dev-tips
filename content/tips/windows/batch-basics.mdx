@@ -1,0 +1,50 @@
+---
+title: "バッチファイルの基本パターン"
+description: "Windows バッチファイルでよく使うパターン集"
+category: "windows"
+tags: ["batch", "cmd"]
+created: "2026-03-12"
+updated: "2026-03-12"
+---
+
+## 基本構文
+
+### 変数と条件分岐
+
+```bat
+@echo off
+set NAME=World
+echo Hello, %NAME%!
+
+if "%1"=="" (
+    echo 引数が指定されていません
+    exit /b 1
+)
+```
+
+### ループ
+
+```bat
+@echo off
+rem ファイル一覧をループ
+for %%f in (*.txt) do (
+    echo Processing: %%f
+)
+
+rem 数値ループ
+for /l %%i in (1,1,10) do (
+    echo Count: %%i
+)
+```
+
+### ファイル操作
+
+```bat
+@echo off
+rem ディレクトリが存在しなければ作成
+if not exist "backup" mkdir backup
+
+rem 日付付きバックアップ
+set DATESTR=%date:~0,4%%date:~5,2%%date:~8,2%
+copy /y data.db "backup\data_%DATESTR%.db"
+```
