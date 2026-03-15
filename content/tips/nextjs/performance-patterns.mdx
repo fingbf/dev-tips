@@ -1,0 +1,286 @@
+---
+title: "Next.js パフォーマンス最適化パターン"
+description: "mtimeキャッシュ、Map検索、dynamic import、useMemo等の実践的なパフォーマンス改善パターン集"
+category: "nextjs"
+tags: ["performance", "cache", "optimization"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## mtimeベースファイルキャッシュ
+
+`fs.statSync().mtimeMs` でファイルの最終更新時刻を取得し、前回読み込み時から変更がなければキャッシュを返す。TSVやJSONなど、頻繁に読み込むが更新頻度の低いファイルに最適。
+
+```typescript
+import fs from "fs";
+
+type FileCache<T> = {
+  mtimeMs: number;
+  data: T;
+};
+
+const cache = new Map<string, FileCache<unknown>>();
+
+function readFileWithCache<T>(filePath: string, parser: (content: string) => T): T {
+  const stat = fs.statSync(filePath);
+  const cached = cache.get(filePath) as FileCache<T> | undefined;
+
+  if (cached && cached.mtimeMs === stat.mtimeMs) {
+    return cached.data;
+  }
+
+  const content = fs.readFileSync(filePath, "utf-8");
+  const data = parser(content);
+  cache.set(filePath, { mtimeMs: stat.mtimeMs, data });
+  return data;
+}
+
+// 使用例: TSVファイルの読み込み
+function loadTsvData(filePath: string) {
+  return readFileWithCache(filePath, (content) =>
+    content
+      .trim()
+      .split("\n")
+      .slice(1) // ヘッダー行をスキップ
+      .map((line) => line.split("\t"))
+  );
+}
+```
+
+## Map化によるO(1)検索
+
+配列の `.find()` は要素数に比例してO(n)の計算量がかかる。IDやキーでの検索が頻繁なデータは `Map` に変換することでO(1)の検索が可能になる。mtimeベースのキャッシュ無効化と組み合わせると効果的。
+
+```typescript
+import fs from "fs";
+
+type Item = {
+  id: string;
+  name: string;
+  value: number;
+};
+
+let itemMap: Map<string, Item> | null = null;
+let lastMtimeMs = 0;
+
+function getItemMap(filePath: string): Map<string, Item> {
+  const stat = fs.statSync(filePath);
+
+  if (itemMap && lastMtimeMs === stat.mtimeMs) {
+    return itemMap;
+  }
+
+  const content = fs.readFileSync(filePath, "utf-8");
+  const items: Item[] = JSON.parse(content);
+
+  // 配列からMapに変換
+  itemMap = new Map(items.map((item) => [item.id, item]));
+  lastMtimeMs = stat.mtimeMs;
+  return itemMap;
+}
+
+// Before: O(n) — 毎回全件走査
+// const item = items.find((i) => i.id === targetId);
+
+// After: O(1) — 直接アクセス
+// const item = getItemMap(filePath).get(targetId);
+```
+
+## ディレクトリスキャンのキャッシュ
+
+`readdirSync` の結果をディレクトリの `mtimeMs` でキャッシュする。ファイルが追加・削除されるとディレクトリのmtimeが変わるため、自動的にキャッシュが無効化される。
+
+```typescript
+import fs from "fs";
+import path from "path";
+
+type DirCache = {
+  mtimeMs: number;
+  files: string[];
+};
+
+const dirCache = new Map<string, DirCache>();
+
+function listFiles(dirPath: string, extension?: string): string[] {
+  const stat = fs.statSync(dirPath);
+  const cached = dirCache.get(dirPath);
+
+  if (cached && cached.mtimeMs === stat.mtimeMs) {
+    return cached.files;
+  }
+
+  let files = fs.readdirSync(dirPath).map((f) => path.join(dirPath, f));
+
+  if (extension) {
+    files = files.filter((f) => f.endsWith(extension));
+  }
+
+  dirCache.set(dirPath, { mtimeMs: stat.mtimeMs, files });
+  return files;
+}
+
+// 使用例
+const tsvFiles = listFiles("data/weapons", ".tsv");
+```
+
+## next/dynamic で遅延ロード
+
+重いコンポーネント（dnd-kit、チャートライブラリ等）は `next/dynamic` で動的インポートすることで、初期バンドルサイズを削減できる。ユーザーが実際にそのコンポーネントを必要とするまで読み込みを遅延させる。
+
+```typescript
+import dynamic from "next/dynamic";
+
+// 重いドラッグ&ドロップライブラリを遅延ロード
+const SortableList = dynamic(() => import("@/components/SortableList"), {
+  loading: () => <div className="animate-pulse h-64 bg-muted rounded" />,
+  ssr: false, // クライアントのみで動作するコンポーネントの場合
+});
+
+// 条件付きで表示するモーダル等にも有効
+const HeavyModal = dynamic(() => import("@/components/HeavyModal"), {
+  loading: () => null,
+});
+
+export default function Page() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div>
+      <SortableList items={items} />
+      <button onClick={() => setIsOpen(true)}>開く</button>
+      {isOpen && <HeavyModal onClose={() => setIsOpen(false)} />}
+    </div>
+  );
+}
+```
+
+## useMemo/React.memo の使いどころ
+
+計算コストの高い処理結果をメモ化し、依存値が変わらない限り再計算を防ぐ。カテゴリ別カウントやフィルタリング等、配列を走査する処理に効果的。
+
+```typescript
+import { useMemo, memo } from "react";
+
+type Item = {
+  id: string;
+  category: string;
+  name: string;
+};
+
+// useMemo: 計算結果のメモ化
+function Dashboard({ items }: { items: Item[] }) {
+  // カテゴリ別の件数を集計（itemsが変わらない限り再計算しない）
+  const countByCategory = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of items) {
+      counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+    }
+    return counts;
+  }, [items]);
+
+  return (
+    <div>
+      {Array.from(countByCategory.entries()).map(([cat, count]) => (
+        <div key={cat}>
+          {cat}: {count}件
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+```typescript
+import { memo } from "react";
+
+type ItemCardProps = {
+  id: string;
+  name: string;
+  onClick: (id: string) => void;
+};
+
+// React.memo: propsが変わらない限り再レンダリングしない
+const ItemCard = memo(function ItemCard({ id, name, onClick }: ItemCardProps) {
+  return (
+    <div className="card" onClick={() => onClick(id)}>
+      <h3>{name}</h3>
+    </div>
+  );
+});
+```
+
+## APIレスポンスのCache-Control
+
+更新頻度の低いデータ（マスターデータ等）を返すAPIには `Cache-Control` ヘッダーを付けて、ブラウザやCDNにキャッシュさせる。不要なリクエストを削減し、レスポンス速度を改善できる。
+
+```typescript
+import { NextResponse } from "next/server";
+
+// 不変データ: 長期キャッシュ + CDNキャッシュ
+export async function GET() {
+  const data = await fetchMasterData();
+
+  return NextResponse.json(data, {
+    headers: {
+      // ブラウザ: 1時間キャッシュ、CDN: 1日キャッシュ
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+    },
+  });
+}
+
+// 頻繁に更新されるデータ: stale-while-revalidate で古いキャッシュを返しつつ裏で更新
+export async function GET() {
+  const data = await fetchFrequentData();
+
+  return NextResponse.json(data, {
+    headers: {
+      // 60秒はキャッシュ、その後300秒は古いデータを返しつつバックグラウンドで再検証
+      "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+    },
+  });
+}
+```
+
+## html-to-image の動的インポート
+
+`html-to-image` のような重いライブラリは、通常の `import` ではバンドルに含まれてしまう。`await import()` で必要になったタイミングで初めて読み込むことで、初期ロード時間を短縮できる。
+
+```typescript
+async function captureElement(element: HTMLElement): Promise<string> {
+  // 必要なタイミングで初めてライブラリを読み込む
+  const { toPng } = await import("html-to-image");
+
+  const dataUrl = await toPng(element, {
+    quality: 0.95,
+    pixelRatio: 2,
+  });
+
+  return dataUrl;
+}
+
+// ボタンクリック時にのみ読み込まれる
+function ExportButton({ targetRef }: { targetRef: React.RefObject<HTMLElement> }) {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    if (!targetRef.current) return;
+    setIsExporting(true);
+
+    try {
+      const dataUrl = await captureElement(targetRef.current);
+      const link = document.createElement("a");
+      link.download = "export.png";
+      link.href = dataUrl;
+      link.click();
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  return (
+    <button onClick={handleExport} disabled={isExporting}>
+      {isExporting ? "エクスポート中..." : "画像として保存"}
+    </button>
+  );
+}
+```

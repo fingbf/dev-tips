@@ -1,0 +1,265 @@
+---
+title: "Next.js セキュリティ強化チートシート"
+description: "middleware認証、セキュリティヘッダー、入力バリデーション、パストラバーサル防止の実践パターン"
+category: "nextjs"
+tags: ["security", "middleware", "validation"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## 1. middleware.ts で API ルート保護
+
+Middleware を使って、特定の API ルートにアクセス制限をかける。
+
+### IP 制限
+
+リクエスト元の IP アドレスをチェックして、許可リストにないアクセスを拒否する。
+
+```ts
+// middleware.ts
+import { NextRequest, NextResponse } from "next/server";
+
+const ALLOWED_IPS = ["127.0.0.1", "::1"];
+
+export function middleware(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+
+  if (!ALLOWED_IPS.includes(ip)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  return NextResponse.next();
+}
+```
+
+```ts
+// middleware.ts（matcher設定）
+export const config = {
+  matcher: ["/api/admin/:path*"],
+};
+```
+
+### トークン認証
+
+`Authorization` ヘッダーまたはクエリパラメーターで Bearer トークンを検証する。
+
+```ts
+// middleware.ts
+import { NextRequest, NextResponse } from "next/server";
+
+const API_TOKEN = process.env.API_SECRET_TOKEN;
+
+export function middleware(request: NextRequest) {
+  const token =
+    request.headers.get("authorization")?.replace("Bearer ", "") ??
+    request.nextUrl.searchParams.get("token");
+
+  if (token !== API_TOKEN) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  return NextResponse.next();
+}
+```
+
+## 2. セキュリティヘッダー設定
+
+`next.config.ts` の `headers()` でレスポンスヘッダーを一括設定する。
+
+```ts
+// next.config.ts
+import type { NextConfig } from "next";
+
+const securityHeaders = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-DNS-Prefetch-Control", value: "on" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+## 3. 動的ルートパラメーターのバリデーション
+
+ユーザー入力由来のパラメーターは、処理前に必ず形式を検証する。
+
+### 正規表現による ID チェック
+
+```ts
+// app/api/raids/[raidId]/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+const RAID_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ raidId: string }> },
+) {
+  const { raidId } = await params;
+
+  if (!RAID_ID_PATTERN.test(raidId)) {
+    return NextResponse.json({ error: "Invalid raidId format" }, { status: 400 });
+  }
+
+  // raidId は安全に使用できる
+  return NextResponse.json({ raidId });
+}
+```
+
+### Zod を使った構造化バリデーション
+
+```ts
+import { z } from "zod";
+
+const paramsSchema = z.object({
+  raidId: z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, "Invalid raidId"),
+  action: z.enum(["start", "stop", "status"]),
+});
+
+const result = paramsSchema.safeParse({ raidId, action });
+
+if (!result.success) {
+  return NextResponse.json({ error: result.error.flatten() }, { status: 400 });
+}
+```
+
+## 4. パストラバーサル防止
+
+ファイルパスを組み立てる際、`../` による上位ディレクトリへのアクセスを防ぐ。
+
+```ts
+import path from "path";
+
+const BASE_DIR = path.resolve(process.cwd(), "data");
+
+function getSafePath(userInput: string): string | null {
+  const resolved = path.resolve(BASE_DIR, userInput);
+
+  // BASE_DIR 配下であることを確認
+  if (!resolved.startsWith(BASE_DIR + path.sep)) {
+    return null;
+  }
+
+  return resolved;
+}
+```
+
+```ts
+// 使用例
+const filePath = getSafePath(req.query.filename as string);
+
+if (!filePath) {
+  return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+}
+
+const content = await fs.readFile(filePath, "utf-8");
+```
+
+## 5. 子プロセスの環境変数制限
+
+`child_process` で外部コマンドを実行する際、`process.env` をそのまま渡さず必要な変数だけに絞る。
+
+```ts
+import { spawn } from "child_process";
+
+const safeEnv = {
+  PATH: process.env.PATH ?? "",
+  NODE_ENV: process.env.NODE_ENV ?? "production",
+  HOME: process.env.HOME ?? "",
+};
+```
+
+```ts
+const child = spawn("node", ["worker.js"], {
+  env: safeEnv, // process.env ではなく最小限の変数のみ
+  cwd: "/app/workers",
+});
+```
+
+`process.env` をそのまま渡すと、API キーや DB 接続情報が子プロセスに漏れるリスクがある。
+
+## 6. SSE インジェクション防止
+
+Server-Sent Events でログをストリーミングする際、改行文字をエスケープして不正なイベント注入を防ぐ。
+
+```ts
+function sanitizeSSEData(data: string): string {
+  return data
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r");
+}
+```
+
+```ts
+// SSE ストリーミング時の使用例
+const encoder = new TextEncoder();
+
+const stream = new ReadableStream({
+  start(controller) {
+    const send = (message: string) => {
+      const safe = sanitizeSSEData(message);
+      controller.enqueue(encoder.encode(`data: ${safe}\n\n`));
+    };
+
+    send("ビルド開始...");
+    send(userProvidedLog); // ユーザー入力も安全にストリーム可能
+  },
+});
+
+return new Response(stream, {
+  headers: {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+  },
+});
+```
+
+## 7. TSV ファイル書き込みのバリデーション
+
+TSV ファイルに書き込む前に、入力値にタブ・改行が含まれていないことを検証する。
+
+```ts
+function validateTsvValue(value: string): boolean {
+  return !/[\t\n\r]/.test(value);
+}
+```
+
+```ts
+function sanitizeTsvValue(value: string): string {
+  return value
+    .replace(/\t/g, " ")
+    .replace(/[\n\r]/g, " ");
+}
+```
+
+```ts
+// 書き込み例
+import fs from "fs/promises";
+
+async function appendTsvRow(filePath: string, columns: string[]) {
+  for (const col of columns) {
+    if (!validateTsvValue(col)) {
+      throw new Error(`Invalid TSV value: ${col}`);
+    }
+  }
+
+  const line = columns.join("\t") + "\n";
+  await fs.appendFile(filePath, line, "utf-8");
+}
+```
+
+タブや改行がそのまま書き込まれると、TSV の列がずれてパース時にデータが破損する。

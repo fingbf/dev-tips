@@ -1,0 +1,291 @@
+---
+title: "Tailwind CSS ダークモード完全対応ガイド"
+description: "bg-white→dark:bg-zinc-900 の置換パターン、トグル実装、よくある対応漏れと修正方法"
+category: "tailwindcss"
+tags: ["dark-mode", "ui", "design"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## 1. ダークモード設定
+
+`tailwind.config.ts` で `darkMode: "class"` を設定する。これにより、`<html>` タグに `dark` クラスを付与することでダークモードが切り替わる。
+
+```ts title="tailwind.config.ts"
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  darkMode: "class",
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+
+export default config;
+```
+
+## 2. 基本の置換パターン
+
+既存のライトモード用クラスに `dark:` プレフィックス付きクラスを追加する。
+
+### 背景色
+
+| ライトモード | ダークモード対応後 |
+|---|---|
+| `bg-white` | `bg-white dark:bg-zinc-900` |
+| `bg-gray-50` | `bg-gray-50 dark:bg-zinc-800` |
+| `bg-gray-100` | `bg-gray-100 dark:bg-zinc-800` |
+
+### ボーダー
+
+| ライトモード | ダークモード対応後 |
+|---|---|
+| `border-gray-100` | `border-gray-100 dark:border-zinc-800` |
+| `border-gray-200` | `border-gray-200 dark:border-zinc-700` |
+| `border-gray-50` | `border-gray-50 dark:border-zinc-800` |
+
+### テキスト
+
+| ライトモード | ダークモード対応後 |
+|---|---|
+| `text-gray-900` | `text-gray-900 dark:text-zinc-100` |
+| `text-gray-700` | `text-gray-700 dark:text-zinc-300` |
+| `text-gray-500` | `text-gray-500 dark:text-zinc-400` |
+
+### ホバー
+
+| ライトモード | ダークモード対応後 |
+|---|---|
+| `hover:bg-gray-50` | `hover:bg-gray-50 dark:hover:bg-zinc-800` |
+
+{/* prettier-ignore */}
+> **ポイント**: `dark:` と `hover:` を組み合わせる場合は `dark:hover:` の順序で記述する。
+
+## 3. トグルボタン実装
+
+`localStorage` でユーザーの設定を保持し、初回訪問時はシステム設定に従う。
+
+```tsx title="components/ThemeToggle.tsx"
+"use client";
+
+import { useEffect, useState } from "react";
+
+export function ThemeToggle() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // 初期化: localStorage > システム設定 の優先順位
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark") {
+      setIsDark(true);
+      document.documentElement.classList.add("dark");
+    } else if (stored === "light") {
+      setIsDark(false);
+      document.documentElement.classList.remove("dark");
+    } else {
+      // システム設定に従う
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDark(prefersDark);
+      if (prefersDark) {
+        document.documentElement.classList.add("dark");
+      }
+    }
+  }, []);
+
+  const toggle = () => {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      className="rounded-lg border border-gray-200 p-2 dark:border-zinc-700"
+      aria-label="テーマ切り替え"
+    >
+      {isDark ? "☀️" : "🌙"}
+    </button>
+  );
+}
+```
+
+### フラッシュ防止
+
+`<html>` タグより前にインラインスクリプトを挿入し、ページ描画前にクラスを適用する。
+
+```html title="app/layout.tsx の <head> 内"
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      (function() {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    `,
+  }}
+/>
+```
+
+## 4. SVGグラフのダーク対応
+
+Recharts や手書きSVGなど、グラフ系コンポーネントでよく必要になるパターン。
+
+### CSS変数で切り替える方法
+
+```css title="globals.css"
+:root {
+  --chart-bg: #ffffff;
+  --chart-stroke: #374151; /* gray-700 */
+  --chart-grid: #e5e7eb; /* gray-200 */
+  --chart-text: #1f2937; /* gray-800 */
+}
+
+.dark {
+  --chart-bg: #18181b; /* zinc-900 */
+  --chart-stroke: #d4d4d8; /* zinc-300 */
+  --chart-grid: #3f3f46; /* zinc-700 */
+  --chart-text: #e4e4e7; /* zinc-200 */
+}
+```
+
+### SVG要素での適用
+
+```tsx
+<svg className="bg-white dark:bg-zinc-900">
+  {/* stroke の切り替え */}
+  <line
+    className="stroke-gray-200 dark:stroke-zinc-700"
+    x1="0" y1="0" x2="100" y2="0"
+  />
+  {/* fill の切り替え */}
+  <rect
+    className="fill-gray-100 dark:fill-zinc-800"
+    width="50" height="50"
+  />
+  {/* text の切り替え */}
+  <text className="fill-gray-700 dark:fill-zinc-300">ラベル</text>
+</svg>
+```
+
+### Recharts の場合
+
+Recharts はインラインスタイルを使うため、CSS変数経由で対応する。
+
+```tsx
+<ResponsiveContainer>
+  <LineChart data={data}>
+    <CartesianGrid stroke="var(--chart-grid)" />
+    <XAxis stroke="var(--chart-text)" />
+    <YAxis stroke="var(--chart-text)" />
+    <Line stroke="var(--chart-stroke)" />
+  </LineChart>
+</ResponsiveContainer>
+```
+
+## 5. よくある対応漏れ
+
+実際のプロジェクトで見落としやすい箇所をまとめる。
+
+### フィルターボタン・タブ
+
+アクティブ/非アクティブの両状態にダーク対応が必要。
+
+```tsx
+// NG: アクティブ状態のみ対応
+<button className={active ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700"}>
+
+// OK: 非アクティブ状態にもダーク対応
+<button className={active
+  ? "bg-blue-500 text-white"
+  : "bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300"
+}>
+```
+
+### モーダル・ドロップダウン
+
+オーバーレイと中身の両方に対応が必要。
+
+```tsx
+{/* オーバーレイ */}
+<div className="fixed inset-0 bg-black/50 dark:bg-black/70" />
+
+{/* モーダル本体 */}
+<div className="rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700">
+  <h2 className="text-gray-900 dark:text-zinc-100">タイトル</h2>
+</div>
+```
+
+### テーブルヘッダー
+
+`<thead>` の背景色が見落とされやすい。
+
+```tsx
+<thead className="bg-gray-50 dark:bg-zinc-800">
+  <tr>
+    <th className="text-gray-700 dark:text-zinc-300 border-b border-gray-200 dark:border-zinc-700">
+      カラム名
+    </th>
+  </tr>
+</thead>
+```
+
+### スティッキーヘッダー
+
+`sticky` 要素は背景色がないと下のコンテンツが透けて見える。
+
+```tsx
+{/* NG: 背景色なしで透ける */}
+<header className="sticky top-0">
+
+{/* OK: 背景色を明示 */}
+<header className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700">
+```
+
+### input / select / textarea
+
+フォーム要素はブラウザデフォルトスタイルがあるため、明示的に指定する。
+
+```tsx
+<input className="bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 border-gray-300 dark:border-zinc-600" />
+```
+
+## 6. 一括検索コマンド
+
+対応漏れを見つけるために、ダーク対応が必要なクラスを検索する。
+
+```bash
+# bg-white で dark:bg が同じ行にないものを検索
+grep -rn "bg-white" --include="*.tsx" --include="*.jsx" src/ | grep -v "dark:bg"
+
+# bg-gray-50 の未対応を検索
+grep -rn "bg-gray-50" --include="*.tsx" --include="*.jsx" src/ | grep -v "dark:"
+
+# text-gray-900 の未対応を検索
+grep -rn "text-gray-900" --include="*.tsx" --include="*.jsx" src/ | grep -v "dark:"
+
+# border-gray の未対応を一括検索
+grep -rn "border-gray" --include="*.tsx" --include="*.jsx" src/ | grep -v "dark:"
+```
+
+まとめて実行する場合:
+
+```bash
+# 主要なライトモードクラスの未対応を一括検出
+for pattern in "bg-white" "bg-gray-50" "bg-gray-100" "text-gray-900" "text-gray-700" "border-gray-200"; do
+  echo "=== $pattern ==="
+  grep -rn "$pattern" --include="*.tsx" --include="*.jsx" src/ | grep -v "dark:" || echo "  (すべて対応済み)"
+done
+```

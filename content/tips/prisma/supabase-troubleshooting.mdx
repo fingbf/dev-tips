@@ -1,0 +1,420 @@
+---
+title: "Prisma × Supabase 接続トラブルシューティング"
+description: "DB接続プール溢れ、Session mode制約、並列クエリ制限の実践的な解決パターン"
+category: "prisma"
+tags: ["supabase", "connection-pool", "troubleshooting"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+# Prisma × Supabase 接続トラブルシューティング
+
+Supabase + Prisma の組み合わせで頻出する接続エラーと、その実践的な解決パターンをまとめる。
+
+---
+
+## 1. よくあるエラー
+
+### "prepared statement already exists"
+
+Transaction mode の pgbouncer 経由で接続している場合に発生する。Prisma はデフォルトで prepared statement を使うが、Transaction mode ではセッションが使い回されるため、同名の prepared statement が衝突する。
+
+```
+Error: prepared statement "s0" already exists
+```
+
+**解決策**: 接続URLに `pgbouncer=true` を追加する。
+
+```env
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:6543/postgres?pgbouncer=true"
+```
+
+### "too many connections"
+
+Supabase Free プランの接続数上限（デフォルト60）を超過した場合に発生する。Serverless 環境では各インスタンスが個別に接続を張るため、すぐに上限に達する。
+
+```
+Error: too many connections for role "postgres"
+```
+
+**解決策**: `connection_limit` を制限する（後述）。
+
+### タイムアウト
+
+接続プールが枯渇し、新規接続の取得待ちでタイムアウトする。
+
+```
+Error: Timed out fetching a new connection from the connection pool.
+```
+
+**解決策**: プールサイズの削減、クエリの直列化、タイムアウト値の調整。
+
+```env
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:6543/postgres?connection_limit=1&pool_timeout=20"
+```
+
+---
+
+## 2. Supabase Session mode の制約
+
+Supabase の接続プール（pgbouncer）には **Session mode** と **Transaction mode** の2種類がある。
+
+### Session mode（ポート 5432）
+
+- デフォルトの接続モード
+- 接続が切断されるまでセッションを占有する
+- prepared statement が使える
+- **1接続 = 1セッション**（接続中ずっとプールを占有）
+
+```env
+# Session mode（直接接続）
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:5432/postgres"
+```
+
+### Transaction mode（ポート 6543）
+
+- トランザクション単位でセッションを使い回す
+- prepared statement は使えない（`pgbouncer=true` が必要）
+- 接続の利用効率が高い
+- **Serverless 環境ではこちらを推奨**
+
+```env
+# Transaction mode（pgbouncer 経由）
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:6543/postgres?pgbouncer=true"
+```
+
+### 使い分けの判断基準
+
+| 用途 | 推奨モード | ポート |
+|------|-----------|--------|
+| ローカル開発 | Session mode | 5432 |
+| Vercel Serverless | Transaction mode | 6543 |
+| 長時間バッチ処理 | Session mode (Direct) | 5432 |
+| マイグレーション実行 | Session mode (Direct) | 5432 |
+
+**注意**: マイグレーション（`prisma migrate deploy`）は必ず Session mode（直接接続）で実行すること。Transaction mode ではロックの管理ができずに失敗する。
+
+```env
+# マイグレーション用の直接接続URL
+DIRECT_URL="postgresql://user:pass@db.xxx.supabase.co:5432/postgres"
+```
+
+```prisma
+// schema.prisma
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")       // Transaction mode（アプリ用）
+  directUrl = env("DIRECT_URL")         // Session mode（マイグレーション用）
+}
+```
+
+---
+
+## 3. PrismaClient のシングルトンパターン
+
+Next.js の開発環境ではホットリロードのたびに新しい `PrismaClient` インスタンスが生成され、接続が増え続ける。`globalThis` を使ってインスタンスを再利用する。
+
+```typescript
+// lib/prisma.ts
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["query", "warn", "error"] : ["error"],
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+```
+
+### なぜ必要か
+
+- `next dev` はファイル変更のたびにモジュールを再評価する
+- `globalThis` に保存しないと、リロードごとに新しい接続プールが作られる
+- 開発中に `too many connections` が出る原因の大半がこれ
+
+### 本番環境では不要？
+
+本番環境（`production`）ではモジュールの再評価が発生しないため、シングルトンパターンは技術的には不要。ただし、コードの統一性のために同じファイルを使うのが一般的。
+
+---
+
+## 4. 接続プールサイズの制限
+
+### connection_limit=1 の設定
+
+Serverless 環境では各関数インスタンスが独立した接続プールを持つ。デフォルトのプールサイズ（CPU数に依存、通常5〜10）だと、複数インスタンスが同時起動した場合にすぐに上限に達する。
+
+```env
+# Serverless 環境向け：プールサイズを1に制限
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:6543/postgres?pgbouncer=true&connection_limit=1"
+```
+
+### なぜ connection_limit=1 なのか
+
+| 想定 | プールサイズ=5 | プールサイズ=1 |
+|------|--------------|--------------|
+| 同時10インスタンス | 50接続 | 10接続 |
+| 同時20インスタンス | 100接続（超過） | 20接続 |
+| 同時50インスタンス | 250接続（致命的） | 50接続 |
+
+Supabase Free プランの上限は60接続。`connection_limit=1` にしておけば、60インスタンスまで同時起動しても上限内に収まる。
+
+### pool_timeout の調整
+
+接続プールが小さい場合、クエリが待ち状態になる可能性がある。タイムアウト値を適切に設定する。
+
+```env
+DATABASE_URL="postgresql://user:pass@db.xxx.supabase.co:6543/postgres?pgbouncer=true&connection_limit=1&pool_timeout=20"
+```
+
+---
+
+## 5. 並列クエリの段階的削減
+
+`Promise.all` で複数クエリを並列実行すると、接続プールの枯渇やタイムアウトの原因になる。段階的に並列度を下げて安定性を確保する。
+
+### 判断基準
+
+| 並列数 | 使うべき場面 | リスク |
+|--------|-------------|--------|
+| 7並列以上 | 使わない | 接続プール枯渇の危険大 |
+| 4並列 | 潤沢な接続数がある場合のみ | 中程度のリスク |
+| 2並列 | 独立したクエリが2つだけの場合 | 低リスク |
+| 直列 | Serverless / Free プラン | 最も安全 |
+
+### リファクタリング例
+
+**Before: 7並列（危険）**
+
+```typescript
+const [users, posts, comments, tags, categories, stats, logs] = await Promise.all([
+  prisma.user.findMany(),
+  prisma.post.findMany(),
+  prisma.comment.findMany(),
+  prisma.tag.findMany(),
+  prisma.category.findMany(),
+  prisma.stats.findFirst(),
+  prisma.log.findMany(),
+]);
+```
+
+**After: 直列化（安全）**
+
+```typescript
+const users = await prisma.user.findMany();
+const posts = await prisma.post.findMany({ where: { authorId: { in: users.map((u) => u.id) } } });
+const comments = await prisma.comment.findMany({ where: { postId: { in: posts.map((p) => p.id) } } });
+// 依存関係のないクエリは最小限の並列で実行
+const [tags, categories] = await Promise.all([
+  prisma.tag.findMany(),
+  prisma.category.findMany(),
+]);
+const stats = await prisma.stats.findFirst();
+```
+
+### チャンク実行ユーティリティ
+
+どうしても並列実行が必要な場合は、チャンクに分けて実行する。
+
+```typescript
+async function executeInChunks<T>(
+  queries: (() => Promise<T>)[],
+  chunkSize: number = 2
+): Promise<T[]> {
+  const results: T[] = [];
+  for (let i = 0; i < queries.length; i += chunkSize) {
+    const chunk = queries.slice(i, i + chunkSize);
+    const chunkResults = await Promise.all(chunk.map((q) => q()));
+    results.push(...chunkResults);
+  }
+  return results;
+}
+
+// 使用例：2並列ずつ実行
+const results = await executeInChunks(
+  [
+    () => prisma.user.findMany(),
+    () => prisma.post.findMany(),
+    () => prisma.comment.findMany(),
+    () => prisma.tag.findMany(),
+  ],
+  2
+);
+```
+
+---
+
+## 6. Vercel Serverless での注意点
+
+### コールドスタート時の接続遅延
+
+Serverless 関数はコールドスタート時に新規接続を確立する。この接続確立に1〜3秒かかることがある。
+
+```typescript
+// 接続確立を事前に行う（関数のトップレベルで）
+import { prisma } from "@/lib/prisma";
+
+// コールドスタート時に接続を確立
+prisma.$connect();
+
+export async function GET() {
+  // ここでは既に接続済み
+  const data = await prisma.user.findMany();
+  return Response.json(data);
+}
+```
+
+### Vercel の同時実行数
+
+| Vercel プラン | 同時実行数 | 推奨 connection_limit |
+|-------------|-----------|---------------------|
+| Hobby | 10 | 1 |
+| Pro | 100 | 1 |
+| Enterprise | カスタム | 1〜3 |
+
+### pgbouncer 設定の確認
+
+Supabase ダッシュボード → Settings → Database → Connection Pooling で以下を確認する。
+
+- **Pool Mode**: Transaction（推奨）
+- **Pool Size**: デフォルト15（Free プラン）
+- **ポート**: 6543（pgbouncer 経由）
+
+```env
+# 本番環境の .env 設定例
+DATABASE_URL="postgresql://postgres.xxxx:password@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres.xxxx:password@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres"
+```
+
+### 関数のリージョン設定
+
+Supabase と Vercel のリージョンを揃えることで、接続遅延を最小化する。
+
+```typescript
+// next.config.ts（Vercel のリージョン指定）
+// または各 route.ts で指定
+export const runtime = "nodejs";
+export const preferredRegion = "hnd1"; // 東京リージョン
+```
+
+---
+
+## 7. デバッグ方法
+
+### Prisma のクエリログ
+
+`log` オプションでクエリの実行内容を確認する。
+
+```typescript
+const prisma = new PrismaClient({
+  log: [
+    { level: "query", emit: "stdout" },   // 実行されたSQL
+    { level: "warn", emit: "stdout" },     // 警告
+    { level: "error", emit: "stdout" },    // エラー
+  ],
+});
+```
+
+出力例:
+
+```
+prisma:query SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1
+prisma:query Duration: 3ms
+```
+
+### イベントベースのログ取得
+
+より詳細な制御が必要な場合は、イベントリスナーを使う。
+
+```typescript
+const prisma = new PrismaClient({
+  log: [{ level: "query", emit: "event" }],
+});
+
+prisma.$on("query", (e) => {
+  console.log(`Query: ${e.query}`);
+  console.log(`Params: ${e.params}`);
+  console.log(`Duration: ${e.duration}ms`);
+
+  // 遅いクエリの検出
+  if (e.duration > 1000) {
+    console.warn(`⚠ スロークエリ検出: ${e.duration}ms`);
+  }
+});
+```
+
+### Supabase ダッシュボードでの接続数確認
+
+Supabase ダッシュボード → Database → Database の「Active connections」で現在の接続数を確認できる。
+
+また、SQL エディタで直接確認することもできる。
+
+```sql
+-- 現在のアクティブ接続数を確認
+SELECT count(*) FROM pg_stat_activity;
+
+-- 接続元ごとの接続数を確認
+SELECT
+  client_addr,
+  usename,
+  application_name,
+  count(*)
+FROM pg_stat_activity
+GROUP BY client_addr, usename, application_name
+ORDER BY count(*) DESC;
+
+-- 待機中のクエリを確認
+SELECT
+  pid,
+  now() - pg_stat_activity.query_start AS duration,
+  query,
+  state
+FROM pg_stat_activity
+WHERE state != 'idle'
+  AND query NOT ILIKE '%pg_stat_activity%'
+ORDER BY duration DESC;
+```
+
+### 接続数のモニタリング（簡易版）
+
+定期的に接続数を確認するための API ルートを作成する。
+
+```typescript
+// app/api/debug/connections/route.ts
+import { prisma } from "@/lib/prisma";
+
+export async function GET() {
+  if (process.env.NODE_ENV === "production") {
+    return Response.json({ error: "Not available in production" }, { status: 403 });
+  }
+
+  const result = await prisma.$queryRaw<{ count: bigint }[]>`
+    SELECT count(*) FROM pg_stat_activity
+  `;
+
+  return Response.json({
+    activeConnections: Number(result[0].count),
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+---
+
+## まとめ: チェックリスト
+
+本番デプロイ前に以下を確認する。
+
+- [ ] `DATABASE_URL` に `pgbouncer=true&connection_limit=1` を設定したか
+- [ ] `DIRECT_URL`（直接接続）をマイグレーション用に設定したか
+- [ ] PrismaClient のシングルトンパターンを実装したか
+- [ ] `Promise.all` の並列クエリ数は適切か（2以下推奨）
+- [ ] Supabase と Vercel のリージョンは揃えたか
+- [ ] 開発環境でクエリログを有効にしたか

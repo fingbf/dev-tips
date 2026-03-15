@@ -1,0 +1,337 @@
+---
+title: "型安全な mtime ベースキャッシュパターン"
+description: "ファイル更新時に自動無効化されるモジュールレベルキャッシュの実装パターン"
+category: "typescript"
+tags: ["cache", "pattern", "node"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## 課題
+
+サーバーサイドで TSV / JSON / CSV などの静的ファイルを読み込む場面は多い。
+素朴に毎回 `fs.readFileSync` を呼ぶと、リクエストのたびにディスク I/O が発生しパフォーマンスが悪化する。
+
+```typescript
+// 毎回読み込む素朴な実装 — リクエストごとにディスク I/O が走る
+import fs from "fs";
+
+export function loadItems(): Item[] {
+  const raw = fs.readFileSync("data/items.tsv", "utf-8");
+  return parseTsv(raw);
+}
+```
+
+一方で開発中はファイルを頻繁に編集するため、キャッシュが効きすぎるとサーバーを再起動しないと反映されない問題が起きる。
+
+**「本番ではキャッシュしたいが、ファイルが変わったら自動で無効化したい」** という要件を両立するのが mtime ベースキャッシュパターンである。
+
+---
+
+## 解決策: mtime による変更検知
+
+`fs.statSync(filePath).mtimeMs` でファイルの最終更新日時（ミリ秒）を取得し、前回キャッシュ時の値と比較する。
+変更がなければキャッシュをそのまま返し、変更があれば再読み込みしてキャッシュを更新する。
+
+```typescript
+import fs from "fs";
+
+// キャッシュエントリの型定義
+interface CacheEntry<T> {
+  mtimeMs: number;
+  data: T;
+}
+
+// キャッシュストア
+const cache = new Map<string, CacheEntry<unknown>>();
+
+function loadWithCache<T>(filePath: string, parser: (raw: string) => T): T {
+  const { mtimeMs } = fs.statSync(filePath);
+  const cached = cache.get(filePath) as CacheEntry<T> | undefined;
+
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached.data;
+  }
+
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const data = parser(raw);
+  cache.set(filePath, { mtimeMs, data });
+  return data;
+}
+```
+
+`statSync` は `readFileSync` に比べてはるかに軽量（メタデータの取得のみ）なので、毎回呼んでも実質的なオーバーヘッドは無視できる。
+
+---
+
+## 基本パターン: 単一ファイルキャッシュ
+
+汎用的な型安全キャッシュ関数を作り、各データソースごとにラップする。
+
+```typescript
+import fs from "fs";
+import path from "path";
+
+// --- 汎用キャッシュ基盤 ---
+
+interface CacheEntry<T> {
+  mtimeMs: number;
+  data: T;
+}
+
+const fileCache = new Map<string, CacheEntry<unknown>>();
+
+export function cachedRead<T>(
+  filePath: string,
+  parser: (raw: string) => T,
+): T {
+  const abs = path.resolve(filePath);
+  const { mtimeMs } = fs.statSync(abs);
+  const entry = fileCache.get(abs) as CacheEntry<T> | undefined;
+
+  if (entry && entry.mtimeMs === mtimeMs) {
+    return entry.data;
+  }
+
+  const raw = fs.readFileSync(abs, "utf-8");
+  const data = parser(raw);
+  fileCache.set(abs, { mtimeMs, data });
+  return data;
+}
+
+// --- 利用例: TSV パーサー ---
+
+interface Weapon {
+  id: string;
+  name: string;
+  atk: number;
+  hp: number;
+}
+
+function parseTsv(raw: string): Weapon[] {
+  const lines = raw.trim().split("\n");
+  const headers = lines[0].split("\t");
+  return lines.slice(1).map((line) => {
+    const cols = line.split("\t");
+    return {
+      id: cols[0],
+      name: cols[1],
+      atk: Number(cols[2]),
+      hp: Number(cols[3]),
+    };
+  });
+}
+
+// 呼び出し側はキャッシュを意識しない
+export function getWeapons(): Weapon[] {
+  return cachedRead("data/weapons.tsv", parseTsv);
+}
+```
+
+---
+
+## ディレクトリキャッシュ
+
+`readdirSync` の結果もディレクトリの mtime でキャッシュできる。
+ファイルの追加・削除・リネームがあるとディレクトリの mtime が更新されるため、一覧の変化を自動検知できる。
+
+```typescript
+import fs from "fs";
+import path from "path";
+
+interface DirCacheEntry {
+  mtimeMs: number;
+  files: string[];
+}
+
+const dirCache = new Map<string, DirCacheEntry>();
+
+export function cachedReaddir(dirPath: string): string[] {
+  const abs = path.resolve(dirPath);
+  const { mtimeMs } = fs.statSync(abs);
+  const entry = dirCache.get(abs);
+
+  if (entry && entry.mtimeMs === mtimeMs) {
+    return entry.files;
+  }
+
+  const files = fs.readdirSync(abs);
+  dirCache.set(abs, { mtimeMs, files });
+  return files;
+}
+
+// 利用例: ディレクトリ内の全 TSV を読み込む
+export function loadAllTsvInDir(dirPath: string): Weapon[] {
+  const files = cachedReaddir(dirPath);
+  return files
+    .filter((f) => f.endsWith(".tsv"))
+    .flatMap((f) => cachedRead(path.join(dirPath, f), parseTsv));
+}
+```
+
+> **注意**: ディレクトリ内のファイルの **内容** が変わっただけではディレクトリの mtime は更新されない。
+> 内容の変更も検知したい場合は、個別ファイルの mtime チェックと組み合わせる。
+
+---
+
+## Map 索引パターン
+
+配列データをキャッシュすると同時に、ID から要素を O(1) で引ける `Map` を保持するパターン。
+マスターデータの参照で頻出する。
+
+```typescript
+import fs from "fs";
+import path from "path";
+
+interface IndexedCache<T> {
+  mtimeMs: number;
+  list: T[];
+  byId: Map<string, T>;
+}
+
+const indexedCache = new Map<string, IndexedCache<unknown>>();
+
+export function cachedReadIndexed<T extends { id: string }>(
+  filePath: string,
+  parser: (raw: string) => T[],
+): IndexedCache<T> {
+  const abs = path.resolve(filePath);
+  const { mtimeMs } = fs.statSync(abs);
+  const entry = indexedCache.get(abs) as IndexedCache<T> | undefined;
+
+  if (entry && entry.mtimeMs === mtimeMs) {
+    return entry;
+  }
+
+  const raw = fs.readFileSync(abs, "utf-8");
+  const list = parser(raw);
+  const byId = new Map(list.map((item) => [item.id, item]));
+  const result: IndexedCache<T> = { mtimeMs, list, byId };
+  indexedCache.set(abs, result as IndexedCache<unknown>);
+  return result;
+}
+
+// 利用例
+export function getWeaponById(id: string): Weapon | undefined {
+  const { byId } = cachedReadIndexed("data/weapons.tsv", parseTsv);
+  return byId.get(id);
+}
+
+export function getAllWeapons(): Weapon[] {
+  const { list } = cachedReadIndexed("data/weapons.tsv", parseTsv);
+  return list;
+}
+```
+
+配列の線形検索が不要になるため、大量のマスターデータを頻繁に ID 引きする場面で効果が大きい。
+
+---
+
+## 開発モードでの挙動比較
+
+### 旧パターン: NODE_ENV でキャッシュを切り替え
+
+```typescript
+// 旧パターン — 開発時はキャッシュ無効化
+let weaponsCache: Weapon[] | null = null;
+
+export function getWeapons(): Weapon[] {
+  // 開発モードでは毎回読み直す
+  if (process.env.NODE_ENV === "development") {
+    return parseTsv(fs.readFileSync("data/weapons.tsv", "utf-8"));
+  }
+
+  // 本番ではキャッシュを使う
+  if (!weaponsCache) {
+    weaponsCache = parseTsv(fs.readFileSync("data/weapons.tsv", "utf-8"));
+  }
+  return weaponsCache;
+}
+```
+
+**問題点**:
+- 開発時は毎回フルリードが走るためページ表示が遅い
+- 本番ではファイルを差し替えてもプロセス再起動まで反映されない
+- 環境変数による分岐がコード全体に散らばりがち
+
+### mtime パターン
+
+```typescript
+// mtime パターン — 環境に依存しない
+export function getWeapons(): Weapon[] {
+  return cachedRead("data/weapons.tsv", parseTsv);
+}
+```
+
+**優位性**:
+
+| 観点 | 旧パターン | mtime パターン |
+|------|-----------|---------------|
+| 開発時の速度 | 毎回フルリード | 変更時のみリード |
+| 本番での反映 | プロセス再起動が必要 | ファイル差し替えで即反映 |
+| コードの複雑さ | 環境分岐が必要 | 分岐不要 |
+| バグリスク | キャッシュ無効化忘れ | mtime が正しい限り安全 |
+
+mtime パターンは環境を問わず「変更があれば再読み込み、なければキャッシュ」という一貫した挙動になるため、`NODE_ENV` による分岐は不要になる。
+
+---
+
+## 注意点
+
+### mtime の精度
+
+OS やファイルシステムによって mtime の精度が異なる。
+
+| OS / ファイルシステム | mtime 精度 |
+|---------------------|-----------|
+| Windows (NTFS) | 100 ナノ秒（ただし実測では約 10ms 単位で丸められることがある） |
+| Linux (ext4) | 1 ナノ秒 |
+| macOS (APFS) | 1 ナノ秒 |
+| FAT32 | 2 秒 |
+
+`mtimeMs` はミリ秒精度の浮動小数点数を返すため、通常の用途では十分だが、**2 秒以内に同じファイルを複数回書き換える** ようなケースでは FAT32 環境で検知漏れが起こり得る。
+
+### NFS / ネットワークファイルシステム
+
+NFS 環境では以下の問題が発生する可能性がある:
+
+- **クライアントキャッシュ**: NFS クライアントが `stat` の結果をキャッシュするため、サーバー側の変更が即座に反映されない（`actimeo` 設定に依存）
+- **クロック同期**: NFS サーバーとクライアントで時刻がずれていると mtime の比較が不正確になる
+- **推奨対策**: NFS 環境では `stat` に加えてファイルサイズ (`size`) もチェックすると信頼性が上がる
+
+```typescript
+interface CacheEntry<T> {
+  mtimeMs: number;
+  size: number; // ファイルサイズも保持
+  data: T;
+}
+
+export function cachedReadSafe<T>(
+  filePath: string,
+  parser: (raw: string) => T,
+): T {
+  const abs = path.resolve(filePath);
+  const stat = fs.statSync(abs);
+  const entry = fileCache.get(abs) as CacheEntry<T> | undefined;
+
+  // mtime とサイズの両方が一致した場合のみキャッシュヒット
+  if (
+    entry &&
+    entry.mtimeMs === stat.mtimeMs &&
+    entry.size === stat.size
+  ) {
+    return entry.data;
+  }
+
+  const raw = fs.readFileSync(abs, "utf-8");
+  const data = parser(raw);
+  fileCache.set(abs, { mtimeMs: stat.mtimeMs, size: stat.size, data });
+  return data;
+}
+```
+
+### その他の注意
+
+- **メモリ消費**: キャッシュはモジュールレベルの `Map` に保持されるため、巨大なファイルを大量にキャッシュするとメモリを圧迫する。不要になったエントリは `cache.delete(key)` で明示的に解放する
+- **マルチプロセス**: `cluster` モジュールや PM2 でワーカーを複数起動する場合、各プロセスが独立したキャッシュを持つ点に注意
+- **非同期版**: パフォーマンスがクリティカルな場面では `fs.promises.stat` + `fs.promises.readFile` の非同期版を検討する
