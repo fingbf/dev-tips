@@ -1,0 +1,413 @@
+---
+title: "Vercel デプロイ & 運用チートシート"
+description: "Vercel CLI、環境変数管理、ビルド設定、トラブルシューティングの実践ガイド"
+category: "devops"
+tags: ["vercel", "deploy", "ci-cd"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## Vercel CLI 基本コマンド
+
+Vercel CLI はローカルからデプロイやログ確認を行うためのツール。
+
+### インストール
+
+```bash
+npm i -g vercel
+```
+
+### 主要コマンド
+
+| コマンド | 用途 |
+|---------|------|
+| `vercel` | プレビューデプロイ |
+| `vercel --prod` | 本番デプロイ |
+| `vercel env pull` | 環境変数を `.env.local` にダウンロード |
+| `vercel logs <url>` | デプロイのログを確認 |
+| `vercel inspect <url>` | デプロイの詳細情報を表示 |
+| `vercel ls` | デプロイ一覧を表示 |
+
+### プレビューデプロイ
+
+```bash
+# プレビュー環境にデプロイ（PRごとの確認用）
+vercel
+
+# 本番環境にデプロイ
+vercel --prod
+```
+
+### ログ確認
+
+```bash
+# 直近のデプロイログを確認
+vercel logs https://your-project-xxx.vercel.app
+
+# リアルタイムでログを追跡
+vercel logs https://your-project-xxx.vercel.app --follow
+```
+
+---
+
+## 環境変数管理
+
+Vercel の環境変数は **Production / Preview / Development** の3つの環境ごとに設定できる。
+
+### CLI での操作
+
+```bash
+# 環境変数を追加（対話形式で環境を選択）
+vercel env add DATABASE_URL
+
+# 特定の環境に直接追加
+echo "postgresql://..." | vercel env add DATABASE_URL production
+
+# 一覧表示
+vercel env ls
+
+# 削除
+vercel env rm DATABASE_URL production
+```
+
+### ローカル開発への反映
+
+```bash
+# Vercel に設定した環境変数を .env.local にダウンロード
+vercel env pull
+
+# 特定の環境から取得
+vercel env pull --environment=preview
+```
+
+### 環境ごとの使い分け
+
+| 環境 | 用途 | 対象ブランチ |
+|-----|------|------------|
+| Production | 本番環境 | `main` ブランチ |
+| Preview | PRプレビュー | `main` 以外のブランチ |
+| Development | ローカル開発 | `vercel dev` 実行時 |
+
+### `.env.local` と Vercel Dashboard の関係
+
+```bash
+# .env.local はローカル専用（gitignore 対象）
+# Vercel Dashboard で設定した値がデプロイ時に使われる
+# vercel env pull でローカルに同期できる
+```
+
+> **注意**: `.env.local` は `.gitignore` に必ず含めること。シークレットがリポジトリに混入するのを防ぐ。
+
+---
+
+## next.config.ts のデプロイ設定
+
+`next.config.ts` でリダイレクト、リライト、ヘッダーを設定できる。
+
+### リダイレクト
+
+```ts
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/old-page",
+        destination: "/new-page",
+        permanent: true, // 308（恒久的）
+      },
+      {
+        source: "/blog/:slug",
+        destination: "/posts/:slug",
+        permanent: false, // 307（一時的）
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+### リライト
+
+URL を変えずに内部的に別パスへルーティングする。
+
+```ts
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        // /api/proxy/xxx → 外部APIへ転送
+        source: "/api/proxy/:path*",
+        destination: "https://external-api.example.com/:path*",
+      },
+    ];
+  },
+};
+```
+
+### セキュリティヘッダー
+
+```ts
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+        ],
+      },
+    ];
+  },
+};
+```
+
+---
+
+## ビルドエラーのトラブルシューティング
+
+### よくあるエラーと解決策
+
+| エラー | 原因 | 解決策 |
+|-------|------|--------|
+| `FATAL ERROR: Heap out of memory` | メモリ不足 | `NODE_OPTIONS=--max-old-space-size=4096` を環境変数に追加 |
+| `Build exceeded maximum duration` | ビルドタイムアウト | 不要な依存を削減、動的インポートを活用 |
+| `Module not found` | 依存関係の不整合 | `node_modules` と `lockfile` を削除して再インストール |
+| `Type error` | TypeScript エラー | ローカルで `tsc --noEmit` を実行して事前確認 |
+
+### メモリ不足の対処
+
+```bash
+# Vercel Dashboard > Settings > Environment Variables に追加
+NODE_OPTIONS=--max-old-space-size=4096
+```
+
+### 依存関係のリセット
+
+```bash
+# ローカルで依存関係をクリーンインストール
+rm -rf node_modules .next
+npm ci
+
+# lockfile の不整合を確認
+npm ls --all 2>&1 | grep "WARN"
+```
+
+### ビルドキャッシュのクリア
+
+```bash
+# Vercel Dashboard から手動でキャッシュクリア
+# Settings > General > Build & Development Settings > Clear Cache
+
+# CLI からの再デプロイ（キャッシュなし）
+vercel --force
+```
+
+---
+
+## Serverless Function の制約
+
+Vercel の Serverless Function にはプランごとの制限がある。
+
+### 主な制限値
+
+| 項目 | Hobby | Pro |
+|-----|-------|-----|
+| 実行時間 | 10秒 | 60秒 |
+| ペイロードサイズ | 4.5MB | 4.5MB |
+| 関数サイズ（圧縮後） | 250KB | 250KB |
+| メモリ | 1024MB | 3008MB |
+
+### コールドスタート対策
+
+```ts
+// app/api/health/route.ts
+// Cron Job で定期的にウォームアップ
+export async function GET() {
+  return Response.json({ status: "ok" });
+}
+```
+
+```json
+// vercel.json - Cron でウォームアップ
+{
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
+```
+
+### 実行時間の最適化
+
+```ts
+// 重い処理は Streaming で返す
+export async function GET() {
+  const stream = new ReadableStream({
+    async start(controller) {
+      // チャンクごとにデータを送信
+      for (const chunk of dataChunks) {
+        controller.enqueue(new TextEncoder().encode(JSON.stringify(chunk)));
+      }
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+```
+
+### 関数サイズの削減
+
+```ts
+// 動的インポートで関数サイズを削減
+export async function POST(request: Request) {
+  // 必要な時だけ重いライブラリを読み込む
+  const { default: sharp } = await import("sharp");
+  // ...
+}
+```
+
+---
+
+## ドメイン設定
+
+### カスタムドメインの追加
+
+```bash
+# CLI でドメインを追加
+vercel domains add example.com
+
+# ドメイン一覧を確認
+vercel domains ls
+
+# ドメインの検証状態を確認
+vercel domains inspect example.com
+```
+
+### DNS 設定
+
+| レコード種別 | ホスト | 値 | 用途 |
+|------------|-------|-----|------|
+| A | `@` | `76.76.21.21` | ルートドメイン |
+| CNAME | `www` | `cname.vercel-dns.com` | www サブドメイン |
+
+### SSL 証明書
+
+Vercel はカスタムドメイン追加時に SSL 証明書を自動発行・更新する。手動設定は不要。
+
+```bash
+# 証明書の状態を確認
+vercel certs ls
+```
+
+> **注意**: DNS の浸透には最大48時間かかる場合がある。`dig` コマンドで伝播状況を確認できる。
+
+```bash
+# DNS の伝播確認
+dig example.com +short
+```
+
+---
+
+## モニタリング
+
+### Vercel Analytics
+
+ページビュー、ユニークビジター、リファラーなどを確認できる。
+
+```bash
+# パッケージのインストール
+npm i @vercel/analytics
+```
+
+```tsx
+// app/layout.tsx
+import { Analytics } from "@vercel/analytics/react";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}
+```
+
+### Speed Insights
+
+Core Web Vitals（LCP, FID, CLS）をリアルユーザーデータで計測する。
+
+```bash
+npm i @vercel/speed-insights
+```
+
+```tsx
+// app/layout.tsx
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html>
+      <body>
+        {children}
+        <SpeedInsights />
+      </body>
+    </html>
+  );
+}
+```
+
+### ログ確認のワークフロー
+
+```bash
+# 1. 本番のランタイムログを確認
+vercel logs https://your-app.vercel.app --follow
+
+# 2. 特定のデプロイのビルドログを確認
+vercel inspect <deployment-url>
+
+# 3. Serverless Function のエラーを調査
+# Vercel Dashboard > Logs > Runtime Logs でフィルタリング
+```
+
+### 障害発生時の確認手順
+
+1. `vercel logs` でエラーメッセージを特定
+2. Vercel Dashboard の **Functions** タブで実行時間・エラー率を確認
+3. **Analytics** でトラフィック異常がないか確認
+4. 必要に応じて `vercel rollback` で前のデプロイに戻す
+
+```bash
+# 直前のデプロイにロールバック
+vercel rollback
+```
