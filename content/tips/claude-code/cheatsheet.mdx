@@ -41,6 +41,12 @@ claude -r "session-name"
 claude --resume
 ```
 
+セッションをフォークして再開（元セッションに影響しない）:
+
+```bash
+claude --resume abc123 --fork-session
+```
+
 パイプ入力 + ワンショットモード（結果を出力して終了）:
 
 ```bash
@@ -191,12 +197,64 @@ claude --max-turns 10
 claude --max-budget-usd 5.00
 ```
 
+### リモート・Web 連携
+
+ターミナルから Web セッション（claude.ai）を作成:
+
+```bash
+claude --remote "認証バグを修正して"
+```
+
+Web セッションをローカルに移行:
+
+```bash
+claude --teleport
+```
+
+リモート制御を有効にして起動:
+
+```bash
+claude --remote-control "My Project"
+```
+
+PR にリンクされたセッションを再開:
+
+```bash
+claude --from-pr 123
+```
+
+### Chrome ブラウザ連携
+
+```bash
+claude --chrome
+```
+
+```bash
+claude --no-chrome
+```
+
+### チームメイト表示モード
+
+```bash
+claude --teammate-mode auto
+```
+
+```bash
+claude --teammate-mode tmux
+```
+
 ### SDK / 自動化向け
 
 ワンショット実行（JSON 出力）:
 
 ```bash
 claude -p "クエリ" --output-format json
+```
+
+JSON スキーマで構造化出力:
+
+```bash
+claude -p --json-schema '{"type":"object","properties":{"name":{"type":"string"}}}' "クエリ"
 ```
 
 システムプロンプトを追加:
@@ -258,11 +316,12 @@ claude --debug "api,mcp"
 | `/config` | 設定画面を開く（`/settings` も同じ） |
 | `/model [model]` | モデルを変更（左右キーで effort 調整） |
 | `/effort [level]` | 思考の深さを設定（low / medium / high / max） |
-| `/fast [on\|off]` | 高速モードの切替 |
+| `/fast [on/off]` | 高速モードの切替 |
 | `/permissions` | パーミッション設定を表示・変更 |
 | `/vim` | Vim 編集モードの切替 |
 | `/theme` | カラーテーマを変更 |
 | `/color [色]` | プロンプトバーの色を変更 |
+| `/statusline` | ステータスラインの表示設定 |
 
 ### ツール・プラグイン
 
@@ -274,6 +333,7 @@ claude --debug "api,mcp"
 | `/reload-plugins` | プラグインを再読み込み |
 | `/keybindings` | キーバインド設定を開く |
 | `/terminal-setup` | ターミナルのキーバインド設定 |
+| `/chrome` | Chrome ブラウザ連携の設定 |
 
 ### プロジェクト・コード
 
@@ -288,15 +348,26 @@ claude --debug "api,mcp"
 | `/agents` | サブエージェントを管理 |
 | `/skills` | 利用可能なスキル一覧 |
 
-### 生産性
+### 生産性・自動化
 
 | コマンド | 説明 |
 |---------|------|
+| `/loop [間隔] <プロンプト>` | 定期実行（デフォルト10分間隔） |
 | `/btw <質問>` | 会話履歴に残さないサイド質問 |
 | `/copy` | 最後の応答をクリップボードにコピー |
 | `/stats` | 日次の使用状況・履歴を表示 |
+| `/insights` | セッション分析レポートを生成 |
 | `/tasks` | バックグラウンドタスクの一覧・管理 |
 | `/plan` | プランモードに入る |
+
+### リモート・デバイス連携
+
+| コマンド | 説明 |
+|---------|------|
+| `/remote-control` | セッションをリモート制御可能にする（`/rc` も同じ） |
+| `/teleport` | Web セッションをローカルに移行 |
+| `/desktop` | デスクトップアプリに移行（`/app` も同じ） |
+| `/mobile` | モバイルアプリの QR コードを表示（`/ios`, `/android` も同じ） |
 
 ### アカウント
 
@@ -305,8 +376,46 @@ claude --debug "api,mcp"
 | `/login` | ログイン |
 | `/logout` | ログアウト |
 | `/usage` | プラン制限・レート制限を表示 |
+| `/extra-usage` | 追加使用量の設定 |
+| `/privacy-settings` | プライバシー設定（Pro/Max のみ） |
 | `/status` | バージョン・モデル・アカウント情報 |
 | `/doctor` | インストール状態を診断 |
+| `/release-notes` | 変更履歴を表示 |
+
+### 外部連携
+
+| コマンド | 説明 |
+|---------|------|
+| `/install-github-app` | GitHub Actions 連携をセットアップ |
+| `/install-slack-app` | Slack アプリをインストール |
+
+## /loop の使い方
+
+デフォルト（10分間隔）:
+
+```
+/loop ビルドの状態を確認して
+```
+
+間隔を指定（先頭）:
+
+```
+/loop 5m テストを実行して結果を報告
+```
+
+間隔を指定（末尾）:
+
+```
+/loop デプロイの状態を確認 every 30m
+```
+
+他のスラッシュコマンドを定期実行:
+
+```
+/loop 20m /pr-comments 123
+```
+
+対応する単位: `s`（秒）, `m`（分）, `h`（時間）, `d`（日）
 
 ## キーボードショートカット
 
@@ -527,6 +636,20 @@ mcp__server-name__tool-name
 /compact 認証機能の実装に集中して
 ```
 
+### 定期的にビルド状態を確認
+
+```
+/loop 5m ビルドの状態を確認して問題があれば報告
+```
+
+### 履歴を汚さずに質問
+
+処理中でも使える。コンテキスト内の情報だけで回答:
+
+```
+/btw さっきのファイル名なんだっけ？
+```
+
 ### GitHub PR との連携
 
 PR のコメントを取得して対応:
@@ -553,4 +676,18 @@ JSON 出力でスクリプト連携:
 
 ```bash
 claude -p "package.json の依存関係を分析して" --output-format json
+```
+
+### Web 連携で外出先から作業
+
+ターミナルからクラウドでタスクを開始:
+
+```bash
+claude --remote "テストを全部実行して失敗したら修正して"
+```
+
+セッションをリモート制御可能にする:
+
+```
+/rc
 ```
