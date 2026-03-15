@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-2 text-2xl font-bold">Dev Tips</h1>
+        <h1 className="mb-2 text-2xl font-bold md:text-3xl">Dev Tips</h1>
         <p className="text-zinc-600 dark:text-zinc-400">
           開発Tips・スニペット集
         </p>
@@ -22,7 +22,7 @@ export default function Home() {
           まだ記事がありません。content/tips/ にMDXファイルを追加してください。
         </p>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {tips.map((tip) => (
             <TipCard key={`${tip.category}/${tip.slug}`} tip={tip} />
           ))}

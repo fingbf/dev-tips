@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-2 text-2xl font-bold">{cat.name}</h1>
+        <h1 className="mb-2 text-2xl font-bold md:text-3xl">{cat.name}</h1>
         <p className="text-zinc-600 dark:text-zinc-400">{cat.description}</p>
       </div>
 
@@ -41,7 +41,7 @@ export default async function CategoryPage({ params }: Props) {
           このカテゴリにはまだ記事がありません。
         </p>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {tips.map((tip) => (
             <TipCard key={tip.slug} tip={tip} />
           ))}

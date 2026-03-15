@@ -45,14 +45,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white font-sans text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100`}
       >
         <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
-            <Link href="/" className="text-lg font-bold tracking-tight">
+          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-2">
+            <Link
+              href="/"
+              className="rounded-md px-2 py-1.5 text-lg font-bold tracking-tight transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-zinc-800"
+            >
               Dev Tips
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Link
                 href="/tags"
-                className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                className="rounded-lg px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-zinc-400 dark:hover:bg-zinc-800"
               >
                 Tags
               </Link>
@@ -60,7 +63,7 @@ export default function RootLayout({
             </div>
           </div>
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-8">{children}</main>
+        <main className="mx-auto max-w-4xl px-4 py-8 md:px-6">{children}</main>
         <footer className="border-t border-zinc-200 dark:border-zinc-800">
           <div className="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-zinc-500">
             Dev Tips

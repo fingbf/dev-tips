@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCategories, getTipsByCategory, getTip } from "@/lib/tips";
 import { TagBadge } from "@/components/tag-badge";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { MDXRemote } from "@/components/mdx-remote";
 
 type Props = {
@@ -38,30 +39,35 @@ export default async function TipPage({ params }: Props) {
   if (!tip) notFound();
 
   const { frontmatter, content } = tip;
+  const categories = getCategories();
+  const cat = categories.find((c) => c.slug === category);
 
   return (
     <article className="space-y-6">
       <div>
-        <div className="mb-2 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-          <Link
-            href={`/tips/${category}`}
-            className="rounded bg-zinc-100 px-2 py-0.5 font-medium transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
-          >
-            {category}
-          </Link>
+        <Breadcrumb
+          items={[
+            { label: "Top", href: "/" },
+            { label: cat?.name ?? category, href: `/tips/${category}` },
+            { label: frontmatter.title },
+          ]}
+        />
+        <h1 className="mt-3 text-2xl font-bold md:text-3xl">
+          {frontmatter.title}
+        </h1>
+        <div className="mt-2 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
           <time dateTime={frontmatter.created}>{frontmatter.created}</time>
           {frontmatter.updated !== frontmatter.created && (
             <span>(更新: {frontmatter.updated})</span>
           )}
         </div>
-        <h1 className="text-3xl font-bold">{frontmatter.title}</h1>
         {frontmatter.description && (
           <p className="mt-2 text-lg text-zinc-600 dark:text-zinc-400">
             {frontmatter.description}
           </p>
         )}
         {frontmatter.tags?.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1">
+          <div className="mt-3 flex flex-wrap gap-1.5">
             {frontmatter.tags.map((tag) => (
               <TagBadge key={tag} tag={tag} />
             ))}
@@ -80,13 +86,13 @@ export default async function TipPage({ params }: Props) {
       <div className="flex gap-4 text-sm">
         <Link
           href={`/tips/${category}`}
-          className="text-blue-600 hover:underline dark:text-blue-400"
+          className="rounded-md px-3 py-2 text-blue-600 transition-colors hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-blue-400 dark:hover:bg-zinc-800"
         >
-          ← {category} の記事一覧
+          ← {cat?.name ?? category} の記事一覧
         </Link>
         <Link
           href="/"
-          className="text-blue-600 hover:underline dark:text-blue-400"
+          className="rounded-md px-3 py-2 text-blue-600 transition-colors hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-blue-400 dark:hover:bg-zinc-800"
         >
           ← トップに戻る
         </Link>

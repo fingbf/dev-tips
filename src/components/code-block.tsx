@@ -20,7 +20,7 @@ export function CodeBlock({ children, ...props }: React.ComponentProps<"pre">) {
       </pre>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 rounded border border-zinc-300 bg-zinc-100 px-2 py-1 text-xs text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-zinc-200 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+        className="absolute top-2 right-2 rounded-md border border-zinc-300 bg-zinc-100 px-2.5 py-1.5 text-xs text-zinc-600 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 hover:bg-zinc-200 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
         aria-label="コードをコピー"
       >
         {copied ? "Copied!" : "Copy"}

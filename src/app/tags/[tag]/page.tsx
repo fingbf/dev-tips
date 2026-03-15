@@ -24,12 +24,12 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">#{decodedTag}</h1>
+      <h1 className="text-2xl font-bold md:text-3xl">#{decodedTag}</h1>
       <p className="text-zinc-600 dark:text-zinc-400">
         {tips.length} 件の記事
       </p>
 
-      <div className="grid gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {tips.map((tip) => (
           <TipCard key={`${tip.category}/${tip.slug}`} tip={tip} />
         ))}

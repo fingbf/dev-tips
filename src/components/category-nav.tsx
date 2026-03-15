@@ -11,7 +11,7 @@ export function CategoryNav({ categories, current }: CategoryNavProps) {
     <nav className="flex flex-wrap gap-2">
       <Link
         href="/"
-        className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
           !current
             ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
             : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
@@ -23,7 +23,7 @@ export function CategoryNav({ categories, current }: CategoryNavProps) {
         <Link
           key={cat.slug}
           href={`/tips/${cat.slug}`}
-          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
             current === cat.slug
               ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
               : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
