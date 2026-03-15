@@ -1,0 +1,399 @@
+---
+title: "Claude Code コマンドチートシート"
+description: "Claude Code CLI のコマンド、スラッシュコマンド、キーボードショートカット、設定ファイルの総合リファレンス"
+category: "claude-code"
+tags: ["cli", "command", "cheatsheet", "ai"]
+created: "2026-03-15"
+updated: "2026-03-15"
+---
+
+## CLI 基本コマンド
+
+### セッション管理
+
+```bash
+# インタラクティブセッションを開始
+claude
+
+# 初期プロンプト付きで開始
+claude "このコードを説明して"
+
+# 直前の会話を続行
+claude -c
+
+# セッションIDまたは名前で再開
+claude -r "session-name"
+
+# セッション一覧から選択して再開
+claude --resume
+
+# パイプ入力 + ワンショットモード（結果を出力して終了）
+cat file.ts | claude -p "このコードをレビューして"
+
+# バージョン確認・アップデート
+claude -v
+claude update
+```
+
+### 認証
+
+```bash
+claude auth login           # ログイン
+claude auth login --sso     # SSO でログイン
+claude auth logout          # ログアウト
+claude auth status --text   # 認証状態を表示
+```
+
+### MCP サーバー管理
+
+```bash
+# サーバー追加
+claude mcp add --transport http my-api https://api.example.com
+claude mcp add --transport sse my-sse https://sse.example.com
+claude mcp add --transport stdio my-tool -- node server.js
+
+# 管理
+claude mcp list             # 一覧表示
+claude mcp get my-api       # 詳細表示
+claude mcp remove my-api    # 削除
+```
+
+## CLI フラグ
+
+### よく使うフラグ
+
+```bash
+# モデル指定
+claude --model sonnet
+claude --model opus
+
+# パーミッションモード
+claude --permission-mode plan          # 分析のみ（変更不可）
+claude --permission-mode acceptEdits   # ファイル編集を自動許可
+claude --permission-mode dontAsk       # 未許可ツールは自動拒否
+
+# 思考の深さ（effort）
+claude --effort low      # 軽量な応答
+claude --effort high     # 深い分析
+claude --effort max      # 最大限の思考
+
+# ワークツリーで作業
+claude -w feature-branch
+
+# ターン数・予算制限
+claude --max-turns 10
+claude --max-budget-usd 5.00
+```
+
+### SDK / 自動化向けフラグ
+
+```bash
+# ワンショット実行（パイプライン向け）
+claude -p "クエリ" --output-format json
+
+# システムプロンプトのカスタマイズ
+claude --append-system-prompt "常に日本語で回答して"
+claude --system-prompt-file custom-prompt.md
+
+# ツール制限
+claude --allowedTools "Read" "Bash(npm run *)"
+claude --disallowedTools "Bash(rm -rf)"
+
+# 追加ディレクトリ
+claude --add-dir ../shared-lib
+
+# デバッグモード
+claude --debug "api,mcp"
+```
+
+## スラッシュコマンド
+
+### セッション・コンテキスト
+
+| コマンド | 説明 |
+|---------|------|
+| `/clear` | 会話履歴をクリア（`/reset`, `/new` も同じ） |
+| `/compact [指示]` | 会話を圧縮（指示で焦点を指定可） |
+| `/context` | コンテキスト使用量を可視化 |
+| `/cost` | トークン使用量・コストを表示 |
+| `/export [file]` | 会話をテキストファイルにエクスポート |
+| `/fork [name]` | 現在の会話をフォーク |
+| `/resume [session]` | セッションを再開 |
+| `/rename [name]` | セッション名を変更 |
+| `/rewind` | チェックポイントまで巻き戻し |
+
+### 設定・モデル
+
+| コマンド | 説明 |
+|---------|------|
+| `/config` | 設定画面を開く（`/settings` も同じ） |
+| `/model [model]` | モデルを変更（左右キーで effort 調整） |
+| `/effort [level]` | 思考の深さを設定（low / medium / high / max） |
+| `/fast [on\|off]` | 高速モードの切替 |
+| `/permissions` | パーミッション設定を表示・変更 |
+| `/vim` | Vim 編集モードの切替 |
+| `/theme` | カラーテーマを変更 |
+| `/color [色]` | プロンプトバーの色を変更 |
+
+### ツール・プラグイン
+
+| コマンド | 説明 |
+|---------|------|
+| `/mcp` | MCP サーバーの管理・認証 |
+| `/hooks` | Hook 設定を表示 |
+| `/plugin` | プラグイン管理 |
+| `/reload-plugins` | プラグインを再読み込み |
+| `/keybindings` | キーバインド設定を開く |
+| `/terminal-setup` | ターミナルのキーバインド設定 |
+
+### プロジェクト・コード
+
+| コマンド | 説明 |
+|---------|------|
+| `/init` | CLAUDE.md を生成してプロジェクト初期化 |
+| `/memory` | CLAUDE.md の編集、メモリ管理 |
+| `/add-dir <path>` | 作業ディレクトリを追加 |
+| `/diff` | インタラクティブ diff ビューアを開く |
+| `/pr-comments [PR]` | GitHub PR のコメントを取得 |
+| `/security-review` | ブランチのセキュリティ脆弱性を分析 |
+| `/agents` | サブエージェントを管理 |
+| `/skills` | 利用可能なスキル一覧 |
+
+### 生産性
+
+| コマンド | 説明 |
+|---------|------|
+| `/btw <質問>` | 会話履歴に残さないサイド質問 |
+| `/copy` | 最後の応答をクリップボードにコピー |
+| `/stats` | 日次の使用状況・履歴を表示 |
+| `/tasks` | バックグラウンドタスクの一覧・管理 |
+| `/plan` | プランモードに入る |
+
+### アカウント
+
+| コマンド | 説明 |
+|---------|------|
+| `/login` | ログイン |
+| `/logout` | ログアウト |
+| `/usage` | プラン制限・レート制限を表示 |
+| `/status` | バージョン・モデル・アカウント情報 |
+| `/doctor` | インストール状態を診断 |
+
+## キーボードショートカット
+
+### 基本操作
+
+| ショートカット | 説明 |
+|--------------|------|
+| `Ctrl+C` | 入力 / 生成をキャンセル |
+| `Ctrl+D` | セッションを終了 |
+| `Ctrl+L` | 画面クリア（履歴は保持） |
+| `Ctrl+O` | 詳細出力の切替 |
+| `Ctrl+T` | タスクリストの表示切替 |
+| `Ctrl+R` | コマンド履歴の逆検索 |
+| `Ctrl+G` | デフォルトテキストエディタで開く |
+| `Ctrl+F` | バックグラウンドエージェントを全停止（3秒以内に2回） |
+| `Ctrl+B` | 現在のタスクをバックグラウンドへ |
+
+### テキスト編集
+
+| ショートカット | 説明 |
+|--------------|------|
+| `Ctrl+K` | カーソル位置から行末まで削除 |
+| `Ctrl+U` | 行全体を削除 |
+| `Ctrl+Y` | 削除したテキストを貼り付け |
+| `Alt+B` / `Alt+F` | 単語単位で前後に移動 |
+
+### モード切替
+
+| ショートカット | 説明 |
+|--------------|------|
+| `Shift+Tab` / `Alt+M` | パーミッションモードを切替 |
+| `Alt+P` | モデルを切替 |
+| `Alt+T` | 拡張思考の切替 |
+| `Esc` × 2 | 巻き戻し / サマリー |
+
+### 複数行入力
+
+| 方法 | ショートカット |
+|------|--------------|
+| エスケープ方式 | `\` + `Enter` |
+| macOS | `Option+Enter` |
+| モダンターミナル | `Shift+Enter`（iTerm2, WezTerm, Ghostty, Kitty） |
+| 制御文字 | `Ctrl+J` |
+
+### 画像貼り付け
+
+| OS | ショートカット |
+|----|--------------|
+| macOS | `Cmd+V` |
+| Windows | `Ctrl+V` / `Alt+V` |
+
+## 設定ファイル
+
+### ファイルの種類と場所
+
+| ファイル | スコープ | Git 共有 | 用途 |
+|---------|---------|---------|------|
+| `~/.claude/settings.json` | ユーザー全体 | No | 個人のグローバル設定 |
+| `.claude/settings.json` | プロジェクト | Yes | チーム共有設定 |
+| `.claude/settings.local.json` | ローカル | No | 個人のプロジェクト設定 |
+| `CLAUDE.md` | プロジェクト | Yes | プロジェクト指示書 |
+| `~/.claude/keybindings.json` | ユーザー全体 | No | キーバインド |
+| `.mcp.json` | プロジェクト | Yes | MCP サーバー（共有） |
+| `~/.claude/.mcp.json` | ユーザー全体 | No | MCP サーバー（個人） |
+
+### settings.json の構造
+
+```json
+{
+  "permissions": {
+    "allow": ["Read", "Bash(npm run *)"],
+    "ask": ["Edit"],
+    "deny": ["Bash(rm -rf)"]
+  },
+  "defaultMode": "default",
+  "model": "claude-sonnet-4-6-20250514",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "additionalDirectories": ["../shared-lib"]
+}
+```
+
+### パーミッションルールの書き方
+
+```bash
+# ツール全体を許可
+Read
+
+# ワイルドカードで範囲指定
+Bash(npm run *)        # npm run から始まるコマンド
+Bash(git commit *)     # git commit から始まるコマンド
+Read(/src/**)          # src 配下を再帰的に許可
+
+# ドメイン指定
+WebFetch(domain:github.com)
+
+# MCP ツール
+mcp__server-name__tool-name
+```
+
+## パーミッションモード
+
+| モード | 動作 |
+|-------|------|
+| `default` | 各ツール初回使用時に確認 |
+| `acceptEdits` | ファイル編集を自動許可 |
+| `plan` | 分析のみ、変更・実行不可 |
+| `dontAsk` | 未承認ツールは自動拒否 |
+| `bypassPermissions` | 全チェックをスキップ（注意） |
+
+## 環境変数
+
+### 認証・API
+
+| 変数 | 用途 |
+|------|------|
+| `ANTHROPIC_API_KEY` | Claude API キー |
+| `ANTHROPIC_BASE_URL` | カスタム API エンドポイント |
+| `CLAUDE_CODE_USE_BEDROCK` | AWS Bedrock を使用 |
+| `CLAUDE_CODE_USE_VERTEX` | Google Vertex AI を使用 |
+
+### 設定
+
+| 変数 | 用途 |
+|------|------|
+| `CLAUDE_CODE_DEBUG` | デバッグログを有効化 |
+| `MCP_TIMEOUT` | MCP 起動タイムアウト（ms） |
+| `MAX_MCP_OUTPUT_TOKENS` | MCP 出力の最大トークン数 |
+| `NO_COLOR` | カラー出力を無効化 |
+
+## Hooks
+
+### イベント一覧
+
+| イベント | タイミング | ブロック可 |
+|---------|----------|----------|
+| `SessionStart` | セッション開始時 | No |
+| `UserPromptSubmit` | プロンプト処理前 | Yes |
+| `PreToolUse` | ツール実行前 | Yes |
+| `PostToolUse` | ツール成功後 | No |
+| `Stop` | Claude の応答完了時 | Yes |
+| `SessionEnd` | セッション終了時 | No |
+
+### 設定例
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/validate.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Vim モード
+
+`/vim` で有効化。
+
+### モード切替
+
+| キー | 動作 |
+|------|------|
+| `Esc` | NORMAL モードへ |
+| `i` / `I` | カーソル前 / 行頭に挿入 |
+| `a` / `A` | カーソル後 / 行末に挿入 |
+| `o` / `O` | 下 / 上に行を追加して挿入 |
+
+### NORMAL モードの操作
+
+| キー | 動作 |
+|------|------|
+| `h`/`j`/`k`/`l` | 左/下/上/右 |
+| `w` / `b` / `e` | 次の単語 / 前の単語 / 単語末尾 |
+| `0` / `$` | 行頭 / 行末 |
+| `dd` / `D` | 行削除 / 行末まで削除 |
+| `cc` / `C` | 行変更 / 行末まで変更 |
+| `yy` / `p` | 行コピー / 貼り付け |
+| `.` | 直前の操作を繰り返し |
+
+## Tips
+
+### コンテキストが大きくなったら
+
+```
+/compact 認証機能の実装に集中して
+```
+
+会話を圧縮して、指定した内容にフォーカスを当てられる。
+
+### GitHub PR との連携
+
+```bash
+# PR のコメントを取得して対応
+/pr-comments 123
+
+# セキュリティレビューを実行
+/security-review
+```
+
+### パイプラインでの活用
+
+```bash
+# コードの説明を生成
+cat src/utils.ts | claude -p "この関数の説明をコメントとして追加して" --output-format text
+
+# JSON 出力でスクリプト連携
+claude -p "package.json の依存関係を分析して" --output-format json
+```
