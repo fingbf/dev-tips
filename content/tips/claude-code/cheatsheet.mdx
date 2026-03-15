@@ -7,106 +7,235 @@ created: "2026-03-15"
 updated: "2026-03-15"
 ---
 
-## CLI 基本コマンド
+## CLI コマンド（ターミナルから実行）
 
 ### セッション管理
 
+インタラクティブセッションを開始:
+
 ```bash
-# インタラクティブセッションを開始
 claude
+```
 
-# 初期プロンプト付きで開始
+初期プロンプト付きで開始:
+
+```bash
 claude "このコードを説明して"
+```
 
-# 直前の会話を続行
+直前の会話を続行:
+
+```bash
 claude -c
+```
 
-# セッションIDまたは名前で再開
+セッションIDまたは名前で再開:
+
+```bash
 claude -r "session-name"
+```
 
-# セッション一覧から選択して再開
+セッション一覧から選択して再開:
+
+```bash
 claude --resume
+```
 
-# パイプ入力 + ワンショットモード（結果を出力して終了）
+パイプ入力 + ワンショットモード（結果を出力して終了）:
+
+```bash
 cat file.ts | claude -p "このコードをレビューして"
+```
 
-# バージョン確認・アップデート
+バージョン確認:
+
+```bash
 claude -v
+```
+
+アップデート:
+
+```bash
 claude update
 ```
 
 ### 認証
 
+ログイン:
+
 ```bash
-claude auth login           # ログイン
-claude auth login --sso     # SSO でログイン
-claude auth logout          # ログアウト
-claude auth status --text   # 認証状態を表示
+claude auth login
+```
+
+SSO でログイン:
+
+```bash
+claude auth login --sso
+```
+
+ログアウト:
+
+```bash
+claude auth logout
+```
+
+認証状態を表示:
+
+```bash
+claude auth status --text
 ```
 
 ### MCP サーバー管理
 
-```bash
-# サーバー追加
-claude mcp add --transport http my-api https://api.example.com
-claude mcp add --transport sse my-sse https://sse.example.com
-claude mcp add --transport stdio my-tool -- node server.js
+HTTP サーバーを追加:
 
-# 管理
-claude mcp list             # 一覧表示
-claude mcp get my-api       # 詳細表示
-claude mcp remove my-api    # 削除
+```bash
+claude mcp add --transport http my-api https://api.example.com
 ```
 
-## CLI フラグ
-
-### よく使うフラグ
+SSE サーバーを追加:
 
 ```bash
-# モデル指定
+claude mcp add --transport sse my-sse https://sse.example.com
+```
+
+stdio サーバーを追加:
+
+```bash
+claude mcp add --transport stdio my-tool -- node server.js
+```
+
+一覧表示:
+
+```bash
+claude mcp list
+```
+
+詳細表示:
+
+```bash
+claude mcp get my-api
+```
+
+削除:
+
+```bash
+claude mcp remove my-api
+```
+
+## CLI フラグ（起動時に指定）
+
+### モデル指定
+
+```bash
 claude --model sonnet
+```
+
+```bash
 claude --model opus
+```
 
-# パーミッションモード
-claude --permission-mode plan          # 分析のみ（変更不可）
-claude --permission-mode acceptEdits   # ファイル編集を自動許可
-claude --permission-mode dontAsk       # 未許可ツールは自動拒否
+### パーミッションモード
 
-# 思考の深さ（effort）
-claude --effort low      # 軽量な応答
-claude --effort high     # 深い分析
-claude --effort max      # 最大限の思考
+分析のみ（変更不可）:
 
-# ワークツリーで作業
+```bash
+claude --permission-mode plan
+```
+
+ファイル編集を自動許可:
+
+```bash
+claude --permission-mode acceptEdits
+```
+
+未許可ツールは自動拒否:
+
+```bash
+claude --permission-mode dontAsk
+```
+
+### 思考の深さ（effort）
+
+軽量な応答:
+
+```bash
+claude --effort low
+```
+
+深い分析:
+
+```bash
+claude --effort high
+```
+
+最大限の思考:
+
+```bash
+claude --effort max
+```
+
+### ワークツリーで作業
+
+```bash
 claude -w feature-branch
+```
 
-# ターン数・予算制限
+### ターン数・予算制限
+
+```bash
 claude --max-turns 10
+```
+
+```bash
 claude --max-budget-usd 5.00
 ```
 
-### SDK / 自動化向けフラグ
+### SDK / 自動化向け
+
+ワンショット実行（JSON 出力）:
 
 ```bash
-# ワンショット実行（パイプライン向け）
 claude -p "クエリ" --output-format json
+```
 
-# システムプロンプトのカスタマイズ
+システムプロンプトを追加:
+
+```bash
 claude --append-system-prompt "常に日本語で回答して"
+```
+
+システムプロンプトをファイルから読み込み:
+
+```bash
 claude --system-prompt-file custom-prompt.md
+```
 
-# ツール制限
+許可ツールを指定:
+
+```bash
 claude --allowedTools "Read" "Bash(npm run *)"
+```
+
+拒否ツールを指定:
+
+```bash
 claude --disallowedTools "Bash(rm -rf)"
+```
 
-# 追加ディレクトリ
+追加ディレクトリ:
+
+```bash
 claude --add-dir ../shared-lib
+```
 
-# デバッグモード
+デバッグモード:
+
+```bash
 claude --debug "api,mcp"
 ```
 
-## スラッシュコマンド
+## スラッシュコマンド（セッション内で実行）
 
 ### セッション・コンテキスト
 
@@ -263,19 +392,39 @@ claude --debug "api,mcp"
 
 ### パーミッションルールの書き方
 
-```bash
-# ツール全体を許可
+ツール全体を許可:
+
+```
 Read
+```
 
-# ワイルドカードで範囲指定
-Bash(npm run *)        # npm run から始まるコマンド
-Bash(git commit *)     # git commit から始まるコマンド
-Read(/src/**)          # src 配下を再帰的に許可
+npm run から始まるコマンドを許可:
 
-# ドメイン指定
+```
+Bash(npm run *)
+```
+
+git commit から始まるコマンドを許可:
+
+```
+Bash(git commit *)
+```
+
+src 配下を再帰的に許可:
+
+```
+Read(/src/**)
+```
+
+ドメイン指定:
+
+```
 WebFetch(domain:github.com)
+```
 
-# MCP ツール
+MCP ツール:
+
+```
 mcp__server-name__tool-name
 ```
 
@@ -372,28 +521,36 @@ mcp__server-name__tool-name
 
 ### コンテキストが大きくなったら
 
+会話を圧縮して、指定した内容にフォーカスを当てられる:
+
 ```
 /compact 認証機能の実装に集中して
 ```
 
-会話を圧縮して、指定した内容にフォーカスを当てられる。
-
 ### GitHub PR との連携
 
-```bash
-# PR のコメントを取得して対応
-/pr-comments 123
+PR のコメントを取得して対応:
 
-# セキュリティレビューを実行
+```
+/pr-comments 123
+```
+
+セキュリティレビューを実行:
+
+```
 /security-review
 ```
 
 ### パイプラインでの活用
 
-```bash
-# コードの説明を生成
-cat src/utils.ts | claude -p "この関数の説明をコメントとして追加して" --output-format text
+コードの説明を生成:
 
-# JSON 出力でスクリプト連携
+```bash
+cat src/utils.ts | claude -p "この関数の説明をコメントとして追加して" --output-format text
+```
+
+JSON 出力でスクリプト連携:
+
+```bash
 claude -p "package.json の依存関係を分析して" --output-format json
 ```

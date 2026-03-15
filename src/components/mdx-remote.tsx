@@ -1,4 +1,5 @@
 import { MDXRemote as MDXRemoteBase } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import { CodeBlock } from "./code-block";
 
@@ -17,6 +18,7 @@ export function MDXRemote({ source }: Props) {
       components={components}
       options={{
         mdxOptions: {
+          remarkPlugins: [remarkGfm],
           rehypePlugins: [
             [
               rehypePrettyCode,
