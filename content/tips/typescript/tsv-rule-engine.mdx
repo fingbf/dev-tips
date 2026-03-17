@@ -1,0 +1,295 @@
+---
+title: "TSV 駆動のルールエンジンと排他スロットパターン"
+description: "条件付きルールを TSV ファイルに外出しし、排他グループの MAX 取りで共存不可ロジックを処理する実践パターン"
+category: "typescript"
+tags: ["pattern", "architecture", "node", "data-driven"]
+created: "2026-03-18"
+updated: "2026-03-18"
+---
+
+## 課題
+
+ビジネスロジックをコードにハードコードすると、ルール追加のたびにコード変更・ビルド・デプロイが必要になる。
+特に以下のようなケースで問題になりやすい:
+
+- キャラクターやアイテムの効果定義がどんどん増える
+- 条件（属性・レベル・タイプ等）が複雑に絡む
+- 一部の効果は共存不可で、最大値のみ適用される
+
+```typescript
+// ハードコードの例 — ルール追加のたびにコード変更が必要
+function getEffects(characterId: string, level: number): Effects {
+  if (characterId === "CHAR_001" && level >= 120) {
+    return { atkUp: 10, dmgCapUp: 0 };
+  }
+  if (characterId === "CHAR_001" && level >= 150) {
+    return { atkUp: 10, dmgCapUp: 10 };
+  }
+  if (characterId === "CHAR_002" && level >= 100) {
+    return { atkUp: 20, dmgCapUp: 5 };
+  }
+  // ... ルールが増えるたびに肥大化
+  return { atkUp: 0, dmgCapUp: 0 };
+}
+```
+
+---
+
+## 解決策: TSV にルールを外出し
+
+効果定義を TSV ファイルに分離し、汎用的なローダーで条件マッチングを行う。
+
+### 1. TSV でルールを定義
+
+```tsv title="data/character_effects.tsv"
+character_id	effect_type	value	min_level	target_type	note
+CHAR_001	atk_up	10	120	fire	火属性キャラのATK+10%
+CHAR_001	dmg_cap_up	10	150	fire	火属性キャラのD上限+10%(Lv150追加)
+CHAR_002	atk_up	20	100		全属性ATK+20%
+CHAR_002	dmg_cap_up	5	100		全属性D上限+5%
+CHAR_003	atk_up	50	1		ATK+50%(メイン装備時のみ)
+CHAR_003	dmg_cap_up	20	1		D上限+20%
+```
+
+**利点**: ルール追加は TSV に1行追加するだけ。コード変更不要。
+
+### 2. 型安全なローダー
+
+```typescript
+import { cachedRead } from "./cache"; // mtime キャッシュ（別記事参照）
+
+/** TSV の行型 */
+interface EffectRule {
+  character_id: string;
+  effect_type: string;
+  value: string;
+  min_level: string;
+  target_type: string;
+  note: string;
+}
+
+/** キャラ ID → ルール一覧の Map を構築 */
+function loadEffectRules(): Map<string, EffectRule[]> {
+  const rows = cachedRead<EffectRule>("data/character_effects.tsv", parseTsv);
+  const map = new Map<string, EffectRule[]>();
+  for (const row of rows) {
+    const list = map.get(row.character_id) ?? [];
+    list.push(row);
+    map.set(row.character_id, list);
+  }
+  return map;
+}
+```
+
+### 3. 条件付きマッチング
+
+```typescript
+interface EffectTotals {
+  atk_up: number;
+  dmg_cap_up: number;
+}
+
+/**
+ * アクティブメンバーの効果を条件付きで集計
+ * @param members - パーティメンバー一覧
+ * @param targetType - 対象タイプ（属性等）
+ */
+function collectEffects(
+  members: { id: string; level: number }[],
+  targetType: string,
+): EffectTotals {
+  const rules = loadEffectRules();
+  const totals: EffectTotals = { atk_up: 0, dmg_cap_up: 0 };
+
+  for (const member of members) {
+    const memberRules = rules.get(member.id);
+    if (!memberRules) continue;
+
+    for (const rule of memberRules) {
+      // レベル条件
+      const minLevel = Number(rule.min_level) || 0;
+      if (member.level < minLevel) continue;
+
+      // タイプ条件（空 = 全タイプ対象）
+      if (rule.target_type && rule.target_type !== targetType) continue;
+
+      // 効果を加算
+      const key = rule.effect_type as keyof EffectTotals;
+      const val = Number(rule.value) || 0;
+      if (key in totals) {
+        totals[key] += val;
+      }
+    }
+  }
+  return totals;
+}
+```
+
+---
+
+## 排他スロット（MAX 取り）パターン
+
+一部の効果は「共存不可」で、複数ソースのうち最大値のみ適用される。
+例: ソースA が D上限+20%、ソースB が D上限+10%、ソースC が D上限+10% の場合、**MAX(20, 10, 10) = 20%** のみ適用。
+
+### 素朴な実装の問題
+
+```typescript
+// NG: 全ソースを単純加算 → 20 + 10 + 10 = 40% で過大
+let dmgCapUp = 0;
+dmgCapUp += sourceA.dmgCapUp; // 20
+dmgCapUp += sourceB.dmgCapUp; // 10
+dmgCapUp += sourceC.dmgCapUp; // 10
+// → 40% (実際は 20% が正しい)
+```
+
+### 排他グループと加算グループを分離
+
+```typescript
+interface SlotTotals {
+  atk_up: number;
+  dmg_cap_up: number;
+  // ... 他のスロット
+}
+
+// 排他グループ: これらの dmg_cap_up は MAX 取り
+const exclusiveDmgCapSources = [
+  mainEquipEffect.dmg_cap_up,    // メイン装備由来: 20%
+  subMemberEffect.dmg_cap_up,    // サブメンバー由来: 10%
+  supportAbility.dmg_cap_up,     // サポートアビリティ由来: 10%
+];
+
+// 加算グループ: これらは通常通り合算
+const stackableDmgCap =
+  weaponSkill.dmg_cap_up +   // 武器スキル: 15%
+  zenithBonus.dmg_cap_up +   // ゼニスボーナス: 5%
+  memorial.dmg_cap_up;       // 記念品: 3%
+
+// 排他グループは MAX、加算グループは合算
+const totalDmgCapUp =
+  Math.max(...exclusiveDmgCapSources, 0) + stackableDmgCap;
+// → MAX(20, 10, 10) + (15 + 5 + 3) = 20 + 23 = 43%
+```
+
+### 汎用化: 排他グループ定義
+
+複数の排他グループがある場合、グループ定義をデータ化する。
+
+```typescript
+/** 排他グループの定義 */
+interface ExclusiveGroup<T> {
+  /** 対象スロットのキー */
+  slot: keyof T;
+  /** このグループに属する効果値の配列 */
+  values: number[];
+}
+
+/**
+ * 排他グループを MAX 取りで解決し、スロットに加算
+ */
+function resolveExclusiveGroups<T extends Record<string, number>>(
+  slots: T,
+  groups: ExclusiveGroup<T>[],
+): void {
+  for (const group of groups) {
+    const maxValue = Math.max(...group.values, 0);
+    (slots as Record<string, number>)[group.slot as string] += maxValue;
+  }
+}
+
+// 使用例
+const slots: SlotTotals = { atk_up: 100, dmg_cap_up: 23 };
+
+resolveExclusiveGroups(slots, [
+  {
+    slot: "dmg_cap_up",
+    values: [
+      mainEquipEffect.dmg_cap_up,  // 20
+      subMemberEffect.dmg_cap_up,  // 10
+      supportAbility.dmg_cap_up,   // 10
+    ],
+  },
+]);
+// slots.dmg_cap_up → 23 + 20 = 43
+```
+
+---
+
+## 組み合わせ: TSV ルール + 排他スロット
+
+実際の計算エンジンでは、TSV から読み込んだ効果を排他/加算に振り分ける。
+
+```typescript
+interface CollectedEffects {
+  /** 通常のスロット加算効果 */
+  stackable: Partial<Record<keyof SlotTotals, number>>;
+  /** 排他グループに入る効果（MAX 取り用） */
+  exclusiveDmgCap: number;
+}
+
+function collectMemberEffects(
+  members: { id: string; level: number }[],
+  targetType: string,
+): CollectedEffects {
+  const rules = loadEffectRules();
+  const stackable: Partial<Record<keyof SlotTotals, number>> = {};
+  let exclusiveDmgCap = 0;
+
+  for (const member of members) {
+    const memberRules = rules.get(member.id);
+    if (!memberRules) continue;
+
+    for (const rule of memberRules) {
+      if (Number(rule.min_level) > member.level) continue;
+      if (rule.target_type && rule.target_type !== targetType) continue;
+
+      const val = Number(rule.value) || 0;
+      if (val === 0) continue;
+
+      // dmg_cap_up は排他グループに分離
+      if (rule.effect_type === "dmg_cap_up") {
+        exclusiveDmgCap += val;
+      } else {
+        const key = rule.effect_type as keyof SlotTotals;
+        stackable[key] = (stackable[key] ?? 0) + val;
+      }
+    }
+  }
+
+  return { stackable, exclusiveDmgCap };
+}
+
+// 使用例
+const effects = collectMemberEffects(partyMembers, "fire");
+
+// 加算効果をスロットに反映
+for (const [key, val] of Object.entries(effects.stackable)) {
+  slots[key as keyof SlotTotals] += val;
+}
+
+// 排他 D 上限: 他ソースと MAX 取り
+const exclusiveDmgCap = Math.max(
+  mainEquipDmgCap,         // メイン装備
+  subMemberDmgCap,         // サブメンバー
+  effects.exclusiveDmgCap, // TSV ルール由来
+  0,
+);
+slots.dmg_cap_up += exclusiveDmgCap;
+```
+
+---
+
+## まとめ
+
+| 観点 | ハードコード | TSV ルールエンジン |
+|------|------------|------------------|
+| ルール追加 | コード変更 + ビルド | TSV に1行追加 |
+| 条件分岐 | if/else の肥大化 | 汎用マッチャーで処理 |
+| 見通し | コードを読まないと把握困難 | TSV を見れば全ルールが一覧 |
+| テスト | 個別にケースを書く | TSV を差し替えるだけ |
+| 排他ルール | 特別な分岐が必要 | グループ定義 + MAX 取り |
+
+**ポイント**:
+- ビジネスルールはデータ（TSV/JSON）に外出しし、コードは汎用的なマッチャーに徹する
+- 排他グループ（共存不可）と加算グループを明確に分離する
+- [mtime キャッシュ](/tips/typescript/mtime-cache-pattern) と組み合わせれば、TSV 編集が即座に反映される
