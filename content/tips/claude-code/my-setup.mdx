@@ -1,0 +1,227 @@
+---
+title: "Claude Code マイセットアップ — コマンド・エージェント・Hook 全集"
+description: "自分用にカスタマイズしたClaude Codeの設定一覧。カスタムコマンド、エージェント、Hook、MCP、セキュリティ設定をまとめたリファレンス"
+category: "claude-code"
+tags: ["cli", "setup", "commands", "agents", "hooks", "config"]
+created: "2026-03-29"
+updated: "2026-03-29"
+---
+
+自分の開発環境に合わせてカスタマイズした Claude Code の設定まとめ。
+忘れたらここを見る。
+
+---
+
+## カスタムコマンド
+
+### グローバル（`~/.claude/commands/`）
+
+全プロジェクト共通で使えるコマンド。
+
+| コマンド | 説明 | モデル |
+|---------|------|--------|
+| `/review` | git diff から変更ファイルを自動検出してコードレビュー。severity（CRITICAL / WARNING / SUGGESTION）で分類 | Sonnet |
+| `/qa` | ビルド確認 + テスト + 型チェック。package.json からプロジェクト種別を自動判定 | デフォルト |
+| `/commit-flow` | QA → レビュー → コミット＆プッシュの標準フローを一発実行。ドキュメントのみの変更は自動でレビュースキップ | デフォルト |
+| `/cc-health` | Claude Code 設定のヘルスチェック。CLAUDE.md 行数、rules/ サイズ、エージェント整合性、未適用の提案件数など | Haiku |
+| `/cc-audit` | Web リサーチでベスプラ調査 → 現状との差分分析 → 適用。月1回推奨 | デフォルト |
+
+### my-secretary（`.claude/commands/`）
+
+| コマンド | 説明 |
+|---------|------|
+| `/daily` | 今日のTODO表示 + 前日未完了タスクの自動引き継ぎ。1週間以上持ち越しは棚卸し |
+| `/inbox <内容>` | inbox にタイムスタンプ付きクイックキャプチャ |
+
+### granblue-toolkit（`.claude/commands/`）
+
+| コマンド | 説明 |
+|---------|------|
+| `/damage-check [groupId comboId]` | ダメージ計算の回帰チェック。引数なしで全体、ありで個別 |
+| `/deploy-check` | デプロイ前チェックリスト（ビルド・型チェック・環境変数・検算） |
+
+### workout-menu（`.claude/commands/`）
+
+| コマンド | 説明 |
+|---------|------|
+| `/qa` | ビルド + 型チェック + テスト（プロジェクト固有版） |
+
+---
+
+## カスタムエージェント（`~/.claude/agents/`）
+
+タスクに応じて自動起動またはコマンドから呼び出される専門エージェント。
+
+| エージェント | モデル | 自動起動トリガー | 役割 |
+|-------------|--------|-----------------|------|
+| `code-reviewer` | Sonnet | コード変更後 | 品質・設計・セキュリティ・パフォーマンス・テストの5観点でレビュー |
+| `planner` | Sonnet | 複雑な機能リクエスト | 要件分析 → 設計 → タスク分解 → リスク分析 |
+| `tdd-guide` | Sonnet | バグ修正・新機能 | RED → GREEN → REFACTOR のTDDサイクル |
+| `build-error-resolver` | Sonnet | ビルド失敗時 | 最小変更で段階的にビルドエラーを解決。アーキテクチャ変更禁止 |
+| `security-reviewer` | **Haiku** | コミット前 | セキュリティ脆弱性スキャン（軽量・高速） |
+
+### モデル使い分けの考え方
+
+- **メインセッション**: Opus（深い推論）
+- **サブエージェント**: Sonnet（`CLAUDE_CODE_SUBAGENT_MODEL=claude-sonnet-4-6` で自動適用）
+- **軽量タスク**: Haiku（security-reviewer、cc-health）
+
+---
+
+## Hook 一覧（`~/.claude/settings.json`）
+
+### 保護系
+
+| イベント | 動作 |
+|---------|------|
+| **PreToolUse**（Edit/Write） | `.env`、ロックファイル、`.git/` の編集を **exit 2 でブロック** |
+
+### 自動化系
+
+| イベント | 動作 |
+|---------|------|
+| **PostToolUse**（Edit/Write） | Prettier で自動フォーマット（ts/tsx/js/jsx/json/css/scss） |
+| **Notification** | Windows メッセージボックスで「確認が必要です」を表示 |
+
+### コンテキスト管理系
+
+| イベント | 動作 |
+|---------|------|
+| **PostCompact** | git log 最新5件 + ブランチ名を再注入。CLAUDE.md 再読み込みを促す |
+| **Stop** | セッション終了前に未完了タスク・コミット忘れを確認（無限ループ防止付き） |
+
+### CLAUDE.md 育成系
+
+| イベント | 動作 |
+|---------|------|
+| **SessionEnd** | 会話を分析して CLAUDE.md 改善提案を `~/.claude/suggestions/` に自動生成 |
+| **PreCompact** | 同上 |
+
+---
+
+## セキュリティ設定
+
+### deny ルール（読み取り禁止）
+
+```
+~/.ssh/**
+~/.aws/**
+~/.gnupg/**
+~/.npmrc
+~/.pypirc
+./.env
+./.env.*
+```
+
+### deny ルール（編集禁止）
+
+```
+~/.bashrc
+~/.zshrc
+~/.profile
+./.env
+./.env.*
+```
+
+---
+
+## MCP サーバー
+
+| サーバー | パッケージ | 用途 |
+|---------|-----------|------|
+| **Context7** | `@upstash/context7-mcp` | ライブラリドキュメント最新版を参照（APIキー不要） |
+| **Sequential Thinking** | `@modelcontextprotocol/server-sequential-thinking` | 複雑な問題を段階的に分解して思考（APIキー不要） |
+
+---
+
+## 環境変数
+
+| 変数 | 値 | 効果 |
+|------|---|------|
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | `70` | コンテキストの70%使用でコンパクション自動発動 |
+| `CLAUDE_CODE_SUBAGENT_MODEL` | `claude-sonnet-4-6` | サブエージェントに Sonnet を使用（コスト最適化） |
+
+---
+
+## rules/（`~/.claude/rules/`）
+
+全体で **119行**（ベスプラ上限 150行以下をキープ）。
+
+| ファイル | 行数 | 内容 |
+|---------|------|------|
+| `git-workflow.md` | 24 | Conventional Commits、PRフロー |
+| `performance.md` | 20 | モデル使い分け、コンテキスト管理 |
+| `agents.md` | 19 | エージェント自動起動ルール |
+| `coding-style.md` | 17 | TS/JS 規約（リンターに任せる方針） |
+| `development-workflow.md` | 15 | リサーチ→計画→TDD→レビュー→コミット |
+| `patterns.md` | 12 | API レスポンス形式、Repository パターン |
+| `security.md` | 12 | シークレット管理、security-reviewer 連携 |
+
+### path-scoped rules（granblue-toolkit）
+
+| ファイル | 対象パス | 内容 |
+|---------|---------|------|
+| `web-conventions.md` | `web/**/*.{ts,tsx}` | 共通部品の利用ルール |
+| `data-conventions.md` | `output/**/*.json`, `scripts/**` | JSONデータ・キャプチャ規約 |
+
+---
+
+## .worktreeinclude
+
+git worktree 使用時に .env 系ファイルを自動コピーする設定。
+
+### granblue-toolkit
+
+```
+.env
+.env.local
+.env.production.local
+web/.env
+web/.env.local
+```
+
+### workout-menu
+
+```
+.env
+.env.local
+.env.production.local
+```
+
+---
+
+## 定期メンテナンスサイクル
+
+| タイミング | やること |
+|-----------|---------|
+| **セッション開始** | `/company` 起動で `/cc-health` が自動実行 |
+| **ウィークリー** | `~/.claude/suggestions/` の提案を棚卸し・適用 |
+| **マンスリー** | `/cc-audit` でベスプラのフルリサーチ＋差分適用 |
+
+---
+
+## ベスプラ Tips（リサーチから得た知見）
+
+### CLAUDE.md のコツ
+
+- **200行以下** を維持。超えたら Progressive Disclosure（`@import` で別ファイル参照）
+- Claude が間違えるたびに追記する「生きたドキュメント」
+- コードスタイルはリンターに任せる。CLAUDE.md には「Claudeが推測できないこと」だけ書く
+
+### コンテキスト管理
+
+- `/clear` でタスク間リセット。1セッション=1タスクが基本
+- `/compact` で大タスク前にトークン回復。焦点を指定できる（`/compact 認証機能に集中`）
+- 3ステップ以上の非自明タスクはプランモードで開始
+
+### プロンプティング
+
+- 結果志向で指示する（「これが動くことを証明して」）
+- 手段ではなく目的を伝える（マイクロマネジメントしない）
+- フィードバックループを与える（テストコマンド、リンター、期待出力）
+
+### Hook の注意点
+
+- **exit 2** でブロック。exit 1 は警告のみ
+- Stop Hook は `stop_hook_active` で無限ループ防止
+- 各 Hook は 500ms 以内に抑える（セッションが重くなる）
