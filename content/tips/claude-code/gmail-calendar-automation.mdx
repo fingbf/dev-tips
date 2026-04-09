@@ -1,0 +1,218 @@
+---
+title: "Gmail & Google Calendar 自動化 — MCP連携とリモートトリガー"
+description: "Claude CodeのMCPでGmail/Googleカレンダーを連携。メール分類フィルター、予約→カレンダー自動登録、リモートトリガーによる定期実行まで"
+category: "claude-code"
+tags: ["mcp", "gmail", "google-calendar", "automation", "remote-trigger", "filter"]
+created: "2026-04-09"
+updated: "2026-04-09"
+---
+
+Claude Code の MCP（Model Context Protocol）で Gmail と Google Calendar を接続し、メール管理とカレンダー登録を自動化した記録。
+
+---
+
+## 全体構成
+
+```
+┌─────────────────────────────────────────────┐
+│  ローカルセッション（CLI / Desktop）           │
+│  Gmail MCP（フル権限）+ Calendar MCP          │
+│  → 検索・読取・ラベル操作・削除・カレンダー登録 │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────┴──────────────────────────┐
+│  リモートトリガー（Anthropicクラウド・3時間おき）│
+│  Gmail MCP（Read Only）+ Calendar MCP        │
+│  → 検索・読取・カレンダー登録のみ              │
+│  → ラベル操作・削除・既読化は不可              │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## MCP 権限の差異
+
+ローカルとリモートで使える操作が違う。これを知らずに設計すると詰む。
+
+| 操作 | ローカル | リモート |
+|------|---------|---------|
+| メール検索 | `search_emails` | `search_messages` |
+| メール読み取り | `read_email` | `read_message` |
+| ラベル付与/削除 | `modify_email` | **不可** |
+| ゴミ箱移動 | `batch_modify_emails` → TRASH | **不可** |
+| 完全削除 | **不可**（Insufficient Permission） | **不可** |
+| 下書き作成 | `draft_email` | `create_draft` |
+| カレンダー登録 | `gcal_create_event` | `gcal_create_event` |
+
+**ポイント**: `batch_delete_emails`（完全削除）はローカルでも権限不足。`batch_modify_emails` で TRASH ラベルを付与して代替する。30日後にGmailが自動削除。
+
+---
+
+## Gmailフィルター設計
+
+### 分類の考え方
+
+同じ送信元でも広告と重要通知が混在する。**件名キーワード**で分離する。
+
+```
+送信元だけで判定（全部広告）:
+  au PAY カード, 楽天カードニュース, Gポイント
+
+送信元 + キーワードで判定（混在）:
+  auじぶん銀行: 「キャンペーン」→削除 / 「セキュリティ」→残す
+  三井住友カード: 「ポイント」→削除 / 「セキュリティ通信」→残す
+  アプラスカード: 「キャッシング」→削除 / 「お支払日」→残す
+```
+
+### 広告フィルター（キーワード分類）
+
+| 送信元 | 削除条件 | 残すもの |
+|--------|---------|---------|
+| `magazine@email.kddi-fs.com` | 全て | — |
+| `cardnews@mail.rakuten-card.co.jp` | 全て | — |
+| `info@g-plan.net` | 全て | — |
+| `news@jibunbank.co.jp` | キャンペーン/ローン/住宅ローン/外貨/PR/プレゼント/限定/積立 | セキュリティ警告, 金利確定, Ponta加算 |
+| `mail@contact.vpass.ne.jp` | キャンペーン/ポイント/還元/当たる/プレゼント/山分け | セキュリティ通信, つみたて投資 |
+| `thanks@aplus.co.jp` | キャンペーン/キャッシング/ポイント/プレゼント/エントリー/招待/限定 | お支払日, 請求案内 |
+| `info@pepup.life` | キャンペーン/ポイント交換/ギフトカード/5%OFF | 健診, 健保組合案内 |
+
+### 不要通知フィルター
+
+| 送信元 | 削除条件 | 残すもの |
+|--------|---------|---------|
+| `member@point.recruit.co.jp` | ログイン通知 | — |
+| `no-reply@id.rakuten.co.jp` | ログイン通知 | — |
+| `service@rakuten-sec.co.jp` | ログイン通知/投信基準価額 | 認証コード |
+| `noreply@steampowered.com` | ウィッシュリストセール | 購入確認, ログイン通知 |
+| `no-reply-meisai@dpoint.docomo.ne.jp` | 全て | — |
+| `info@linksmate.jp` | 全て | — |
+| `noreply@nsp.mdj.jp` | 全て | — |
+| `reserve@beauty.hotpepper.jp` | 「ご来店ありがとう」 | 予約確定（カレンダー連携） |
+| `info@mail.rakuten-bank.co.jp` | 全て | — |
+
+---
+
+## 予約メール → カレンダー自動登録
+
+### 対応サービスとパース仕様
+
+**HOT PEPPER Beauty** (`reserve@beauty.hotpepper.jp`)
+
+```
+■来店日時
+　2026年03月29日（日）14:30     → start
+■サロン名
+　小岩蔵前橋通り接骨院           → summary: 🏥 小岩蔵前橋通り接骨院
+■メニュー
+　ボディケア＋整体＋骨盤矯正     → description
+（所要時間目安：45分）            → end = start + 45min
+maps.google.com/maps?q=35.7,139.8 → location
+```
+
+**湘南美容クリニック** (`info@mc.sbc-med.com`)
+
+```
+湘南美容クリニック津田沼院でございます。 → summary: 🏥 湘南美容クリニック津田沼院
+2026年04月19日(日)でご予約を承りました。→ date
+ご来院時刻 16:00                       → start
+終了予定時刻 16:30                      → end
+ご予約内容
+医療脱毛　鼻下(口ひげ)+あご+あご下     → description
+https://www.s-b-c.net/clinic/branch/tsudanuma/clinic/ → location
+```
+
+### カレンダーイベント仕様
+
+```json
+{
+  "summary": "🏥 {サロン名/院名}",
+  "start": { "dateTime": "2026-04-19T16:00:00+09:00", "timeZone": "Asia/Tokyo" },
+  "end": { "dateTime": "2026-04-19T16:30:00+09:00", "timeZone": "Asia/Tokyo" },
+  "location": "https://www.s-b-c.net/clinic/branch/tsudanuma/clinic/",
+  "description": "医療脱毛 鼻下+あご+あご下\n\n※シェービングしてから来院",
+  "reminders": {
+    "useDefault": false,
+    "overrides": [{ "method": "popup", "minutes": 60 }]
+  }
+}
+```
+
+**新しいサービスを追加するには**: メール本文のパターンを確認して、日時・場所・メニューの抽出ルールをSKILL.mdに追記するだけ。
+
+---
+
+## リモートトリガー（定期実行）
+
+### 設定
+
+| 項目 | 値 |
+|------|-----|
+| スケジュール | 6, 9, 12, 15, 18, 21時 JST |
+| cron (UTC) | `0 21,0,3,6,9,12 * * *` |
+| モデル | claude-sonnet-4-6 |
+| MCP | Gmail + Google Calendar |
+
+### JST → UTC 変換
+
+cron式はUTCで指定する必要がある。JST = UTC + 9時間。
+
+```
+JST  →  UTC
+ 6時 → 21時（前日）
+ 9時 →  0時
+12時 →  3時
+15時 →  6時
+18時 →  9時
+21時 → 12時
+```
+
+### リモートの制限と運用
+
+リモートエージェントはRead Onlyなので、役割分担する:
+
+```
+リモート（自動・3時間おき）:
+  ✅ メール検索・件名チェック
+  ✅ 予約メール → カレンダー登録
+  ✅ 要対応メールの報告
+  ❌ 既読・ラベル操作・削除
+
+ローカルセッション（手動）:
+  ✅ 上記すべて + ラベル操作・削除・振り分け
+```
+
+---
+
+## セキュリティ
+
+### リモートエージェントの本文読み取り制限
+
+メール内容がAnthropicクラウドを通るため、機密性の高いメールは本文を読まない。
+
+| パターン | 理由 |
+|---------|------|
+| 件名に「パスワード」「リセット」 | 認証リンクの漏洩防止 |
+| 件名に「認証コード」「確認コード」 | 2FAコードの保護 |
+| 銀行系 + 件名に「残高」「明細」「振込」 | 口座情報の保護 |
+
+### プライバシー設定
+
+- Claude Code CLIはデフォルトでモデル学習にデータを使用しない
+- リモートトリガーは claude.ai の Privacy 設定に依存
+- https://claude.ai/settings → 「Improve Claude」をオフ推奨
+
+---
+
+## トラブルシューティング
+
+### `batch_delete_emails` が Insufficient Permission
+
+Gmail APIの `mail.google.com` スコープが必要だが、MCPサーバーが持っていない。`batch_modify_emails` で `addLabelIds: ["TRASH"]` を使って代替する。
+
+### リモートトリガーにMCPコネクタが追加できない
+
+`/schedule` スキルのコネクタ一覧に表示されない場合、https://claude.ai/code/scheduled/{trigger_id} の管理画面から直接追加する。`connector_uuid` はAPI経由では取得しづらい。
+
+### クラウド版Gmailのツール名が違う
+
+ローカル（`mcp__gmail__search_emails`）とクラウド（`search_messages`）で関数名が異なる。プロンプトには汎用的な指示を書き、具体的な関数名はエージェントに任せるのが安全。
