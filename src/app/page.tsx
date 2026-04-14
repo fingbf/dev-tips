@@ -1,33 +1,63 @@
-import { getAllTips, getCategories } from "@/lib/tips";
-import { TipCard } from "@/components/tip-card";
-import { CategoryNav } from "@/components/category-nav";
+import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dev Tips - 無料オンラインツール",
+  description:
+    "開発者・配信者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+};
+
+type Tool = {
+  slug: string;
+  name: string;
+  description: string;
+  icon: string;
+};
+
+const tools: Tool[] = [
+  {
+    slug: "cron-generator",
+    name: "Cron式ジェネレーター",
+    description:
+      "GUIでCron式を組み立て、日本語で意味を解説。次回実行日時も表示。Unix / Quartz 両対応。",
+    icon: "⏰",
+  },
+  {
+    slug: "obs-timer",
+    name: "OBS配信用クロック",
+    description:
+      "OBSブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけ。",
+    icon: "🎬",
+  },
+];
 
 export default function Home() {
-  const tips = getAllTips();
-  const categories = getCategories();
-
   return (
     <div className="space-y-6">
       <div>
         <h1 className="mb-2 text-2xl font-bold md:text-3xl">Dev Tips</h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          開発Tips・スニペット集
+          ブラウザ完結・登録不要の無料オンラインツール
         </p>
       </div>
 
-      <CategoryNav categories={categories} />
-
-      {tips.length === 0 ? (
-        <p className="py-12 text-center text-zinc-500">
-          まだ記事がありません。content/tips/ にMDXファイルを追加してください。
-        </p>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {tips.map((tip) => (
-            <TipCard key={`${tip.category}/${tip.slug}`} tip={tip} />
-          ))}
-        </div>
-      )}
+      <div className="grid gap-4 md:grid-cols-2">
+        {tools.map((tool) => (
+          <Link
+            key={tool.slug}
+            href={`/tools/${tool.slug}`}
+            className="group rounded-lg border border-zinc-200 p-5 transition-all hover:border-zinc-400 hover:shadow-md dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:shadow-zinc-900/50"
+          >
+            <div className="mb-2 text-3xl">{tool.icon}</div>
+            <h2 className="mb-2 text-xl font-semibold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
+              {tool.name}
+            </h2>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              {tool.description}
+            </p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
