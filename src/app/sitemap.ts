@@ -1,9 +1,8 @@
 import { MetadataRoute } from "next";
+import { tools } from "@/data/tools";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.SITE_URL || "https://dev-tips.example.com";
-
-  const toolSlugs = ["cron-generator", "obs-timer"];
 
   const entries: MetadataRoute.Sitemap = [
     {
@@ -14,9 +13,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  for (const slug of toolSlugs) {
+  for (const tool of tools) {
     entries.push({
-      url: `${baseUrl}/tools/${slug}`,
+      url: `${baseUrl}/tools/${tool.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,

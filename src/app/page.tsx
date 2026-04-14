@@ -1,35 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { tools } from "@/data/tools";
 
 export const metadata: Metadata = {
   title: "Dev Tips - 無料オンラインツール",
   description:
     "開発者・配信者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
 };
-
-type Tool = {
-  slug: string;
-  name: string;
-  description: string;
-  icon: string;
-};
-
-const tools: Tool[] = [
-  {
-    slug: "cron-generator",
-    name: "Cron式ジェネレーター",
-    description:
-      "GUIでCron式を組み立て、日本語で意味を解説。次回実行日時も表示。Unix / Quartz 両対応。",
-    icon: "⏰",
-  },
-  {
-    slug: "obs-timer",
-    name: "OBS配信用クロック",
-    description:
-      "OBSブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけ。",
-    icon: "🎬",
-  },
-];
 
 export default function Home() {
   return (
