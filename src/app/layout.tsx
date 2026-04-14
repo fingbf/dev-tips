@@ -54,6 +54,12 @@ export default function RootLayout({
             </Link>
             <div className="flex items-center gap-1">
               <Link
+                href="/tools"
+                className="rounded-lg px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-zinc-400 dark:hover:bg-zinc-800"
+              >
+                Tools
+              </Link>
+              <Link
                 href="/tags"
                 className="rounded-lg px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-zinc-400 dark:hover:bg-zinc-800"
               >
