@@ -49,42 +49,202 @@ const GROUP_TEXT_COLORS = [
 ];
 
 type Sample = { label: string; pattern: string; flags: Record<FlagKey, boolean>; testString: string };
-const SAMPLES: Sample[] = [
+type SampleCategory = { category: string; items: Sample[] };
+
+const SAMPLE_CATEGORIES: SampleCategory[] = [
   {
-    label: "メールアドレス",
-    pattern: "[\\w.+-]+@[\\w-]+\\.[\\w.]+",
-    flags: { g: true, i: true, m: false, s: false },
-    testString: "お問い合わせは info@example.com または support@test.co.jp まで。",
+    category: "バリデーション",
+    items: [
+      {
+        label: "メールアドレス",
+        pattern: "[\\w.+-]+@[\\w-]+\\.[\\w.]+",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "連絡先: info@example.com / support@test.co.jp / invalid@",
+      },
+      {
+        label: "URL",
+        pattern: "https?:\\/\\/[\\w/:%#$&?()~.=+\\-]+",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "サイト: https://example.com/path?q=1 / http://docs.example.com",
+      },
+      {
+        label: "電話番号（日本）",
+        pattern: "0\\d{1,4}-\\d{1,4}-\\d{4}",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "TEL: 03-1234-5678 / 090-0000-1234 / FAX: 06-9876-5432",
+      },
+      {
+        label: "郵便番号",
+        pattern: "\\d{3}-\\d{4}",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "東京: 100-0001 / 大阪: 530-0001 / 不正: 12345",
+      },
+      {
+        label: "日付 YYYY-MM-DD",
+        pattern: "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "開始: 2024-01-15 / 終了: 2024/12/31 / 不正: 24-1-1",
+      },
+      {
+        label: "時刻 HH:MM",
+        pattern: "(?:[01]\\d|2[0-3]):[0-5]\\d",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "朝: 09:00 / 昼: 12:30 / 夜: 23:59 / 不正: 25:00",
+      },
+      {
+        label: "IPv4アドレス",
+        pattern: "(?:\\d{1,3}\\.){3}\\d{1,3}",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "サーバー: 192.168.1.1 / DNS: 8.8.8.8 / localhost: 127.0.0.1",
+      },
+      {
+        label: "HEXカラーコード",
+        pattern: "#(?:[0-9a-fA-F]{3}){1,2}\\b",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "primary: #FF5733 / secondary: #333 / bg: #1a2b3c / invalid: #GGHHII",
+      },
+      {
+        label: "UUID",
+        pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "id: 550e8400-e29b-41d4-a716-446655440000 / invalid: 550e8400-e29b-41d",
+      },
+      {
+        label: "ユーザー名（英数字3-20文字）",
+        pattern: "^[a-zA-Z0-9_]{3,20}$",
+        flags: { g: false, i: false, m: true, s: false },
+        testString: "user_name_123\nABC\nab\nthis_name_is_way_too_long_to_be_valid\nvalid123",
+      },
+      {
+        label: "強いパスワード",
+        pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{12,}$",
+        flags: { g: false, i: false, m: true, s: false },
+        testString: "MyPassword123456\nweakpassword\nNoNumbers!\nShort1A\nCorrectHorse99Battery",
+      },
+    ],
   },
   {
-    label: "電話番号",
-    pattern: "\\d{2,4}-\\d{2,4}-\\d{4}",
-    flags: { g: true, i: false, m: false, s: false },
-    testString: "TEL: 03-1234-5678 / FAX: 06-9876-5432",
+    category: "テキスト処理",
+    items: [
+      {
+        label: "HTMLタグ除去",
+        pattern: "<[^>]*>",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "<h1>タイトル</h1><p class=\"lead\">本文テキスト</p><br/>",
+      },
+      {
+        label: "連続空白の正規化",
+        pattern: "\\s{2,}",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "これは   スペースが    多すぎる\tテキストです。",
+      },
+      {
+        label: "重複単語の検出",
+        pattern: "\\b(\\w+)\\s+\\1\\b",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "the the quick brown fox fox jumps over over the lazy dog",
+      },
+      {
+        label: "行頭・行末の空白除去",
+        pattern: "^\\s+|\\s+$",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "  行頭スペース\n行末スペース   \n  両端スペース  ",
+      },
+      {
+        label: "数字を抽出",
+        pattern: "-?\\d+(?:\\.\\d+)?",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "商品: 1500円 / 割引: -300円 / 税率: 10.5% / 合計: 1320円",
+      },
+      {
+        label: "Markdownリンク",
+        pattern: "\\[([^\\]]+)\\]\\(([^)]+)\\)",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "[Google](https://google.com) と [GitHub](https://github.com) を参照。",
+      },
+      {
+        label: "ファイル拡張子",
+        pattern: "\\.([a-zA-Z0-9]+)$",
+        flags: { g: false, i: true, m: true, s: false },
+        testString: "index.html\nstyle.css\nscript.min.js\nREADME.md\nimage.PNG\nno-extension",
+      },
+    ],
   },
   {
-    label: "日付",
-    pattern: "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}",
-    flags: { g: true, i: false, m: false, s: false },
-    testString: "開始日: 2024-01-15 終了日: 2024/12/31",
+    category: "開発者向け",
+    items: [
+      {
+        label: "import文",
+        pattern: "^import\\s.+from\\s['\"].+['\"]",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "import React from 'react';\nimport { useState } from 'react';\nconst x = 1;",
+      },
+      {
+        label: "TODO / FIXME",
+        pattern: "\\b(TODO|FIXME|HACK|XXX)\\b.*",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "// TODO: リファクタリング必要\n// FIXME: バグあり #123\n// HACK: 暫定対応\n// 通常のコメント",
+      },
+      {
+        label: "console.log除去対象",
+        pattern: "console\\.(log|warn|error|debug)\\(.*?\\);?",
+        flags: { g: true, i: false, m: false, s: true },
+        testString: "console.log('debug');\nconsole.warn('注意');\nconsole.error('エラー');\nconst x = 1;",
+      },
+      {
+        label: "URLスラグ検証",
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        flags: { g: false, i: false, m: true, s: false },
+        testString: "my-blog-post\nhello-world\nInvalid-SLUG\nhas spaces\nvalid123\n-starts-with-dash",
+      },
+      {
+        label: "Base64",
+        pattern: "^[A-Za-z0-9+/]+={0,2}$",
+        flags: { g: false, i: false, m: true, s: false },
+        testString: "aGVsbG8gd29ybGQ=\nSGVsbG8h\ninvalid base64!!\ndGVzdA==",
+      },
+      {
+        label: "非ASCII文字（マルチバイト検出）",
+        pattern: "[^\\x00-\\x7F]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "Hello World / こんにちは / café / 日本語テキスト / ASCII only",
+      },
+    ],
   },
   {
-    label: "URLマッチ",
-    pattern: "https?:\\/\\/[\\w/:%#$&?()~.=+\\-]+",
-    flags: { g: true, i: true, m: false, s: false },
-    testString: "公式サイト: https://example.com/path?q=1 ドキュメント: http://docs.example.com",
-  },
-  {
-    label: "HTMLタグ除去",
-    pattern: "<[^>]*>",
-    flags: { g: true, i: true, m: false, s: false },
-    testString: "<h1>タイトル</h1><p class=\"lead\">本文テキスト</p>",
-  },
-  {
-    label: "数字のみ抽出",
-    pattern: "\\d+",
-    flags: { g: true, i: false, m: false, s: false },
-    testString: "商品A: 1500円 / 商品B: 2800円 / 合計: 4300円",
+    category: "日本語",
+    items: [
+      {
+        label: "ひらがな",
+        pattern: "[\\u3041-\\u3096]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "日本語のテキスト。ひらがな、カタカナ、漢字が混在しています。",
+      },
+      {
+        label: "カタカナ",
+        pattern: "[\\u30A1-\\u30FA]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "日本語のテキスト。ひらがな、カタカナ、漢字が混在しています。",
+      },
+      {
+        label: "漢字",
+        pattern: "[\\u4E00-\\u9FFF]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "日本語のテキスト。ひらがな、カタカナ、漢字が混在しています。",
+      },
+      {
+        label: "全角数字",
+        pattern: "[０-９]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "数量：１２３個 / 金額：４５６７円 / 半角: 789",
+      },
+      {
+        label: "全角英字",
+        pattern: "[Ａ-Ｚａ-ｚ]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "入力値：ＡＢＣＤ / ａｂｃ / 半角: ABC / 混在: Ａbc",
+      },
+    ],
   },
 ];
 
@@ -152,6 +312,8 @@ export function RegexTester() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mirrorRef = useRef<HTMLDivElement>(null);
 
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
+
   const toggleFlag = (key: FlagKey) => setFlags((f) => ({ ...f, [key]: !f[key] }));
 
   const applySample = (s: Sample) => {
@@ -159,6 +321,7 @@ export function RegexTester() {
     setFlags(s.flags);
     setTestString(s.testString);
     setReplacement("");
+    setOpenCategory(null);
   };
 
   const result: RegexResult = useMemo(() => buildRegexResult(pattern, flags), [pattern, flags]);
@@ -208,17 +371,43 @@ export function RegexTester() {
       </div>
 
       {/* サンプル */}
-      <div className="flex flex-wrap gap-2">
-        {SAMPLES.map((s) => (
-          <button
-            key={s.label}
-            type="button"
-            onClick={() => applySample(s)}
-            className="rounded-full border border-zinc-300 px-3 py-1 text-xs text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors"
-          >
-            {s.label}
-          </button>
-        ))}
+      <div className="rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div className="flex items-center gap-2 px-3 py-2 border-b border-zinc-200 dark:border-zinc-700">
+          <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">SAMPLES</span>
+          <span className="text-xs text-zinc-400">カテゴリを選んでパターンを読み込む</span>
+        </div>
+        <div className="flex flex-wrap gap-2 px-3 py-2">
+          {SAMPLE_CATEGORIES.map((cat) => (
+            <div key={cat.category} className="relative">
+              <button
+                type="button"
+                onClick={() => setOpenCategory(openCategory === cat.category ? null : cat.category)}
+                className={[
+                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  openCategory === cat.category
+                    ? "border-blue-400 bg-blue-50 text-blue-600 dark:border-blue-500 dark:bg-blue-950/40 dark:text-blue-400"
+                    : "border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800",
+                ].join(" ")}
+              >
+                {cat.category} ▾
+              </button>
+              {openCategory === cat.category && (
+                <div className="absolute left-0 top-8 z-20 min-w-[180px] rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                  {cat.items.map((s) => (
+                    <button
+                      key={s.label}
+                      type="button"
+                      onClick={() => applySample(s)}
+                      className="block w-full px-4 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* パターン入力バー */}
