@@ -47,6 +47,8 @@ type StyleSet = {
 };
 
 const HOLIDAY_SHEET = "祝日";
+const EXCEL_RED_FONT = { color: { argb: "FFEF4444" } };
+const EXCEL_BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
 function addCalendarRow(
   sheet: ExcelJS.Worksheet,
@@ -57,8 +59,6 @@ function addCalendarRow(
   month: number,
 ) {
   const { grayFill, blueFill, border, center } = styles;
-  const RED_FONT = { color: { argb: "FFEF4444" } };
-  const BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
   const row = sheet.addRow(["", ...week.map(() => "")]);
   row.height = 52;
@@ -69,17 +69,19 @@ function addCalendarRow(
     cell.border = border;
     if (!d) return;
 
-    // 祝日名と稼働時間を VLOOKUP / データシート参照で表示
-    const dataRow = d.day + 1;
+    // 祝日名と稼働時間を VLOOKUP で参照
     const dateRef = `DATE(${year},${month},${d.day})`;
     const vlookup = `IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")`;
-    const hoursF = `IF('${dataSheetName}'!C${dataRow}>0,CHAR(10)&TEXT('${dataSheetName}'!C${dataRow},"0.##")&"h","")`;
+    const hoursLookup = `IFERROR(VLOOKUP(${dateRef},'${dataSheetName}'!$A:$C,3,FALSE),0)`;
+    const hoursText = `IF(INT(${hoursLookup})=${hoursLookup},TEXT(${hoursLookup},"0"),TEXT(${hoursLookup},"0.#"))`;
+    const hoursF = `IF(${hoursLookup}>0,CHAR(10)&${hoursText}&"h","")`;
+    const hoursDisplay = d.hours % 1 === 0 ? String(d.hours) : d.hours.toFixed(1);
     cell.value = {
       formula: `=${d.day}&IF(${vlookup}="","",CHAR(10)&${vlookup})&${hoursF}`,
       result: [
         String(d.day),
         ...(d.holidayName ? [d.holidayName] : []),
-        ...(d.isWorking ? [`${d.hours}h`] : []),
+        ...(d.isWorking ? [`${hoursDisplay}h`] : []),
       ].join("\n"),
     };
 
@@ -87,11 +89,25 @@ function addCalendarRow(
     const isSat = d.weekday === 6;
     if (!d.isWorking) {
       cell.fill = grayFill;
-      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : { color: { argb: "FF9CA3AF" } };
+      cell.font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : { color: { argb: "FF9CA3AF" } };
     } else {
       if (isSat) cell.fill = blueFill;
-      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+      cell.font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
     }
+
+    // 祝日シートに手動追加された祝日も書式反映
+    sheet.addConditionalFormatting({
+      ref: cell.address,
+      rules: [{
+        type: "expression",
+        priority: 1,
+        formulae: [`IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+        style: {
+          fill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } },
+          font: { color: { argb: "FFEF4444" } },
+        },
+      }],
+    });
   });
 
   // メモ行（各日に1セル）
@@ -115,8 +131,6 @@ function addMonthBlock(
   styles: StyleSet,
 ): number {
   const { grayFill, blueFill, headerFill, border, center } = styles;
-  const RED_FONT = { color: { argb: "FFEF4444" } };
-  const BLUE_FONT = { color: { argb: "FF3B82F6" } };
   const WHITE_BOLD = { color: { argb: "FFFFFFFF" }, bold: true };
   const WD_NAMES = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -171,8 +185,8 @@ function addMonthBlock(
     };
 
     if (isRest) cell.fill = weekday === 6 && !isHoliday ? blueFill : grayFill;
-    if (weekday === 0 || isHoliday) cell.font = RED_FONT;
-    else if (weekday === 6) cell.font = BLUE_FONT;
+    if (weekday === 0 || isHoliday) cell.font = EXCEL_RED_FONT;
+    else if (weekday === 6) cell.font = EXCEL_BLUE_FONT;
 
     col++;
     if (col === 7) { col = 0; currentRow++; }
@@ -220,10 +234,9 @@ function addCalendarRowStatic(
   styles: StyleSet,
   year: number,
   month: number,
+  unifiedDataSheet?: string,
 ) {
   const { grayFill, blueFill, border, center } = styles;
-  const RED_FONT = { color: { argb: "FFEF4444" } };
-  const BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
   const row = sheet.addRow(["", ...week.map(() => "")]);
   row.height = 52;
@@ -236,13 +249,21 @@ function addCalendarRowStatic(
 
     const dateRef = `DATE(${year},${month},${d.day})`;
     const vlookup = `IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")`;
-    const hoursStr = d.isWorking ? `&CHAR(10)&TEXT(${d.hours},"0.##")&"h"` : "";
+    const hoursDisplay = d.hours % 1 === 0 ? String(d.hours) : d.hours.toFixed(1);
+    let hoursStr: string;
+    if (unifiedDataSheet) {
+      const hoursLookup = `IFERROR(VLOOKUP(${dateRef},'${unifiedDataSheet}'!$A:$D,4,FALSE),0)`;
+      const hoursText = `IF(INT(${hoursLookup})=${hoursLookup},TEXT(${hoursLookup},"0"),TEXT(${hoursLookup},"0.#"))`;
+      hoursStr = `&IF(${hoursLookup}>0,CHAR(10)&${hoursText}&"h","")`;
+    } else {
+      hoursStr = d.isWorking ? `&CHAR(10)&"${hoursDisplay}h"` : "";
+    }
     cell.value = {
       formula: `=${d.day}&IF(${vlookup}="","",CHAR(10)&${vlookup})${hoursStr}`,
       result: [
         String(d.day),
         ...(d.holidayName ? [d.holidayName] : []),
-        ...(d.isWorking ? [`${d.hours}h`] : []),
+        ...(d.isWorking ? [`${hoursDisplay}h`] : []),
       ].join("\n"),
     };
 
@@ -250,11 +271,25 @@ function addCalendarRowStatic(
     const isSat = d.weekday === 6;
     if (!d.isWorking) {
       cell.fill = grayFill;
-      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : { color: { argb: "FF9CA3AF" } };
+      cell.font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : { color: { argb: "FF9CA3AF" } };
     } else {
       if (isSat) cell.fill = blueFill;
-      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+      cell.font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
     }
+
+    // 祝日シートに手動追加された祝日も書式反映
+    sheet.addConditionalFormatting({
+      ref: cell.address,
+      rules: [{
+        type: "expression",
+        priority: 1,
+        formulae: [`IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+        style: {
+          fill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } },
+          font: { color: { argb: "FFEF4444" } },
+        },
+      }],
+    });
   });
 
   // メモ行
@@ -280,6 +315,7 @@ function buildMonthSheet(
   hourlyRate: number,
   useDataRef: boolean,
   dataSheetName: string,
+  unifiedDataSheet?: string,
 ) {
   const { border, center } = styles;
   sheet.columns = [
@@ -316,14 +352,14 @@ function buildMonthSheet(
     week.push(d);
     if (week.length === 7) {
       if (useDataRef) addCalendarRow(sheet, week, styles, dataSheetName, sheetYear, sheetMonth);
-      else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth);
+      else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth, unifiedDataSheet);
       week = [];
     }
   }
   if (week.length > 0) {
     while (week.length < 7) week.push(null);
     if (useDataRef) addCalendarRow(sheet, week, styles, dataSheetName, sheetYear, sheetMonth);
-    else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth);
+    else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth, unifiedDataSheet);
   }
 
   sheet.addRow([]);
@@ -333,12 +369,15 @@ function buildMonthSheet(
   const mTotalHours = monthDays.filter((d) => d.isWorking).reduce((s, d) => s + d.hours, 0);
   const dataRange = useDataRef ? `'${dataSheetName}'!C2:C${monthDays.length + 1}` : null;
 
-  const sr1 = sheet.addRow(["", "稼働日数",
-    dataRange ? { formula: `=COUNTIF(${dataRange},">0")`, result: mWorkingDays } : mWorkingDays,
-    "日"]);
-  const sr2 = sheet.addRow(["", "総稼働時間",
-    dataRange ? { formula: `=SUM(${dataRange})`, result: mTotalHours } : mTotalHours,
-    "時間"]);
+  const workingDaysVal = unifiedDataSheet
+    ? { formula: `=COUNTIFS('${unifiedDataSheet}'!$B:$B,${m},'${unifiedDataSheet}'!$D:$D,">0")`, result: mWorkingDays }
+    : dataRange ? { formula: `=COUNTIF(${dataRange},">0")`, result: mWorkingDays } : mWorkingDays;
+  const totalHoursVal = unifiedDataSheet
+    ? { formula: `=SUMIF('${unifiedDataSheet}'!$B:$B,${m},'${unifiedDataSheet}'!$D:$D)`, result: mTotalHours }
+    : dataRange ? { formula: `=SUM(${dataRange})`, result: mTotalHours } : mTotalHours;
+
+  const sr1 = sheet.addRow(["", "稼働日数", workingDaysVal, "日"]);
+  const sr2 = sheet.addRow(["", "総稼働時間", totalHoursVal, "時間"]);
   [sr1, sr2].forEach((r) => {
     r.height = 20;
     ["B", "C", "D"].forEach((col) => { r.getCell(col).fill = summaryFill; });
@@ -347,7 +386,7 @@ function buildMonthSheet(
   });
   if (hourlyRate > 0) {
     const sr3 = sheet.addRow(["", "月収（概算）",
-      dataRange
+      (unifiedDataSheet || dataRange)
         ? { formula: `=C${sr2.number}*${hourlyRate}`, result: mTotalHours * hourlyRate }
         : mTotalHours * hourlyRate,
       "円"]);
@@ -437,7 +476,10 @@ export function WorkingHoursCalendar() {
       })
       .catch(() => setHolidayError(true))
       .finally(() => clearTimeout(timeoutId));
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const updateUrl = useCallback(
@@ -479,31 +521,10 @@ export function WorkingHoursCalendar() {
     [month, year, defaultHours, hourlyRate, updateUrl]
   );
 
-  const days = useMemo<DayInfo[]>(() => {
-    const daysInMonth = new Date(year, month, 0).getDate();
-    return Array.from({ length: daysInMonth }, (_, i) => {
-      const day = i + 1;
-      const dateStr = toDateStr(year, month, day);
-      const weekday = new Date(year, month - 1, day).getDay();
-      const isWeekend = weekday === 0 || weekday === 6;
-      const isHoliday = dateStr in holidays;
-      const holidayName = holidays[dateStr];
-      const defaultOff = isWeekend || isHoliday;
-      let isWorking: boolean;
-      let isManualOverride = false;
-      if (onDays.has(dateStr)) {
-        isWorking = true;
-        isManualOverride = true;
-      } else if (offDays.has(dateStr)) {
-        isWorking = false;
-        isManualOverride = true;
-      } else {
-        isWorking = !defaultOff;
-      }
-      const hours = dayHours[dateStr] ?? defaultHours;
-      return { date: dateStr, day, weekday, isWorking, isHoliday, holidayName, isManualOverride, hours };
-    });
-  }, [year, month, holidays, offDays, onDays, dayHours, defaultHours]);
+  const days = useMemo<DayInfo[]>(
+    () => generateMonthDays(year, month, holidays, defaultHours, offDays, onDays, dayHours),
+    [year, month, holidays, defaultHours, offDays, onDays, dayHours]
+  );
 
   const isDefaultOff = useCallback(
     (dateStr: string) => {
@@ -644,7 +665,7 @@ export function WorkingHoursCalendar() {
       .sort(([a], [b]) => a.localeCompare(b));
     for (const [dateStr, name] of yearHolidays) {
       const [hy, hmo, hd] = dateStr.split("-").map(Number);
-      const hRow = sheet.addRow({ date: new Date(hy, hmo - 1, hd), name });
+      const hRow = sheet.addRow({ date: new Date(Date.UTC(hy, hmo - 1, hd)), name });
       hRow.height = 18;
       hRow.getCell("date").numFmt = "yyyy/mm/dd";
       hRow.getCell("date").alignment = styles.center;
@@ -691,8 +712,6 @@ export function WorkingHoursCalendar() {
     const { ExcelJS, wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
     const DATA_SHEET_NAME = "データ";
     const { grayFill, headerFill, border: allBorder, center: CENTER } = styles;
-    const RED_FONT = { color: { argb: "FFEF4444" } };
-    const BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
     // シート1: カレンダー
     const calSheet = wb.addWorksheet("カレンダー");
@@ -714,16 +733,21 @@ export function WorkingHoursCalendar() {
       cell.border = allBorder;
     });
     for (const d of days) {
-      const row = dataSheet.addRow({ date: d.date, wd: WEEKDAYS[d.weekday], hours: d.isWorking ? d.hours : 0 });
+      const [dy, dm, dd] = d.date.split("-").map(Number);
+      const row = dataSheet.addRow({ date: new Date(Date.UTC(dy, dm - 1, dd)), wd: WEEKDAYS[d.weekday], hours: d.isWorking ? d.hours : 0 });
       row.height = 18;
+      row.getCell("date").numFmt = "yyyy/mm/dd";
+      row.getCell("date").alignment = CENTER;
       const isSun = d.weekday === 0;
       const isSat = d.weekday === 6;
-      if (!d.isWorking) row.fill = grayFill;
-      row.getCell("date").font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
-      row.getCell("wd").font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+      row.getCell("date").font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
+      row.getCell("wd").font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
       row.getCell("wd").alignment = CENTER;
       row.getCell("hours").alignment = CENTER;
-      row.eachCell((cell) => { cell.border = allBorder; });
+      row.eachCell((cell) => {
+        if (!d.isWorking) cell.fill = grayFill;
+        cell.border = allBorder;
+      });
     }
     const dataEndRow = days.length + 1;
     dataSheet.addRow([]);
@@ -758,15 +782,60 @@ export function WorkingHoursCalendar() {
 
   const exportAnnualExcel = useCallback(async () => {
     const { wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
-    const { headerFill } = styles;
+    const { headerFill, grayFill, border: allBorder, center: CENTER } = styles;
+    const UNIFIED_DATA_SHEET = "データ";
 
-    // 12ヶ月分のカレンダーシート
+    // 全12ヶ月のDayInfoを収集
+    const allMonthDays: DayInfo[][] = [];
     for (let m = 1; m <= 12; m++) {
-      const monthDays = m === month
-        ? days
-        : generateMonthDays(year, m, holidays, defaultHours);
+      allMonthDays.push(m === month ? days : generateMonthDays(year, m, holidays, defaultHours));
+    }
+
+    // 12ヶ月分のカレンダーシート（統合データシートをVLOOKUP参照）
+    for (let m = 1; m <= 12; m++) {
       const sheet = wb.addWorksheet(`${m}月`);
-      buildMonthSheet(sheet, monthDays, styles, year, m, year, m, headerFill, SUMMARY_FILL, WHITE_BOLD, hourlyRate, false, "");
+      buildMonthSheet(sheet, allMonthDays[m - 1], styles, year, m, year, m, headerFill, SUMMARY_FILL, WHITE_BOLD, hourlyRate, false, "", UNIFIED_DATA_SHEET);
+    }
+
+    // 統合データシート（全月・全日の一覧）
+    const dataSheet = wb.addWorksheet(UNIFIED_DATA_SHEET);
+    dataSheet.columns = [
+      { header: "日付", key: "date", width: 14 },
+      { header: "月", key: "month", width: 6 },
+      { header: "曜日", key: "wd", width: 7 },
+      { header: "稼働時間", key: "hours", width: 11 },
+    ];
+    const dataHeaderRow = dataSheet.getRow(1);
+    dataHeaderRow.height = 20;
+    dataHeaderRow.eachCell((cell) => {
+      cell.fill = headerFill;
+      cell.font = WHITE_BOLD;
+      cell.alignment = CENTER;
+      cell.border = allBorder;
+    });
+    for (let m = 1; m <= 12; m++) {
+      for (const d of allMonthDays[m - 1]) {
+        const [dy, dm, dd] = d.date.split("-").map(Number);
+        const row = dataSheet.addRow({
+          date: new Date(Date.UTC(dy, dm - 1, dd)),
+          month: m,
+          wd: WEEKDAYS[d.weekday],
+          hours: d.isWorking ? d.hours : 0,
+        });
+        row.height = 18;
+        row.getCell("date").numFmt = "yyyy/mm/dd";
+        row.getCell("date").alignment = CENTER;
+        row.getCell("wd").alignment = CENTER;
+        row.getCell("hours").alignment = CENTER;
+        const isSun = d.weekday === 0;
+        const isSat = d.weekday === 6;
+        row.getCell("date").font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
+        row.getCell("wd").font = (isSun || d.isHoliday) ? EXCEL_RED_FONT : isSat ? EXCEL_BLUE_FONT : {};
+        row.eachCell((cell) => {
+          if (!d.isWorking) cell.fill = grayFill;
+          cell.border = allBorder;
+        });
+      }
     }
 
     // 祝日 / 年間
@@ -1052,6 +1121,9 @@ export function WorkingHoursCalendar() {
           📅 年間Excel出力（12ヶ月）
         </button>
       </div>
+      <p className="text-xs text-zinc-400">
+        ※ 年間出力は現在表示中の月のカスタム設定のみ反映されます
+      </p>
 
       {/* 使い方 */}
       <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
