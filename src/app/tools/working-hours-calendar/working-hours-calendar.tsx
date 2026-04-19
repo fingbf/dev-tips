@@ -286,11 +286,10 @@ export function WorkingHoursCalendar() {
     const XLSX = await import("xlsx");
     const wb = XLSX.utils.book_new();
 
-    const headers = ["日付", "曜日", "稼働", "稼働時間"];
+    const headers = ["日付", "曜日", "稼働時間"];
     const dataRows = days.map((d) => [
       d.date,
       WEEKDAYS[d.weekday],
-      d.isWorking ? 1 : 0,
       d.isWorking ? d.hours : 0,
     ]);
 
@@ -301,15 +300,15 @@ export function WorkingHoursCalendar() {
       headers,
       ...dataRows,
       [],
-      ["稼働日数", `=COUNTIF(C2:C${dataEndRow},1)`, "", "日"],
-      ["総稼働時間", `=SUM(D2:D${dataEndRow})`, "", "時間"],
+      ["稼働日数", `=COUNTIF(C2:C${dataEndRow},">0")`, "", "日"],
+      ["総稼働時間", `=SUM(C2:C${dataEndRow})`, "", "時間"],
     ];
     if (hourlyRate > 0) {
       sheetData.push(["月収", `=B${summaryRow + 1}*${hourlyRate}`, "", "円"]);
     }
 
     const ws = XLSX.utils.aoa_to_sheet(sheetData);
-    ws["!cols"] = [{ wch: 12 }, { wch: 6 }, { wch: 6 }, { wch: 10 }];
+    ws["!cols"] = [{ wch: 12 }, { wch: 6 }, { wch: 10 }];
     XLSX.utils.book_append_sheet(wb, ws, `${year}年${month}月`);
     XLSX.writeFile(wb, `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`);
   }, [days, hourlyRate, year, month]);
