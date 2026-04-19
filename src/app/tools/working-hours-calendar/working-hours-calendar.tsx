@@ -756,18 +756,18 @@ export function WorkingHoursCalendar() {
         if (!d.isWorking) cell.fill = grayFill;
         cell.border = allBorder;
       });
-      // 祝日シートに手動追加された祝日も書式反映
-      dataSheet.addConditionalFormatting({
-        ref: `A${row.number}:C${row.number}`,
-        rules: [{
-          type: "expression",
-          priority: 1,
-          formulae: [`IFERROR(VLOOKUP($A${row.number},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
-          style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
-        }],
-      });
     }
     const dataEndRow = days.length + 1;
+    // 祝日シート手動追加対応: 範囲一括CF（行単位ルールを1本に集約）
+    dataSheet.addConditionalFormatting({
+      ref: `A2:C${dataEndRow}`,
+      rules: [{
+        type: "expression",
+        priority: 1,
+        formulae: [`IFERROR(VLOOKUP($A2,'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+        style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
+      }],
+    });
     dataSheet.addRow([]);
     const ds1 = dataSheet.addRow(["稼働日数", "", { formula: `=COUNTIF(C2:C${dataEndRow},">0")`, result: workingDays }, "日"]);
     const ds2 = dataSheet.addRow(["総稼働時間", "", { formula: `=SUM(C2:C${dataEndRow})`, result: totalHours }, "時間"]);
@@ -853,18 +853,19 @@ export function WorkingHoursCalendar() {
           if (!d.isWorking) cell.fill = grayFill;
           cell.border = allBorder;
         });
-        // 祝日シートに手動追加された祝日も書式反映
-        dataSheet.addConditionalFormatting({
-          ref: `A${row.number}:D${row.number}`,
-          rules: [{
-            type: "expression",
-            priority: 1,
-            formulae: [`IFERROR(VLOOKUP($A${row.number},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
-            style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
-          }],
-        });
       }
     }
+    // 祝日シート手動追加対応: 範囲一括CF（行単位ルールを1本に集約）
+    const annualDataEndRow = dataSheet.lastRow?.number ?? 1;
+    dataSheet.addConditionalFormatting({
+      ref: `A2:D${annualDataEndRow}`,
+      rules: [{
+        type: "expression",
+        priority: 1,
+        formulae: [`IFERROR(VLOOKUP($A2,'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+        style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
+      }],
+    });
 
     // 祝日 / 年間
     addHolidaySheet(wb, styles, WHITE_BOLD);
