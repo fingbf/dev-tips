@@ -328,11 +328,11 @@ export function RegexTester() {
                 {showHighlight && testString
                   ? segments.map((seg, i) =>
                       seg.isMatch ? (
-                        <mark key={i} className={`${GROUP_COLORS[0]} text-transparent rounded-sm`}>
+                        <mark key={i} className={`${GROUP_COLORS[0]} text-zinc-900 dark:text-zinc-100 rounded-sm`}>
                           {seg.text || " "}
                         </mark>
                       ) : (
-                        <span key={i} className="text-transparent">{seg.text}</span>
+                        <span key={i} className="text-zinc-900 dark:text-zinc-100">{seg.text}</span>
                       )
                     )
                   : null}
