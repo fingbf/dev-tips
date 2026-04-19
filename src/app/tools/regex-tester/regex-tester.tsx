@@ -121,6 +121,12 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         flags: { g: false, i: false, m: true, s: false },
         testString: "MyPassword123456\nweakpassword\nNoNumbers!\nShort1A\nCorrectHorse99Battery",
       },
+      {
+        label: "セマンティックバージョン",
+        pattern: "v?\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.]+)?(?:\\+[a-zA-Z0-9.]+)?",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "リリース: v1.0.0 / v2.3.4-beta.1 / 1.0.0-rc.1+build.123 / 不正: v1.0 / 1.2",
+      },
     ],
   },
   {
@@ -168,6 +174,24 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         flags: { g: false, i: true, m: true, s: false },
         testString: "index.html\nstyle.css\nscript.min.js\nREADME.md\nimage.PNG\nno-extension",
       },
+      {
+        label: "行コメント除去 (//)",
+        pattern: "\\/\\/.*$",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "const x = 1; // 変数定義\nconst y = 2; // 別の変数\n// 行全体コメント\nconst z = 3;",
+      },
+      {
+        label: "ブロックコメント除去 (/* */)",
+        pattern: "\\/\\*[\\s\\S]*?\\*\\/",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "const a = 1; /* インラインコメント */\n/* 複数行\n   コメント */\nconst b = 2;",
+      },
+      {
+        label: "空行除去",
+        pattern: "^[ \\t]*$",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "行1\n\n行2\n\n\n行3\n   \n行4",
+      },
     ],
   },
   {
@@ -209,6 +233,24 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         flags: { g: true, i: false, m: false, s: false },
         testString: "Hello World / こんにちは / café / 日本語テキスト / ASCII only",
       },
+      {
+        label: "Gitコミットハッシュ",
+        pattern: "\\b[0-9a-f]{7,40}\\b",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "短縮: a1b2c3d / フル: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2 / 不正: xyz123 / ZZZABCD",
+      },
+      {
+        label: ".env 環境変数",
+        pattern: "^([A-Z_][A-Z0-9_]*)=(.*)$",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "DATABASE_URL=postgres://localhost/mydb\nAPI_KEY=secret123\nPORT=3000\n# コメント行\ninvalid=lowercase_key\n_LEADING_UNDERSCORE=ok",
+      },
+      {
+        label: "CSS rgb / rgba / hsl / hsla",
+        pattern: "(?:rgb|hsl)a?\\(\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?(?:\\s*,\\s*[\\d.]+)?\\s*\\)",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "color: rgb(255, 0, 0);\nbackground: rgba(0, 128, 255, 0.5);\nborder: hsl(120, 100%, 50%);\nfill: hsla(240, 100%, 50%, 0.8);\ninvalid: rgb(256,0,0,0,0);",
+      },
     ],
   },
   {
@@ -243,6 +285,18 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         pattern: "[Ａ-Ｚａ-ｚ]+",
         flags: { g: true, i: false, m: false, s: false },
         testString: "入力値：ＡＢＣＤ / ａｂｃ / 半角: ABC / 混在: Ａbc",
+      },
+      {
+        label: "半角カタカナ",
+        pattern: "[\\uFF65-\\uFF9F]+",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "全角: カタカナ / 半角: ｶﾀｶﾅ / ﾊﾝｶｸ / 混在: ｶﾀカナ / ひらがな: あいう",
+      },
+      {
+        label: "都道府県",
+        pattern: "(?:北海道|東京都|大阪府|京都府|(?:青森|岩手|宮城|秋田|山形|福島|茨城|栃木|群馬|埼玉|千葉|神奈川|新潟|富山|石川|福井|山梨|長野|岐阜|静岡|愛知|三重|滋賀|兵庫|奈良|和歌山|鳥取|島根|岡山|広島|山口|徳島|香川|愛媛|高知|福岡|佐賀|長崎|熊本|大分|宮崎|鹿児島|沖縄)県)",
+        flags: { g: true, i: false, m: false, s: false },
+        testString: "東京都渋谷区 / 大阪府大阪市 / 神奈川県横浜市 / 北海道札幌市 / 沖縄県那覇市 / 不正: 東京区 / 大阪市",
       },
     ],
   },
