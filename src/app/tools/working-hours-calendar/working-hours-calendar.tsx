@@ -903,17 +903,21 @@ export function WorkingHoursCalendar() {
 
   return (
     <div className="space-y-6">
-      <nav className="text-sm text-zinc-500">
-        <Link href="/" className="hover:text-zinc-700 dark:hover:text-zinc-300">
-          ツール一覧
+      <nav className="text-sm text-zinc-500 dark:text-zinc-400">
+        <Link href="/" className="hover:text-zinc-700 dark:hover:text-zinc-200">
+          Dev Tips
         </Link>
         <span className="mx-2">/</span>
-        <span>稼働時間カレンダー</span>
+        <Link href="/tools" className="hover:text-zinc-700 dark:hover:text-zinc-200">
+          ツール
+        </Link>
+        <span className="mx-2">/</span>
+        <span className="text-zinc-900 dark:text-zinc-100">稼働時間カレンダー</span>
       </nav>
 
       <div>
-        <h1 className="mb-1 text-2xl font-bold md:text-3xl">稼働時間カレンダー</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="mb-2 text-2xl font-bold md:text-3xl">稼働時間カレンダー</h1>
+        <p className="text-zinc-600 dark:text-zinc-400">
           月の稼働日を管理して総稼働時間・月収を算出。曜日をクリックで一括切替、日付をクリックで個別調整。
         </p>
       </div>

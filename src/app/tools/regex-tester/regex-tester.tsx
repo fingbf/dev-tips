@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
+import Link from "next/link";
 
 type FlagKey = "g" | "i" | "m" | "s";
 type TabKey = "match" | "replace";
@@ -384,10 +385,23 @@ export function RegexTester() {
 
   return (
     <div className="space-y-4">
+      {/* パンくず */}
+      <nav className="text-sm text-zinc-500 dark:text-zinc-400">
+        <Link href="/" className="hover:text-zinc-700 dark:hover:text-zinc-200">
+          Dev Tips
+        </Link>
+        <span className="mx-2">/</span>
+        <Link href="/tools" className="hover:text-zinc-700 dark:hover:text-zinc-200">
+          ツール
+        </Link>
+        <span className="mx-2">/</span>
+        <span className="text-zinc-900 dark:text-zinc-100">正規表現テスター</span>
+      </nav>
+
       {/* ヘッダー */}
       <div>
-        <h1 className="mb-1 text-2xl font-bold md:text-3xl">正規表現テスター</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="mb-2 text-2xl font-bold md:text-3xl">正規表現テスター</h1>
+        <p className="text-zinc-600 dark:text-zinc-400">
           JavaScript RegExp でリアルタイム検証。マッチ・置換両対応。入力データはサーバーに送信されず、ブラウザ内で完結します。
         </p>
       </div>
