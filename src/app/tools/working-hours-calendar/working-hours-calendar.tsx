@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
-const DEFAULT_START = "09:00";
-const DEFAULT_END = "18:00";
+const DEFAULT_HOURS = 8;
 
 type DayInfo = {
   date: string;
@@ -16,24 +15,15 @@ type DayInfo = {
   isHoliday: boolean;
   holidayName?: string;
   isManualOverride: boolean;
+  hours: number;
 };
 
 function toDateStr(year: number, month: number, day: number): string {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-function isValidTime(v: string): boolean {
-  return /^\d{2}:\d{2}$/.test(v);
-}
-
 function isValidDateStr(v: string): boolean {
   return /^\d{4}-\d{2}-\d{2}$/.test(v);
-}
-
-function calcDailyHours(start: string, end: string): number {
-  const [sh, sm] = start.split(":").map(Number);
-  const [eh, em] = end.split(":").map(Number);
-  return Math.max(0, (eh * 60 + em - (sh * 60 + sm)) / 60);
 }
 
 function formatHours(hours: number): string {
@@ -47,10 +37,6 @@ function formatMoney(amount: number): string {
   return amount.toLocaleString("ja-JP") + "円";
 }
 
-function getTodayStr(): string {
-  const t = new Date();
-  return toDateStr(t.getFullYear(), t.getMonth() + 1, t.getDate());
-}
 
 export function WorkingHoursCalendar() {
   const router = useRouter();
@@ -67,13 +53,9 @@ export function WorkingHoursCalendar() {
     const m = Number(searchParams.get("m"));
     return m >= 1 && m <= 12 ? m : new Date().getMonth() + 1;
   });
-  const [startHour, setStartHour] = useState(() => {
-    const v = searchParams.get("sh") || DEFAULT_START;
-    return isValidTime(v) ? v : DEFAULT_START;
-  });
-  const [endHour, setEndHour] = useState(() => {
-    const v = searchParams.get("eh") || DEFAULT_END;
-    return isValidTime(v) ? v : DEFAULT_END;
+  const [defaultHours, setDefaultHours] = useState(() => {
+    const h = Number(searchParams.get("h"));
+    return h > 0 && h <= 24 ? h : DEFAULT_HOURS;
   });
   const [hourlyRate, setHourlyRate] = useState(() => {
     const r = Number(searchParams.get("rate"));
@@ -87,15 +69,41 @@ export function WorkingHoursCalendar() {
     const raw = searchParams.get("on");
     return raw ? new Set(raw.split(",").filter(isValidDateStr)) : new Set();
   });
+  const [dayHours, setDayHours] = useState<Record<string, number>>(() => {
+    const raw = searchParams.get("dh");
+    if (!raw) return {};
+    return raw.split(",").reduce((acc, s) => {
+      const idx = s.lastIndexOf(":");
+      if (idx < 0) return acc;
+      const date = s.slice(0, idx);
+      const h = Number(s.slice(idx + 1));
+      if (isValidDateStr(date) && !isNaN(h) && h >= 0 && h <= 24) acc[date] = h;
+      return acc;
+    }, {} as Record<string, number>);
+  });
 
   const [holidays, setHolidays] = useState<Record<string, string>>({});
   const [holidayError, setHolidayError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [editingDay, setEditingDay] = useState<string | null>(null);
+  const [editingHours, setEditingHours] = useState<number>(DEFAULT_HOURS);
 
   useEffect(() => {
     const cached = sessionStorage.getItem("holidays-jp");
     if (cached) {
-      setHolidays(JSON.parse(cached));
+      try {
+        const parsed: unknown = JSON.parse(cached);
+        if (
+          typeof parsed === "object" && parsed !== null && !Array.isArray(parsed) &&
+          Object.values(parsed).every((s) => typeof s === "string")
+        ) {
+          setHolidays(parsed as Record<string, string>);
+        } else {
+          sessionStorage.removeItem("holidays-jp");
+        }
+      } catch {
+        sessionStorage.removeItem("holidays-jp");
+      }
       return;
     }
     const controller = new AbortController();
@@ -113,22 +121,18 @@ export function WorkingHoursCalendar() {
 
   const updateUrl = useCallback(
     (params: {
-      y: number;
-      m: number;
-      sh: string;
-      eh: string;
-      rate: number;
-      off: Set<string>;
-      on: Set<string>;
+      y: number; m: number; h: number; rate: number;
+      off: Set<string>; on: Set<string>; dh: Record<string, number>;
     }) => {
       const p = new URLSearchParams();
       if (params.y !== initialYear) p.set("y", String(params.y));
       if (params.m !== initialMonth) p.set("m", String(params.m));
-      if (params.sh !== DEFAULT_START) p.set("sh", params.sh);
-      if (params.eh !== DEFAULT_END) p.set("eh", params.eh);
+      if (params.h !== DEFAULT_HOURS) p.set("h", String(params.h));
       if (params.rate > 0) p.set("rate", String(params.rate));
       if (params.off.size > 0) p.set("off", [...params.off].join(","));
       if (params.on.size > 0) p.set("on", [...params.on].join(","));
+      const dhEntries = Object.entries(params.dh);
+      if (dhEntries.length > 0) p.set("dh", dhEntries.map(([d, h]) => `${d}:${h}`).join(","));
       router.replace(p.toString() ? `?${p.toString()}` : "?", { scroll: false });
     },
     [router, initialYear, initialMonth]
@@ -142,13 +146,16 @@ export function WorkingHoursCalendar() {
       if (newMonth < 1) { newMonth = 12; newYear--; }
       const newOff = new Set<string>();
       const newOn = new Set<string>();
+      const newDh: Record<string, number> = {};
       setYear(newYear);
       setMonth(newMonth);
       setOffDays(newOff);
       setOnDays(newOn);
-      updateUrl({ y: newYear, m: newMonth, sh: startHour, eh: endHour, rate: hourlyRate, off: newOff, on: newOn });
+      setDayHours(newDh);
+      setEditingDay(null);
+      updateUrl({ y: newYear, m: newMonth, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: newDh });
     },
-    [month, year, startHour, endHour, hourlyRate, updateUrl]
+    [month, year, defaultHours, hourlyRate, updateUrl]
   );
 
   const days = useMemo<DayInfo[]>(() => {
@@ -172,39 +179,96 @@ export function WorkingHoursCalendar() {
       } else {
         isWorking = !defaultOff;
       }
-      return { date: dateStr, day, weekday, isWorking, isHoliday, holidayName, isManualOverride };
+      const hours = dayHours[dateStr] ?? defaultHours;
+      return { date: dateStr, day, weekday, isWorking, isHoliday, holidayName, isManualOverride, hours };
     });
-  }, [year, month, holidays, offDays, onDays]);
+  }, [year, month, holidays, offDays, onDays, dayHours, defaultHours]);
 
-  const toggleDay = useCallback(
-    (dateStr: string, currentlyWorking: boolean) => {
-      const newOff = new Set(offDays);
-      const newOn = new Set(onDays);
-      const weekday = new Date(dateStr).getDay();
-      const defaultOff = weekday === 0 || weekday === 6 || dateStr in holidays;
-
-      if (currentlyWorking) {
-        newOn.delete(dateStr);
-        if (!defaultOff) {
-          newOff.add(dateStr);
-        }
-      } else {
-        newOff.delete(dateStr);
-        if (defaultOff) {
-          newOn.add(dateStr);
-        }
-      }
-      setOffDays(newOff);
-      setOnDays(newOn);
-      updateUrl({ y: year, m: month, sh: startHour, eh: endHour, rate: hourlyRate, off: newOff, on: newOn });
+  const isDefaultOff = useCallback(
+    (dateStr: string) => {
+      const [y, mo, d] = dateStr.split("-").map(Number);
+      const weekday = new Date(y, mo - 1, d).getDay();
+      return weekday === 0 || weekday === 6 || dateStr in holidays;
     },
-    [offDays, onDays, holidays, year, month, startHour, endHour, hourlyRate, updateUrl]
+    [holidays]
   );
 
-  const dailyHours = calcDailyHours(startHour, endHour);
-  const isTimeValid = dailyHours > 0;
-  const workingDays = days.filter((d) => d.isWorking).length;
-  const totalHours = workingDays * dailyHours;
+  const handleDayClick = useCallback(
+    (d: DayInfo) => {
+      if (!d.isWorking) {
+        const newOff = new Set(offDays);
+        const newOn = new Set(onDays);
+        newOff.delete(d.date);
+        if (isDefaultOff(d.date)) newOn.add(d.date);
+        setOffDays(newOff);
+        setOnDays(newOn);
+        updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: dayHours });
+      } else {
+        setEditingDay(d.date);
+        setEditingHours(dayHours[d.date] ?? defaultHours);
+      }
+    },
+    [offDays, onDays, dayHours, defaultHours, isDefaultOff, year, month, hourlyRate, updateUrl]
+  );
+
+  const applyDayEdit = useCallback(() => {
+    if (!editingDay) return;
+    const newDh = { ...dayHours, [editingDay]: editingHours };
+    setDayHours(newDh);
+    setEditingDay(null);
+    updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: offDays, on: onDays, dh: newDh });
+  }, [editingDay, editingHours, dayHours, year, month, defaultHours, hourlyRate, offDays, onDays, updateUrl]);
+
+  const turnOffEditingDay = useCallback(() => {
+    if (!editingDay) return;
+    const newOff = new Set(offDays);
+    const newOn = new Set(onDays);
+    const newDh = { ...dayHours };
+    newOn.delete(editingDay);
+    if (!isDefaultOff(editingDay)) newOff.add(editingDay);
+    delete newDh[editingDay];
+    setOffDays(newOff);
+    setOnDays(newOn);
+    setDayHours(newDh);
+    setEditingDay(null);
+    updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: newDh });
+  }, [editingDay, offDays, onDays, dayHours, isDefaultOff, year, month, defaultHours, hourlyRate, updateUrl]);
+
+  const toggleWeekday = useCallback(
+    (wd: number) => {
+      const daysOfWeekday = days.filter((d) => d.weekday === wd);
+      const allWorking = daysOfWeekday.every((d) => d.isWorking);
+      const newOff = new Set(offDays);
+      const newOn = new Set(onDays);
+      daysOfWeekday.forEach((d) => {
+        if (allWorking) {
+          newOn.delete(d.date);
+          if (!isDefaultOff(d.date)) newOff.add(d.date);
+        } else {
+          newOff.delete(d.date);
+          if (isDefaultOff(d.date)) newOn.add(d.date);
+        }
+      });
+      setOffDays(newOff);
+      setOnDays(newOn);
+      setEditingDay(null);
+      updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: dayHours });
+    },
+    [days, offDays, onDays, isDefaultOff, dayHours, defaultHours, hourlyRate, year, month, updateUrl]
+  );
+
+  const todayStr = useMemo(() => {
+    const t = new Date();
+    return toDateStr(t.getFullYear(), t.getMonth() + 1, t.getDate());
+  }, []);
+
+  const { totalHours, workingDays } = useMemo(() => {
+    const working = days.filter((d) => d.isWorking);
+    return {
+      workingDays: working.length,
+      totalHours: working.reduce((sum, d) => sum + d.hours, 0),
+    };
+  }, [days]);
   const monthlyIncome = hourlyRate > 0 ? totalHours * hourlyRate : null;
   const firstWeekday = days[0]?.weekday ?? 0;
 
@@ -219,18 +283,17 @@ export function WorkingHoursCalendar() {
   }, []);
 
   const exportExcel = useCallback(async () => {
-    if (!isTimeValid) return;
     const XLSX = await import("xlsx");
     const wb = XLSX.utils.book_new();
 
-    const headers = ["日付", "曜日", "稼働"];
+    const headers = ["日付", "曜日", "稼働", "稼働時間"];
     const dataRows = days.map((d) => [
       d.date,
       WEEKDAYS[d.weekday],
       d.isWorking ? 1 : 0,
+      d.isWorking ? d.hours : 0,
     ]);
 
-    // Excelの行番号: 1=ヘッダー, 2〜N+1=データ, N+2=空行, N+3=稼働日数, N+4=1日の稼働時間, N+5=総稼働時間
     const dataEndRow = dataRows.length + 1;
     const summaryRow = dataRows.length + 3;
 
@@ -238,20 +301,20 @@ export function WorkingHoursCalendar() {
       headers,
       ...dataRows,
       [],
-      ["稼働日数", `=COUNTIF(C2:C${dataEndRow},1)`, "日"],
-      ["1日の稼働時間", dailyHours, "時間"],
-      ["総稼働時間", `=B${summaryRow}*B${summaryRow + 1}`, "時間"],
+      ["稼働日数", `=COUNTIF(C2:C${dataEndRow},1)`, "", "日"],
+      ["総稼働時間", `=SUM(D2:D${dataEndRow})`, "", "時間"],
     ];
     if (hourlyRate > 0) {
-      sheetData.push(["月収", `=B${summaryRow + 2}*${hourlyRate}`, "円"]);
+      sheetData.push(["月収", `=B${summaryRow + 1}*${hourlyRate}`, "", "円"]);
     }
 
     const ws = XLSX.utils.aoa_to_sheet(sheetData);
-    ws["!cols"] = [{ wch: 12 }, { wch: 14 }, { wch: 6 }];
-
+    ws["!cols"] = [{ wch: 12 }, { wch: 6 }, { wch: 6 }, { wch: 10 }];
     XLSX.utils.book_append_sheet(wb, ws, `${year}年${month}月`);
     XLSX.writeFile(wb, `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`);
-  }, [days, dailyHours, isTimeValid, hourlyRate, year, month]);
+  }, [days, hourlyRate, year, month]);
+
+  const editingDayInfo = editingDay ? days.find((d) => d.date === editingDay) : null;
 
   return (
     <div className="space-y-6">
@@ -266,7 +329,7 @@ export function WorkingHoursCalendar() {
       <div>
         <h1 className="mb-1 text-2xl font-bold md:text-3xl">稼働時間カレンダー</h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          月の稼働日を管理して総稼働時間・月収を算出。カレンダーをクリックして稼働日を切り替えられます。
+          月の稼働日を管理して総稼働時間・月収を算出。曜日をクリックで一括切替、日付をクリックで個別調整。
         </p>
       </div>
 
@@ -298,38 +361,33 @@ export function WorkingHoursCalendar() {
             </button>
           </div>
 
-          {/* 時刻設定 */}
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <label htmlFor="start-hour" className="text-zinc-600 dark:text-zinc-400">開始</label>
+          {/* デフォルト稼働時間 */}
+          <div className="flex items-center gap-2 text-sm">
+            <label htmlFor="default-hours" className="text-zinc-600 dark:text-zinc-400">
+              1日の稼働時間
+            </label>
             <input
-              id="start-hour"
-              type="time"
-              value={startHour}
+              id="default-hours"
+              type="number"
+              value={defaultHours}
+              min={0.5}
+              max={24}
+              step={0.5}
               onChange={(e) => {
-                setStartHour(e.target.value);
-                updateUrl({ y: year, m: month, sh: e.target.value, eh: endHour, rate: hourlyRate, off: offDays, on: onDays });
+                const v = Math.min(24, Math.max(0.5, Number(e.target.value)));
+                setDefaultHours(v);
+                updateUrl({ y: year, m: month, h: v, rate: hourlyRate, off: offDays, on: onDays, dh: dayHours });
               }}
-              className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
+              className="w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
             />
-            <label htmlFor="end-hour" className="text-zinc-600 dark:text-zinc-400">終了</label>
-            <input
-              id="end-hour"
-              type="time"
-              value={endHour}
-              onChange={(e) => {
-                setEndHour(e.target.value);
-                updateUrl({ y: year, m: month, sh: startHour, eh: e.target.value, rate: hourlyRate, off: offDays, on: onDays });
-              }}
-              className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
-            />
-            {!isTimeValid && (
-              <span className="text-red-500 text-xs">終了時刻は開始より後にしてください</span>
-            )}
+            <span className="text-zinc-600 dark:text-zinc-400">時間</span>
           </div>
 
           {/* 時給 */}
           <div className="flex items-center gap-2 text-sm">
-            <label htmlFor="hourly-rate" className="text-zinc-600 dark:text-zinc-400">時給</label>
+            <label htmlFor="hourly-rate" className="text-zinc-600 dark:text-zinc-400">
+              時給
+            </label>
             <input
               id="hourly-rate"
               type="number"
@@ -339,7 +397,7 @@ export function WorkingHoursCalendar() {
               onChange={(e) => {
                 const v = Math.max(0, Number(e.target.value));
                 setHourlyRate(v);
-                updateUrl({ y: year, m: month, sh: startHour, eh: endHour, rate: v, off: offDays, on: onDays });
+                updateUrl({ y: year, m: month, h: defaultHours, rate: v, off: offDays, on: onDays, dh: dayHours });
               }}
               className="w-28 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
             />
@@ -350,21 +408,27 @@ export function WorkingHoursCalendar() {
 
       {/* カレンダー */}
       <div>
-        <div className="mb-1 grid grid-cols-7 text-center text-xs font-semibold">
-          {WEEKDAYS.map((w, i) => (
-            <div
-              key={w}
-              className={
-                i === 0
-                  ? "text-red-500"
-                  : i === 6
-                  ? "text-blue-500"
-                  : "text-zinc-600 dark:text-zinc-400"
-              }
-            >
-              {w}
-            </div>
-          ))}
+        {/* 曜日ヘッダー（クリックで一括ON/OFF） */}
+        <div className="mb-1 grid grid-cols-7 gap-1">
+          {WEEKDAYS.map((w, i) => {
+            const daysOfWd = days.filter((d) => d.weekday === i);
+            const allWorking = daysOfWd.length > 0 && daysOfWd.every((d) => d.isWorking);
+            return (
+              <button
+                key={w}
+                onClick={() => toggleWeekday(i)}
+                title={`${w}曜日を一括${allWorking ? "休み" : "稼働"}にする`}
+                className={[
+                  "rounded py-1 text-center text-xs font-semibold transition-colors",
+                  "hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                  i === 0 ? "text-red-500" : i === 6 ? "text-blue-500" : "text-zinc-600 dark:text-zinc-400",
+                  allWorking ? "underline decoration-dotted" : "",
+                ].join(" ")}
+              >
+                {w}
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-7 gap-1">
@@ -373,24 +437,25 @@ export function WorkingHoursCalendar() {
           ))}
 
           {days.map((d) => {
-            const isToday = d.date === getTodayStr();
+            const isToday = d.date === todayStr;
+            const isEditing = editingDay === d.date;
             const isSun = d.weekday === 0;
             const isSat = d.weekday === 6;
+            const hasCustomHours = d.isWorking && dayHours[d.date] !== undefined;
 
             return (
               <button
                 key={d.date}
-                onClick={() => toggleDay(d.date, d.isWorking)}
-                title={d.holidayName}
+                onClick={() => handleDayClick(d)}
+                title={d.holidayName ?? (d.isWorking ? "クリックで時間調整" : "クリックで稼働日にする")}
                 className={[
                   "relative flex flex-col items-center rounded-lg border py-2 text-sm transition-colors cursor-pointer hover:opacity-80",
                   isToday ? "ring-2 ring-blue-500" : "",
+                  isEditing ? "ring-2 ring-orange-400" : "",
                   d.isWorking
                     ? "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30"
                     : "border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
+                ].filter(Boolean).join(" ")}
               >
                 <span
                   className={
@@ -410,7 +475,12 @@ export function WorkingHoursCalendar() {
                     {d.holidayName}
                   </span>
                 )}
-                {d.isManualOverride && (
+                {d.isWorking && (
+                  <span className={["text-[10px]", hasCustomHours ? "text-orange-500 font-semibold" : "text-zinc-400 dark:text-zinc-500"].join(" ")}>
+                    {d.hours}h
+                  </span>
+                )}
+                {d.isManualOverride && !hasCustomHours && (
                   <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-orange-400" />
                 )}
               </button>
@@ -418,9 +488,55 @@ export function WorkingHoursCalendar() {
           })}
         </div>
         <p className="mt-1 text-right text-xs text-zinc-400">
-          クリックで稼働日/休業日を切り替え　●手動変更あり
+          曜日クリックで一括切替　日付クリックで個別調整　<span className="text-orange-400">■</span>カスタム時間
         </p>
       </div>
+
+      {/* 日別編集パネル */}
+      {editingDay && editingDayInfo && (
+        <div className="rounded-lg border border-orange-300 bg-orange-50 p-4 dark:border-orange-700 dark:bg-orange-900/20">
+          <p className="mb-3 font-semibold text-sm">
+            {editingDay}（{WEEKDAYS[editingDayInfo.weekday]}）の稼働時間を調整
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <label htmlFor="editing-hours" className="text-zinc-600 dark:text-zinc-400">稼働時間</label>
+              <input
+                id="editing-hours"
+                type="number"
+                value={editingHours}
+                min={0.5}
+                max={24}
+                step={0.5}
+                autoFocus
+                onChange={(e) => setEditingHours(Math.min(24, Math.max(0.5, Number(e.target.value))))}
+                className="w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <span className="text-zinc-600 dark:text-zinc-400">時間</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={applyDayEdit}
+                className="rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
+              >
+                適用
+              </button>
+              <button
+                onClick={turnOffEditingDay}
+                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+              >
+                休みにする
+              </button>
+              <button
+                onClick={() => setEditingDay(null)}
+                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* サマリー */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -432,14 +548,12 @@ export function WorkingHoursCalendar() {
         </div>
         <div className="rounded-lg border border-zinc-200 p-4 text-center dark:border-zinc-700">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">総稼働時間</p>
-          <p className="mt-1 text-2xl font-bold">
-            {isTimeValid ? formatHours(totalHours) : "—"}
-          </p>
+          <p className="mt-1 text-2xl font-bold">{formatHours(totalHours)}</p>
         </div>
         <div className="col-span-2 rounded-lg border border-zinc-200 p-4 text-center md:col-span-1 dark:border-zinc-700">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">月収（概算）</p>
           <p className="mt-1 text-2xl font-bold">
-            {monthlyIncome !== null && isTimeValid ? (
+            {monthlyIncome !== null ? (
               formatMoney(monthlyIncome)
             ) : (
               <span className="text-sm font-normal text-zinc-400">時給を入力すると表示</span>
@@ -458,12 +572,7 @@ export function WorkingHoursCalendar() {
         </button>
         <button
           onClick={exportExcel}
-          disabled={!isTimeValid}
-          className={[
-            "rounded-lg border border-green-500 bg-green-50 px-4 py-2 text-sm text-green-700",
-            "hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40",
-            !isTimeValid ? "cursor-not-allowed opacity-50" : "",
-          ].join(" ")}
+          className="rounded-lg border border-green-500 bg-green-50 px-4 py-2 text-sm text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40"
         >
           📊 Excelで出力
         </button>
@@ -474,11 +583,13 @@ export function WorkingHoursCalendar() {
         <h2 className="mb-3 font-semibold">使い方</h2>
         <ol className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
           <li>1. 年月を選択（土日・祝日は自動で非稼働日になります）</li>
-          <li>2. 1日の稼働時間（開始・終了時刻）を設定</li>
-          <li>3. 時給を入力すると月収の概算が表示されます</li>
-          <li>4. カレンダーのセルをクリックして稼働日/休業日を切り替えられます</li>
-          <li>5. 「URLをコピー」で設定を保存・共有できます</li>
-          <li>6. 「Excelで出力」で数式付きの帳票をダウンロードできます</li>
+          <li>2. 1日のデフォルト稼働時間を設定</li>
+          <li>3. 曜日ヘッダーをクリックするとその曜日を一括ON/OFFできます</li>
+          <li>4. 稼働日をクリックすると時間を個別調整できます</li>
+          <li>5. 休み日をクリックすると稼働日に変更できます</li>
+          <li>6. 時給を入力すると月収の概算が表示されます</li>
+          <li>7. 「URLをコピー」で設定を保存・共有できます</li>
+          <li>8. 「Excelで出力」で数式付きの帳票をダウンロードできます</li>
         </ol>
       </div>
     </div>
