@@ -1223,7 +1223,7 @@ export function WorkingHoursCalendar() {
         </div>
         <div className={[
           "col-span-2 rounded-lg border p-4 text-center md:col-span-1",
-          humorMode && selectedPaymentKind.id !== "cash"
+          humorMode
             ? "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20"
             : "border-zinc-200 dark:border-zinc-700",
         ].join(" ")}>
@@ -1232,26 +1232,40 @@ export function WorkingHoursCalendar() {
               ? `${selectedPaymentKind.emoji} 現物支給（${selectedPaymentKind.name}）`
               : "月収（概算）"}
           </p>
-          <p className="mt-1 text-2xl font-bold">
-            {humorMode ? (
-              directPaymentAmount > 0 ? (
-                <span className="text-amber-600 dark:text-amber-400">
-                  {directPaymentAmount.toLocaleString("ja-JP")}{selectedPaymentKind.unit}
-                </span>
-              ) : (
-                <span className="text-sm font-normal text-zinc-400">月収を入力すると表示</span>
-              )
-            ) : monthlyIncome !== null ? (
-              formatMoney(monthlyIncome)
-            ) : (
-              <span className="text-sm font-normal text-zinc-400">時給を入力すると表示</span>
-            )}
-          </p>
-          {humorMode && directPaymentAmount > 0 && (
-            <p className="mt-1 text-[10px] text-amber-500 dark:text-amber-600">
-              {selectedPaymentKind.id !== "cash" && `≈ ${formatMoney(incomeInYen!)} / `}
-              ※{selectedPaymentKind.note}
-            </p>
+          {humorMode ? (
+            directPaymentAmount > 0 ? (() => {
+              const perHour = totalHours > 0
+                ? directPaymentAmount / totalHours
+                : null;
+              const perHourStr = perHour !== null
+                ? perHour >= 1
+                  ? `${Math.round(perHour).toLocaleString("ja-JP")}${selectedPaymentKind.unit}/h`
+                  : `${perHour.toFixed(2)}${selectedPaymentKind.unit}/h`
+                : null;
+              return (
+                <>
+                  <p className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400">
+                    {directPaymentAmount.toLocaleString("ja-JP")}
+                    <span className="text-sm font-normal">{selectedPaymentKind.unit}</span>
+                  </p>
+                  {perHourStr && (
+                    <p className="mt-0.5 text-sm text-amber-500 dark:text-amber-500">
+                      {perHourStr}
+                    </p>
+                  )}
+                  <p className="mt-1 text-[10px] text-amber-500 dark:text-amber-600">
+                    {selectedPaymentKind.id !== "cash" && `≈ ${formatMoney(incomeInYen!)} / `}
+                    ※{selectedPaymentKind.note}
+                  </p>
+                </>
+              );
+            })() : (
+              <p className="mt-1 text-sm text-zinc-400">月収を入力すると表示</p>
+            )
+          ) : monthlyIncome !== null ? (
+            <p className="mt-1 text-2xl font-bold">{formatMoney(monthlyIncome)}</p>
+          ) : (
+            <p className="mt-1 text-sm text-zinc-400">時給を入力すると表示</p>
           )}
         </div>
       </div>
