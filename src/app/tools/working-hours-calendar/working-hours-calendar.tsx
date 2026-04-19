@@ -742,16 +742,6 @@ export function WorkingHoursCalendar() {
       ds3.fill = SUMMARY_FILL;
     }
 
-    // =====================
-    // シート3: 祝日データ
-    // =====================
-    const holidaySheet = wb.addWorksheet(HOLIDAY_SHEET);
-    holidaySheet.columns = [
-      { header: "日付", key: "date", width: 14 },
-      { header: "祝日名", key: "name", width: 22 },
-    ];
-    const hHdr = holidaySheet.getRow(1);
-    hHdr.height = 20;
     // シート3: 祝日 / シート4: 年間
     addHolidaySheet(wb, styles, WHITE_BOLD);
     addAnnualSheet(wb, styles);
