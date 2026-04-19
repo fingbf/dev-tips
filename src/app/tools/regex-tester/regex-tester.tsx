@@ -141,35 +141,6 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
     ],
   },
   {
-    category: "開発者向け",
-    items: [
-      {
-        label: "TODO / FIXME",
-        pattern: "\\b(TODO|FIXME|HACK|XXX)\\b.*",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "// TODO: リファクタリング必要\n// FIXME: バグあり #123\n// HACK: 暫定対応\n// 通常のコメント",
-      },
-      {
-        label: ".env 環境変数",
-        pattern: "^([A-Z_][A-Z0-9_]*)=(.*)$",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "DATABASE_URL=postgres://localhost/mydb\nAPI_KEY=secret123\nPORT=3000\n# コメント行\ninvalid=lowercase_key",
-      },
-      {
-        label: "CSS rgb / rgba / hsl / hsla",
-        pattern: "(?:rgb|hsl)a?\\(\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?(?:\\s*,\\s*[\\d.]+)?\\s*\\)",
-        flags: { g: true, i: true, m: false, s: false },
-        testString: "color: rgb(255, 0, 0);\nbackground: rgba(0, 128, 255, 0.5);\nborder: hsl(120, 100%, 50%);\nfill: hsla(240, 100%, 50%, 0.8);",
-      },
-      {
-        label: "非ASCII文字（マルチバイト検出）",
-        pattern: "[^\\x00-\\x7F]+",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "Hello World / こんにちは / café / 日本語テキスト / ASCII only",
-      },
-    ],
-  },
-  {
     category: "日本語",
     items: [
       {
