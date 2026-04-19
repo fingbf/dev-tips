@@ -38,6 +38,33 @@ function formatMoney(amount: number): string {
   return amount.toLocaleString("ja-JP") + "円";
 }
 
+type PaymentKind = {
+  id: string;
+  emoji: string;
+  name: string;
+  unit: string;
+  pricePerUnit: number; // 1単位あたりの円価値
+  note: string;
+};
+
+const PAYMENT_KINDS: PaymentKind[] = [
+  { id: "cash",        emoji: "💴", name: "現金",      unit: "円",  pricePerUnit: 1,      note: "法定通貨" },
+  { id: "donguri",     emoji: "🌰", name: "どんぐり",  unit: "個",  pricePerUnit: 0.1,    note: "森の闇相場レート" },
+  { id: "matsubokuri", emoji: "🌲", name: "松ぼっくり", unit: "個",  pricePerUnit: 0.5,    note: "高級品につき" },
+  { id: "ichigo",      emoji: "🍓", name: "イチゴ",    unit: "粒",  pricePerUnit: 50,     note: "国産苺・時価" },
+  { id: "takoyaki",    emoji: "🐙", name: "たこ焼き",  unit: "個",  pricePerUnit: 150,    note: "大阪本場産8個入" },
+  { id: "ramen",       emoji: "🍜", name: "ラーメン",  unit: "杯",  pricePerUnit: 900,    note: "二郎系大盛り" },
+  { id: "tanuki",      emoji: "🦝", name: "たぬき",    unit: "匹",  pricePerUnit: 50000,  note: "なつき度・毛並みによる" },
+];
+
+function formatPaymentAmount(income: number, kind: PaymentKind): string {
+  if (kind.id === "cash") return income.toLocaleString("ja-JP") + "円";
+  const amount = income / kind.pricePerUnit;
+  if (amount >= 10000) return `約${(amount / 10000).toFixed(1)}万${kind.unit}`;
+  if (amount >= 1000) return `約${Math.round(amount / 100) * 100}${kind.unit}`;
+  return `約${Math.round(amount)}${kind.unit}`;
+}
+
 type StyleSet = {
   grayFill: ExcelJS.Fill;
   blueFill: ExcelJS.Fill;
@@ -455,6 +482,9 @@ export function WorkingHoursCalendar() {
   const [copied, setCopied] = useState(false);
   const [editingDay, setEditingDay] = useState<string | null>(null);
   const [editingHours, setEditingHours] = useState<number>(DEFAULT_HOURS);
+  const [humorMode, setHumorMode] = useState(false);
+  const [directMonthlyIncome, setDirectMonthlyIncome] = useState(0);
+  const [paymentKindId, setPaymentKindId] = useState("cash");
 
   useEffect(() => {
     const cached = sessionStorage.getItem("holidays-jp");
@@ -621,6 +651,13 @@ export function WorkingHoursCalendar() {
   }, [days]);
   const monthlyIncome = hourlyRate > 0 ? totalHours * hourlyRate : null;
   const firstWeekday = days[0]?.weekday ?? 0;
+
+  // ユーモアモード用計算
+  const humorIncome = humorMode && directMonthlyIncome > 0 ? directMonthlyIncome : monthlyIncome;
+  const humorHourlyRate = humorMode && directMonthlyIncome > 0 && totalHours > 0
+    ? directMonthlyIncome / totalHours
+    : hourlyRate;
+  const selectedPaymentKind = PAYMENT_KINDS.find((k) => k.id === paymentKindId) ?? PAYMENT_KINDS[0];
 
   const copyUrl = useCallback(async () => {
     try {
@@ -907,7 +944,12 @@ export function WorkingHoursCalendar() {
       )}
 
       {/* 設定パネル */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-900">
+      <div className={[
+        "rounded-lg border p-4",
+        humorMode
+          ? "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20"
+          : "border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900",
+      ].join(" ")}>
         <div className="flex flex-wrap items-center gap-4">
           {/* 月ナビゲーション */}
           <div className="flex items-center gap-2">
@@ -950,26 +992,79 @@ export function WorkingHoursCalendar() {
             <span className="text-zinc-600 dark:text-zinc-400">時間</span>
           </div>
 
-          {/* 時給 */}
-          <div className="flex items-center gap-2 text-sm">
-            <label htmlFor="hourly-rate" className="text-zinc-600 dark:text-zinc-400">
-              時給
-            </label>
-            <input
-              id="hourly-rate"
-              type="number"
-              value={hourlyRate || ""}
-              placeholder="例: 3000"
-              min={0}
-              onChange={(e) => {
-                const v = Math.max(0, Number(e.target.value));
-                setHourlyRate(v);
-                updateUrl({ y: year, m: month, h: defaultHours, rate: v, off: offDays, on: onDays, dh: dayHours });
-              }}
-              className="w-28 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
-            />
-            <span className="text-zinc-600 dark:text-zinc-400">円</span>
-          </div>
+          {/* 時給 / 月収（ユーモアモード） */}
+          {humorMode ? (
+            <div className="flex items-center gap-2 text-sm">
+              <label htmlFor="direct-income" className="text-amber-700 dark:text-amber-400">
+                月収
+              </label>
+              <input
+                id="direct-income"
+                type="number"
+                value={directMonthlyIncome || ""}
+                placeholder="例: 500000"
+                min={0}
+                onChange={(e) => setDirectMonthlyIncome(Math.max(0, Number(e.target.value)))}
+                className="w-32 rounded border border-amber-300 px-2 py-1 dark:border-amber-600 dark:bg-zinc-800"
+              />
+              <span className="text-amber-700 dark:text-amber-400">円</span>
+              {humorHourlyRate > 0 && (
+                <span className="text-xs text-amber-600 dark:text-amber-500">
+                  （時給換算: {Math.round(humorHourlyRate).toLocaleString("ja-JP")}円/h）
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-sm">
+              <label htmlFor="hourly-rate" className="text-zinc-600 dark:text-zinc-400">
+                時給
+              </label>
+              <input
+                id="hourly-rate"
+                type="number"
+                value={hourlyRate || ""}
+                placeholder="例: 3000"
+                min={0}
+                onChange={(e) => {
+                  const v = Math.max(0, Number(e.target.value));
+                  setHourlyRate(v);
+                  updateUrl({ y: year, m: month, h: defaultHours, rate: v, off: offDays, on: onDays, dh: dayHours });
+                }}
+                className="w-28 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <span className="text-zinc-600 dark:text-zinc-400">円</span>
+            </div>
+          )}
+
+          {/* ユーモアモード支給形態 */}
+          {humorMode && (
+            <div className="flex items-center gap-2 text-sm">
+              <label className="text-amber-700 dark:text-amber-400">支給形態</label>
+              <select
+                value={paymentKindId}
+                onChange={(e) => setPaymentKindId(e.target.value)}
+                className="rounded border border-amber-300 px-2 py-1 dark:border-amber-600 dark:bg-zinc-800"
+              >
+                {PAYMENT_KINDS.map((k) => (
+                  <option key={k.id} value={k.id}>{k.emoji} {k.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* ユーモアモードトグル */}
+          <button
+            onClick={() => setHumorMode((v) => !v)}
+            title={humorMode ? "通常モードに戻す" : "ユーモアモードで現物支給を試す"}
+            className={[
+              "ml-auto rounded-lg border px-3 py-1 text-sm transition-colors",
+              humorMode
+                ? "border-amber-400 bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-800/30 dark:text-amber-300"
+                : "border-zinc-300 text-zinc-500 hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
+            ].join(" ")}
+          >
+            {humorMode ? "🎪 ユーモアモード ON" : "🎪"}
+          </button>
         </div>
       </div>
 
@@ -1117,15 +1212,37 @@ export function WorkingHoursCalendar() {
           <p className="text-xs text-zinc-500 dark:text-zinc-400">総稼働時間</p>
           <p className="mt-1 text-2xl font-bold">{formatHours(totalHours)}</p>
         </div>
-        <div className="col-span-2 rounded-lg border border-zinc-200 p-4 text-center md:col-span-1 dark:border-zinc-700">
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">月収（概算）</p>
+        <div className={[
+          "col-span-2 rounded-lg border p-4 text-center md:col-span-1",
+          humorMode && selectedPaymentKind.id !== "cash"
+            ? "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20"
+            : "border-zinc-200 dark:border-zinc-700",
+        ].join(" ")}>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            {humorMode && selectedPaymentKind.id !== "cash"
+              ? `${selectedPaymentKind.emoji} 現物支給（${selectedPaymentKind.name}換算）`
+              : "月収（概算）"}
+          </p>
           <p className="mt-1 text-2xl font-bold">
-            {monthlyIncome !== null ? (
-              formatMoney(monthlyIncome)
+            {humorIncome !== null ? (
+              humorMode && selectedPaymentKind.id !== "cash" ? (
+                <span className="text-amber-600 dark:text-amber-400">
+                  {formatPaymentAmount(humorIncome, selectedPaymentKind)}
+                </span>
+              ) : (
+                formatMoney(humorIncome)
+              )
             ) : (
-              <span className="text-sm font-normal text-zinc-400">時給を入力すると表示</span>
+              <span className="text-sm font-normal text-zinc-400">
+                {humorMode ? "月収を入力すると表示" : "時給を入力すると表示"}
+              </span>
             )}
           </p>
+          {humorMode && humorIncome !== null && selectedPaymentKind.id !== "cash" && (
+            <p className="mt-1 text-[10px] text-amber-500 dark:text-amber-600">
+              ※{selectedPaymentKind.note}　（{formatMoney(humorIncome)}相当）
+            </p>
+          )}
         </div>
       </div>
 
