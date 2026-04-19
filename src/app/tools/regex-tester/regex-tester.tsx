@@ -388,7 +388,7 @@ export function RegexTester() {
       <div>
         <h1 className="mb-1 text-2xl font-bold md:text-3xl">正規表現テスター</h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          JavaScript RegExp でリアルタイム検証。マッチ・置換両対応。ブラウザ内完結。
+          JavaScript RegExp でリアルタイム検証。マッチ・置換両対応。入力データはサーバーに送信されず、ブラウザ内で完結します。
         </p>
       </div>
 
