@@ -68,28 +68,10 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         testString: "サイト: https://example.com/path?q=1 / http://docs.example.com",
       },
       {
-        label: "電話番号（日本）",
-        pattern: "0\\d{1,4}-\\d{1,4}-\\d{4}",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "TEL: 03-1234-5678 / 090-0000-1234 / FAX: 06-9876-5432",
-      },
-      {
-        label: "郵便番号",
-        pattern: "\\d{3}-\\d{4}",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "東京: 100-0001 / 大阪: 530-0001 / 不正: 12345",
-      },
-      {
         label: "日付 YYYY-MM-DD",
         pattern: "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}",
         flags: { g: true, i: false, m: false, s: false },
         testString: "開始: 2024-01-15 / 終了: 2024/12/31 / 不正: 24-1-1",
-      },
-      {
-        label: "時刻 HH:MM",
-        pattern: "(?:[01]\\d|2[0-3]):[0-5]\\d",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "朝: 09:00 / 昼: 12:30 / 夜: 23:59 / 不正: 25:00",
       },
       {
         label: "IPv4アドレス",
@@ -108,18 +90,6 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
         flags: { g: true, i: true, m: false, s: false },
         testString: "id: 550e8400-e29b-41d4-a716-446655440000 / invalid: 550e8400-e29b-41d",
-      },
-      {
-        label: "ユーザー名（英数字3-20文字）",
-        pattern: "^[a-zA-Z0-9_]{3,20}$",
-        flags: { g: false, i: false, m: true, s: false },
-        testString: "user_name_123\nABC\nab\nthis_name_is_way_too_long_to_be_valid\nvalid123",
-      },
-      {
-        label: "強いパスワード",
-        pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{12,}$",
-        flags: { g: false, i: false, m: true, s: false },
-        testString: "MyPassword123456\nweakpassword\nNoNumbers!\nShort1A\nCorrectHorse99Battery",
       },
       {
         label: "セマンティックバージョン",
@@ -145,18 +115,6 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         testString: "これは   スペースが    多すぎる\tテキストです。",
       },
       {
-        label: "重複単語の検出",
-        pattern: "\\b(\\w+)\\s+\\1\\b",
-        flags: { g: true, i: true, m: false, s: false },
-        testString: "the the quick brown fox fox jumps over over the lazy dog",
-      },
-      {
-        label: "行頭・行末の空白除去",
-        pattern: "^\\s+|\\s+$",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "  行頭スペース\n行末スペース   \n  両端スペース  ",
-      },
-      {
         label: "数字を抽出",
         pattern: "-?\\d+(?:\\.\\d+)?",
         flags: { g: true, i: false, m: false, s: false },
@@ -175,18 +133,6 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         testString: "index.html\nstyle.css\nscript.min.js\nREADME.md\nimage.PNG\nno-extension",
       },
       {
-        label: "行コメント除去 (//)",
-        pattern: "\\/\\/.*$",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "const x = 1; // 変数定義\nconst y = 2; // 別の変数\n// 行全体コメント\nconst z = 3;",
-      },
-      {
-        label: "ブロックコメント除去 (/* */)",
-        pattern: "\\/\\*[\\s\\S]*?\\*\\/",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "const a = 1; /* インラインコメント */\n/* 複数行\n   コメント */\nconst b = 2;",
-      },
-      {
         label: "空行除去",
         pattern: "^[ \\t]*$",
         flags: { g: true, i: false, m: true, s: false },
@@ -198,58 +144,28 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
     category: "開発者向け",
     items: [
       {
-        label: "import文",
-        pattern: "^import\\s.+from\\s['\"].+['\"]",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "import React from 'react';\nimport { useState } from 'react';\nconst x = 1;",
-      },
-      {
         label: "TODO / FIXME",
         pattern: "\\b(TODO|FIXME|HACK|XXX)\\b.*",
         flags: { g: true, i: false, m: true, s: false },
         testString: "// TODO: リファクタリング必要\n// FIXME: バグあり #123\n// HACK: 暫定対応\n// 通常のコメント",
       },
       {
-        label: "console.log除去対象",
-        pattern: "console\\.(log|warn|error|debug)\\(.*?\\);?",
-        flags: { g: true, i: false, m: false, s: true },
-        testString: "console.log('debug');\nconsole.warn('注意');\nconsole.error('エラー');\nconst x = 1;",
+        label: ".env 環境変数",
+        pattern: "^([A-Z_][A-Z0-9_]*)=(.*)$",
+        flags: { g: true, i: false, m: true, s: false },
+        testString: "DATABASE_URL=postgres://localhost/mydb\nAPI_KEY=secret123\nPORT=3000\n# コメント行\ninvalid=lowercase_key",
       },
       {
-        label: "URLスラグ検証",
-        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-        flags: { g: false, i: false, m: true, s: false },
-        testString: "my-blog-post\nhello-world\nInvalid-SLUG\nhas spaces\nvalid123\n-starts-with-dash",
-      },
-      {
-        label: "Base64",
-        pattern: "^[A-Za-z0-9+/]+={0,2}$",
-        flags: { g: false, i: false, m: true, s: false },
-        testString: "aGVsbG8gd29ybGQ=\nSGVsbG8h\ninvalid base64!!\ndGVzdA==",
+        label: "CSS rgb / rgba / hsl / hsla",
+        pattern: "(?:rgb|hsl)a?\\(\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?(?:\\s*,\\s*[\\d.]+)?\\s*\\)",
+        flags: { g: true, i: true, m: false, s: false },
+        testString: "color: rgb(255, 0, 0);\nbackground: rgba(0, 128, 255, 0.5);\nborder: hsl(120, 100%, 50%);\nfill: hsla(240, 100%, 50%, 0.8);",
       },
       {
         label: "非ASCII文字（マルチバイト検出）",
         pattern: "[^\\x00-\\x7F]+",
         flags: { g: true, i: false, m: false, s: false },
         testString: "Hello World / こんにちは / café / 日本語テキスト / ASCII only",
-      },
-      {
-        label: "Gitコミットハッシュ",
-        pattern: "\\b[0-9a-f]{7,40}\\b",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "短縮: a1b2c3d / フル: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2 / 不正: xyz123 / ZZZABCD",
-      },
-      {
-        label: ".env 環境変数",
-        pattern: "^([A-Z_][A-Z0-9_]*)=(.*)$",
-        flags: { g: true, i: false, m: true, s: false },
-        testString: "DATABASE_URL=postgres://localhost/mydb\nAPI_KEY=secret123\nPORT=3000\n# コメント行\ninvalid=lowercase_key\n_LEADING_UNDERSCORE=ok",
-      },
-      {
-        label: "CSS rgb / rgba / hsl / hsla",
-        pattern: "(?:rgb|hsl)a?\\(\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?\\s*,\\s*[\\d.]+%?(?:\\s*,\\s*[\\d.]+)?\\s*\\)",
-        flags: { g: true, i: true, m: false, s: false },
-        testString: "color: rgb(255, 0, 0);\nbackground: rgba(0, 128, 255, 0.5);\nborder: hsl(120, 100%, 50%);\nfill: hsla(240, 100%, 50%, 0.8);\ninvalid: rgb(256,0,0,0,0);",
       },
     ],
   },
@@ -275,32 +191,87 @@ const SAMPLE_CATEGORIES: SampleCategory[] = [
         testString: "日本語のテキスト。ひらがな、カタカナ、漢字が混在しています。",
       },
       {
-        label: "全角数字",
-        pattern: "[０-９]+",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "数量：１２３個 / 金額：４５６７円 / 半角: 789",
-      },
-      {
-        label: "全角英字",
-        pattern: "[Ａ-Ｚａ-ｚ]+",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "入力値：ＡＢＣＤ / ａｂｃ / 半角: ABC / 混在: Ａbc",
-      },
-      {
-        label: "半角カタカナ",
-        pattern: "[\\uFF65-\\uFF9F]+",
-        flags: { g: true, i: false, m: false, s: false },
-        testString: "全角: カタカナ / 半角: ｶﾀｶﾅ / ﾊﾝｶｸ / 混在: ｶﾀカナ / ひらがな: あいう",
-      },
-      {
         label: "都道府県",
         pattern: "(?:北海道|東京都|大阪府|京都府|(?:青森|岩手|宮城|秋田|山形|福島|茨城|栃木|群馬|埼玉|千葉|神奈川|新潟|富山|石川|福井|山梨|長野|岐阜|静岡|愛知|三重|滋賀|兵庫|奈良|和歌山|鳥取|島根|岡山|広島|山口|徳島|香川|愛媛|高知|福岡|佐賀|長崎|熊本|大分|宮崎|鹿児島|沖縄)県)",
         flags: { g: true, i: false, m: false, s: false },
-        testString: "東京都渋谷区 / 大阪府大阪市 / 神奈川県横浜市 / 北海道札幌市 / 沖縄県那覇市 / 不正: 東京区 / 大阪市",
+        testString: "東京都渋谷区 / 大阪府大阪市 / 神奈川県横浜市 / 北海道札幌市 / 沖縄県那覇市 / 不正: 東京区",
       },
     ],
   },
 ];
+
+const QUICK_REFERENCE = [
+  {
+    title: "文字クラス",
+    rows: [
+      [".", "改行以外の任意の1文字"],
+      ["\\d", "数字 [0-9]"],
+      ["\\D", "数字以外"],
+      ["\\w", "英数字・アンダースコア"],
+      ["\\W", "\\w 以外"],
+      ["\\s", "空白・タブ・改行"],
+      ["\\S", "空白以外"],
+      ["[abc]", "a, b, c のいずれか"],
+      ["[^abc]", "a, b, c 以外"],
+      ["[a-z]", "a〜z の範囲"],
+    ],
+  },
+  {
+    title: "量指定子",
+    rows: [
+      ["*", "0回以上（最長）"],
+      ["+", "1回以上（最長）"],
+      ["?", "0または1回"],
+      ["{n}", "ちょうどn回"],
+      ["{n,}", "n回以上"],
+      ["{n,m}", "n〜m回"],
+      ["*?", "0回以上（最短）"],
+      ["+?", "1回以上（最短）"],
+    ],
+  },
+  {
+    title: "アンカー",
+    rows: [
+      ["^", "行頭（m: 各行頭）"],
+      ["$", "行末（m: 各行末）"],
+      ["\\b", "単語の境界"],
+      ["\\B", "単語の境界以外"],
+    ],
+  },
+  {
+    title: "グループ",
+    rows: [
+      ["(...)", "キャプチャグループ"],
+      ["(?:...)", "非キャプチャ"],
+      ["(?=...)", "肯定先読み"],
+      ["(?!...)", "否定先読み"],
+      ["(?<=...)", "肯定後読み"],
+      ["(?<!...)", "否定後読み"],
+      ["|", "OR（どちらか）"],
+    ],
+  },
+  {
+    title: "エスケープ",
+    rows: [
+      ["\\.", "ピリオド（文字）"],
+      ["\\(", "括弧（文字）"],
+      ["\\\\", "バックスラッシュ"],
+      ["\\n", "改行"],
+      ["\\t", "タブ"],
+      ["\\uXXXX", "Unicode文字"],
+    ],
+  },
+  {
+    title: "置換参照",
+    rows: [
+      ["$1, $2", "キャプチャグループ"],
+      ["$&", "マッチ全体"],
+      ["$`", "マッチより前"],
+      ["$'", "マッチより後"],
+      ["$$", "$ リテラル"],
+    ],
+  },
+] as { title: string; rows: string[][] }[];
 
 function buildRegexResult(pattern: string, flags: Record<FlagKey, boolean>): RegexResult {
   if (!pattern) return null;
@@ -413,6 +384,9 @@ export function RegexTester() {
   const matchCount = matches.length;
   const hasPattern = pattern.length > 0;
   const showHighlight = hasPattern && !isError && tab === "match";
+
+  // suppress unused warning
+  void groupCount;
 
   return (
     <div className="space-y-4">
@@ -558,8 +532,19 @@ export function RegexTester() {
         {/* 左: テスト文字列 */}
         <div className="flex-1 min-w-0 space-y-3">
           <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
-            <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="flex items-center px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
               <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">TEST STRING</span>
+              <span className="ml-2 text-xs text-zinc-400">自由に入力・編集できます</span>
+              {testString && (
+                <button
+                  type="button"
+                  onClick={() => setTestString("")}
+                  title="クリア"
+                  className="ml-auto text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 px-1.5 py-0.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  ✕ クリア
+                </button>
+              )}
             </div>
             <div className="relative bg-white dark:bg-zinc-900">
               <div
@@ -585,7 +570,7 @@ export function RegexTester() {
                 id="regex-test-string"
                 value={testString}
                 onChange={(e) => setTestString(e.target.value)}
-                placeholder="テスト対象のテキストをここに入力..."
+                placeholder="テスト対象のテキストをここに入力...&#10;（サンプルを読み込んだ後も自由に編集できます）"
                 spellCheck={false}
                 rows={10}
                 className="relative w-full bg-transparent px-3 py-3 font-mono text-sm focus:outline-none resize-none"
@@ -629,9 +614,8 @@ export function RegexTester() {
           )}
         </div>
 
-        {/* 右: マッチ詳細 + クイックリファレンス */}
-        <div className="w-full lg:w-72 shrink-0 space-y-3">
-          {/* マッチ情報（マッチタブのみ） */}
+        {/* 右: マッチ詳細 */}
+        <div className="w-full lg:w-72 shrink-0">
           {tab === "match" && (
             <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
               <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
@@ -681,101 +665,30 @@ export function RegexTester() {
               </div>
             </div>
           )}
+        </div>
+      </div>
 
-          {/* クイックリファレンス */}
-          <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
-            <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-              <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">QUICK REFERENCE</span>
-            </div>
-            <div className="bg-white dark:bg-zinc-900 divide-y divide-zinc-100 dark:divide-zinc-800 text-xs font-mono overflow-y-auto max-h-[520px]">
-              {([
-                {
-                  title: "文字クラス",
-                  rows: [
-                    [".", "改行以外の任意の1文字"],
-                    ["\\d", "数字 [0-9]"],
-                    ["\\D", "数字以外"],
-                    ["\\w", "英数字・アンダースコア"],
-                    ["\\W", "\\w 以外"],
-                    ["\\s", "空白・タブ・改行"],
-                    ["\\S", "空白以外"],
-                    ["[abc]", "a, b, c のいずれか"],
-                    ["[^abc]", "a, b, c 以外"],
-                    ["[a-z]", "a〜z の範囲"],
-                  ],
-                },
-                {
-                  title: "量指定子",
-                  rows: [
-                    ["*", "0回以上（最長マッチ）"],
-                    ["+", "1回以上（最長マッチ）"],
-                    ["?", "0または1回"],
-                    ["{n}", "ちょうどn回"],
-                    ["{n,}", "n回以上"],
-                    ["{n,m}", "n〜m回"],
-                    ["*?", "0回以上（最短マッチ）"],
-                    ["+?", "1回以上（最短マッチ）"],
-                  ],
-                },
-                {
-                  title: "アンカー",
-                  rows: [
-                    ["^", "行頭（mフラグで各行頭）"],
-                    ["$", "行末（mフラグで各行末）"],
-                    ["\\b", "単語の境界"],
-                    ["\\B", "単語の境界以外"],
-                  ],
-                },
-                {
-                  title: "グループ",
-                  rows: [
-                    ["(...)", "キャプチャグループ"],
-                    ["(?:...)", "非キャプチャグループ"],
-                    ["(?=...)", "肯定先読み"],
-                    ["(?!...)", "否定先読み"],
-                    ["(?<=...)", "肯定後読み"],
-                    ["(?<!...)", "否定後読み"],
-                    ["|", "OR（どちらか）"],
-                  ],
-                },
-                {
-                  title: "エスケープ",
-                  rows: [
-                    ["\\.", "ピリオド（文字として）"],
-                    ["\\(", "括弧（文字として）"],
-                    ["\\\\", "バックスラッシュ"],
-                    ["\\n", "改行"],
-                    ["\\t", "タブ"],
-                    ["\\uXXXX", "Unicode文字"],
-                  ],
-                },
-                {
-                  title: "置換時の参照",
-                  rows: [
-                    ["$1, $2", "キャプチャグループ参照"],
-                    ["$&", "マッチ全体"],
-                    ["$`", "マッチより前の文字列"],
-                    ["$'", "マッチより後の文字列"],
-                    ["$$", "$ リテラル"],
-                  ],
-                },
-              ] as { title: string; rows: string[][] }[]).map(({ title, rows }) => (
-                <div key={title}>
-                  <div className="px-3 py-1 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-sans font-medium tracking-wide text-[10px] uppercase">
-                    {title}
+      {/* クイックリファレンス（全幅・6列グリッド） */}
+      <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
+        <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+          <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">QUICK REFERENCE</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y divide-zinc-100 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
+          {QUICK_REFERENCE.map(({ title, rows }) => (
+            <div key={title}>
+              <div className="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-medium tracking-wide text-[10px] uppercase">
+                {title}
+              </div>
+              <div className="px-3 py-2 space-y-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                {rows.map(([sym, desc]) => (
+                  <div key={sym} className="flex gap-1.5 items-baseline">
+                    <span className="shrink-0 text-zinc-800 dark:text-zinc-200 w-16">{sym}</span>
+                    <span className="font-sans text-[11px] leading-tight">{desc}</span>
                   </div>
-                  <div className="px-3 py-1 space-y-0.5 text-zinc-600 dark:text-zinc-400">
-                    {rows.map(([sym, desc]) => (
-                      <div key={sym} className="flex gap-2">
-                        <span className="w-20 shrink-0 text-zinc-800 dark:text-zinc-200">{sym}</span>
-                        <span className="font-sans">{desc}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
