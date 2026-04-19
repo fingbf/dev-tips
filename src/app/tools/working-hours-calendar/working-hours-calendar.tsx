@@ -182,6 +182,183 @@ function addMonthBlock(
   return currentRow - startRow;
 }
 
+// 任意の年月の DayInfo 配列を生成（カスタムデータなし = デフォルト設定）
+function generateMonthDays(
+  y: number,
+  m: number,
+  holidays: Record<string, string>,
+  defaultHours: number,
+  offDays = new Set<string>(),
+  onDays = new Set<string>(),
+  dayHoursMap: Record<string, number> = {},
+): DayInfo[] {
+  const daysInMonth = new Date(y, m, 0).getDate();
+  return Array.from({ length: daysInMonth }, (_, i) => {
+    const day = i + 1;
+    const dateStr = toDateStr(y, m, day);
+    const weekday = new Date(y, m - 1, day).getDay();
+    const isWeekend = weekday === 0 || weekday === 6;
+    const isHoliday = dateStr in holidays;
+    const defaultOff = isWeekend || isHoliday;
+    let isWorking: boolean;
+    let isManualOverride = false;
+    if (onDays.has(dateStr)) { isWorking = true; isManualOverride = true; }
+    else if (offDays.has(dateStr)) { isWorking = false; isManualOverride = true; }
+    else { isWorking = !defaultOff; }
+    return {
+      date: dateStr, day, weekday, isWorking, isHoliday,
+      holidayName: holidays[dateStr], isManualOverride,
+      hours: dayHoursMap[dateStr] ?? defaultHours,
+    };
+  });
+}
+
+// データシート参照なし版カレンダー行（年間出力用）
+function addCalendarRowStatic(
+  sheet: ExcelJS.Worksheet,
+  week: (DayInfo | null)[],
+  styles: StyleSet,
+  year: number,
+  month: number,
+) {
+  const { grayFill, blueFill, border, center } = styles;
+  const RED_FONT = { color: { argb: "FFEF4444" } };
+  const BLUE_FONT = { color: { argb: "FF3B82F6" } };
+
+  const row = sheet.addRow(["", ...week.map(() => "")]);
+  row.height = 52;
+
+  week.forEach((d, i) => {
+    const cell = row.getCell(i + 2);
+    cell.alignment = { ...center, wrapText: true };
+    cell.border = border;
+    if (!d) return;
+
+    const dateRef = `DATE(${year},${month},${d.day})`;
+    const vlookup = `IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")`;
+    const hoursStr = d.isWorking ? `&CHAR(10)&TEXT(${d.hours},"0.##")&"h"` : "";
+    cell.value = {
+      formula: `=${d.day}&IF(${vlookup}="","",CHAR(10)&${vlookup})${hoursStr}`,
+      result: [
+        String(d.day),
+        ...(d.holidayName ? [d.holidayName] : []),
+        ...(d.isWorking ? [`${d.hours}h`] : []),
+      ].join("\n"),
+    };
+
+    const isSun = d.weekday === 0;
+    const isSat = d.weekday === 6;
+    if (!d.isWorking) {
+      cell.fill = grayFill;
+      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : { color: { argb: "FF9CA3AF" } };
+    } else {
+      if (isSat) cell.fill = blueFill;
+      cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+    }
+  });
+
+  // メモ行
+  const memoRow = sheet.addRow(["メモ", "", "", "", "", "", "", ""]);
+  memoRow.height = 24;
+  memoRow.getCell(1).font = { size: 8, color: { argb: "FFBDBDBD" } };
+  memoRow.getCell(1).alignment = { horizontal: "right", vertical: "middle" };
+  for (let c = 2; c <= 8; c++) memoRow.getCell(c).border = border;
+}
+
+// 1ヶ月分の全カレンダーシートを構築するヘルパー
+function buildMonthSheet(
+  sheet: ExcelJS.Worksheet,
+  monthDays: DayInfo[],
+  styles: StyleSet,
+  y: number,
+  m: number,
+  sheetYear: number,
+  sheetMonth: number,
+  headerFill: ExcelJS.Fill,
+  summaryFill: ExcelJS.Fill,
+  whiteBold: { color: { argb: string }; bold: boolean },
+  hourlyRate: number,
+  useDataRef: boolean,
+  dataSheetName: string,
+) {
+  const { border, center } = styles;
+  sheet.columns = [
+    { width: 2 }, { width: 11 }, { width: 11 }, { width: 11 },
+    { width: 11 }, { width: 11 }, { width: 11 }, { width: 11 },
+  ];
+
+  // タイトル
+  const titleRow = sheet.addRow(["", `${y}年${m}月 稼働カレンダー`]);
+  titleRow.height = 24;
+  sheet.mergeCells(`B${titleRow.number}:H${titleRow.number}`);
+  const titleCell = titleRow.getCell("B");
+  titleCell.font = { bold: true, size: 14 };
+  titleCell.alignment = center;
+  sheet.addRow([]);
+
+  // 曜日ヘッダー
+  const wdRow = sheet.addRow(["", "日", "月", "火", "水", "木", "金", "土"]);
+  wdRow.height = 22;
+  wdRow.eachCell((cell, colNum) => {
+    if (colNum === 1) return;
+    cell.fill = headerFill;
+    cell.font = colNum === 2 ? { ...whiteBold, color: { argb: "FFFCA5A5" } }
+              : colNum === 8 ? { ...whiteBold, color: { argb: "FF93C5FD" } }
+              : whiteBold;
+    cell.alignment = center;
+    cell.border = border;
+  });
+
+  // カレンダーグリッド
+  const firstWd = monthDays[0]?.weekday ?? 0;
+  let week: (DayInfo | null)[] = Array(firstWd).fill(null);
+  for (const d of monthDays) {
+    week.push(d);
+    if (week.length === 7) {
+      if (useDataRef) addCalendarRow(sheet, week, styles, dataSheetName, sheetYear, sheetMonth);
+      else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth);
+      week = [];
+    }
+  }
+  if (week.length > 0) {
+    while (week.length < 7) week.push(null);
+    if (useDataRef) addCalendarRow(sheet, week, styles, dataSheetName, sheetYear, sheetMonth);
+    else addCalendarRowStatic(sheet, week, styles, sheetYear, sheetMonth);
+  }
+
+  sheet.addRow([]);
+
+  // サマリー
+  const mWorkingDays = monthDays.filter((d) => d.isWorking).length;
+  const mTotalHours = monthDays.filter((d) => d.isWorking).reduce((s, d) => s + d.hours, 0);
+  const dataRange = useDataRef ? `'${dataSheetName}'!C2:C${monthDays.length + 1}` : null;
+
+  const sr1 = sheet.addRow(["", "稼働日数",
+    dataRange ? { formula: `=COUNTIF(${dataRange},">0")`, result: mWorkingDays } : mWorkingDays,
+    "日"]);
+  const sr2 = sheet.addRow(["", "総稼働時間",
+    dataRange ? { formula: `=SUM(${dataRange})`, result: mTotalHours } : mTotalHours,
+    "時間"]);
+  [sr1, sr2].forEach((r) => {
+    r.height = 20;
+    ["B", "C", "D"].forEach((col) => { r.getCell(col).fill = summaryFill; });
+    r.getCell("B").font = { bold: true };
+    r.getCell("C").font = { bold: true };
+  });
+  if (hourlyRate > 0) {
+    const sr3 = sheet.addRow(["", "月収（概算）",
+      dataRange
+        ? { formula: `=C${sr2.number}*${hourlyRate}`, result: mTotalHours * hourlyRate }
+        : mTotalHours * hourlyRate,
+      "円"]);
+    sr3.height = 20;
+    ["B", "C", "D"].forEach((col) => { sr3.getCell(col).fill = summaryFill; });
+    sr3.getCell("B").font = { bold: true };
+    sr3.getCell("C").font = { bold: true };
+    sr3.getCell("C").numFmt = "#,##0";
+  }
+}
+
 export function WorkingHoursCalendar() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -426,12 +603,10 @@ export function WorkingHoursCalendar() {
     }
   }, []);
 
-  const exportExcel = useCallback(async () => {
+  // 共通スタイル生成（月間・年間出力で使い回す）
+  const buildExcelStyles = useCallback(async () => {
     const ExcelJS = (await import("exceljs")).default;
     const wb = new ExcelJS.Workbook();
-    const DATA_SHEET_NAME = "データ";
-
-    // --- 共通スタイル ---
     const styles: StyleSet = {
       grayFill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } },
       blueFill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFDBEAFE" } },
@@ -445,90 +620,91 @@ export function WorkingHoursCalendar() {
       center: { horizontal: "center", vertical: "middle" },
     };
     const SUMMARY_FILL: ExcelJS.Fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFBEB" } };
-    const RED_FONT = { color: { argb: "FFEF4444" } };
-    const BLUE_FONT = { color: { argb: "FF3B82F6" } };
-    const WHITE_BOLD = { color: { argb: "FFFFFFFF" }, bold: true };
-    const { grayFill, blueFill, headerFill, border: allBorder, center: CENTER } = styles;
+    const WHITE_BOLD = { color: { argb: "FFFFFFFF" }, bold: true as const };
+    return { ExcelJS, wb, styles, SUMMARY_FILL, WHITE_BOLD };
+  }, []);
 
-    // =====================
-    // シート1: カレンダー（データシート参照）
-    // =====================
-    const calSheet = wb.addWorksheet("カレンダー");
-    calSheet.columns = [
-      { width: 2 }, { width: 11 }, { width: 11 }, { width: 11 },
-      { width: 11 }, { width: 11 }, { width: 11 }, { width: 11 },
+  // 祝日シートを追加
+  const addHolidaySheet = useCallback((wb: import("exceljs").Workbook, styles: StyleSet, whiteBold: { color: { argb: string }; bold: boolean }) => {
+    const sheet = wb.addWorksheet(HOLIDAY_SHEET);
+    sheet.columns = [
+      { header: "日付", key: "date", width: 14 },
+      { header: "祝日名", key: "name", width: 22 },
     ];
-
-    const titleRow = calSheet.addRow(["", `${year}年${month}月 稼働カレンダー`]);
-    titleRow.height = 24;
-    calSheet.mergeCells(`B${titleRow.number}:H${titleRow.number}`);
-    const titleCell = titleRow.getCell("B");
-    titleCell.font = { bold: true, size: 14 };
-    titleCell.alignment = CENTER;
-
-    calSheet.addRow([]);
-
-    const wdRow = calSheet.addRow(["", "日", "月", "火", "水", "木", "金", "土"]);
-    wdRow.height = 22;
-    wdRow.eachCell((cell, colNum) => {
-      if (colNum === 1) return;
-      cell.fill = headerFill;
-      cell.font = colNum === 2 ? { ...WHITE_BOLD, color: { argb: "FFFCA5A5" } }
-                : colNum === 8 ? { ...WHITE_BOLD, color: { argb: "FF93C5FD" } }
-                : WHITE_BOLD;
-      cell.alignment = CENTER;
-      cell.border = allBorder;
+    const hHdr = sheet.getRow(1);
+    hHdr.height = 20;
+    hHdr.eachCell((cell) => {
+      cell.fill = styles.headerFill;
+      cell.font = whiteBold;
+      cell.alignment = styles.center;
+      cell.border = styles.border;
     });
+    const yearHolidays = Object.entries(holidays)
+      .filter(([date]) => date.startsWith(`${year}-`))
+      .sort(([a], [b]) => a.localeCompare(b));
+    for (const [dateStr, name] of yearHolidays) {
+      const [hy, hmo, hd] = dateStr.split("-").map(Number);
+      const hRow = sheet.addRow({ date: new Date(hy, hmo - 1, hd), name });
+      hRow.height = 18;
+      hRow.getCell("date").numFmt = "yyyy/mm/dd";
+      hRow.getCell("date").alignment = styles.center;
+      hRow.eachCell((cell) => { cell.border = styles.border; });
+    }
+  }, [holidays, year]);
 
-    const firstWd = days[0]?.weekday ?? 0;
-    let week: (DayInfo | null)[] = Array(firstWd).fill(null);
-    for (const d of days) {
-      week.push(d);
-      if (week.length === 7) {
-        addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME, year, month);
-        week = [];
+  // 年間シートを追加
+  const addAnnualSheet = useCallback((wb: import("exceljs").Workbook, styles: StyleSet) => {
+    const annualSheet = wb.addWorksheet("年間");
+    const MONTH_COL_W = 7;
+    const COL_GAP = 2;
+    const MONTHS_PER_ROW = 3;
+    annualSheet.getColumn(1).width = 1.5;
+    for (let g = 0; g < MONTHS_PER_ROW; g++) {
+      const base = 2 + g * (MONTH_COL_W + COL_GAP);
+      for (let c = 0; c < MONTH_COL_W; c++) annualSheet.getColumn(base + c).width = 5;
+      if (g < MONTHS_PER_ROW - 1) {
+        for (let c = 0; c < COL_GAP; c++) annualSheet.getColumn(base + MONTH_COL_W + c).width = 1.5;
       }
     }
-    if (week.length > 0) {
-      while (week.length < 7) week.push(null);
-      addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME, year, month);
+    const yearTitleRow = annualSheet.addRow([`${year}年 年間休日カレンダー`]);
+    yearTitleRow.height = 26;
+    const totalCols = 1 + MONTHS_PER_ROW * (MONTH_COL_W + COL_GAP) - COL_GAP;
+    annualSheet.mergeCells(1, 1, 1, totalCols);
+    const ytCell = yearTitleRow.getCell(1);
+    ytCell.font = { bold: true, size: 15 };
+    ytCell.alignment = styles.center;
+    annualSheet.addRow([]);
+    let currentStartRow = 3;
+    for (let groupIdx = 0; groupIdx < 4; groupIdx++) {
+      let maxRows = 0;
+      for (let mIdx = 0; mIdx < MONTHS_PER_ROW; mIdx++) {
+        const m = groupIdx * MONTHS_PER_ROW + mIdx + 1;
+        const startCol = 2 + mIdx * (MONTH_COL_W + COL_GAP);
+        const rowsUsed = addMonthBlock(annualSheet, currentStartRow, startCol, year, m, holidays, styles);
+        maxRows = Math.max(maxRows, rowsUsed);
+      }
+      currentStartRow += maxRows + 2;
     }
+  }, [year, holidays]);
 
-    calSheet.addRow([]);
+  const exportExcel = useCallback(async () => {
+    const { ExcelJS, wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
+    const DATA_SHEET_NAME = "データ";
+    const { grayFill, headerFill, border: allBorder, center: CENTER } = styles;
+    const RED_FONT = { color: { argb: "FFEF4444" } };
+    const BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
-    // サマリー（データシートを数式参照）
-    const dataRange = `'${DATA_SHEET_NAME}'!C2:C${days.length + 1}`;
-    const sumRow1 = calSheet.addRow(["", "稼働日数",
-      { formula: `=COUNTIF(${dataRange},">0")`, result: workingDays }, "日"]);
-    const sumRow2 = calSheet.addRow(["", "総稼働時間",
-      { formula: `=SUM(${dataRange})`, result: totalHours }, "時間"]);
-    [sumRow1, sumRow2].forEach((r) => {
-      r.height = 20;
-      ["B", "C", "D"].forEach((col) => { r.getCell(col).fill = SUMMARY_FILL; });
-      r.getCell("B").font = { bold: true };
-      r.getCell("C").font = { bold: true };
-    });
-    if (hourlyRate > 0) {
-      const totalHoursRowNum = sumRow2.number;
-      const sumRow3 = calSheet.addRow(["", "月収（概算）",
-        { formula: `=C${totalHoursRowNum}*${hourlyRate}`, result: totalHours * hourlyRate }, "円"]);
-      sumRow3.height = 20;
-      ["B", "C", "D"].forEach((col) => { sumRow3.getCell(col).fill = SUMMARY_FILL; });
-      sumRow3.getCell("B").font = { bold: true };
-      sumRow3.getCell("C").font = { bold: true };
-      sumRow3.getCell("C").numFmt = "#,##0";
-    }
+    // シート1: カレンダー
+    const calSheet = wb.addWorksheet("カレンダー");
+    buildMonthSheet(calSheet, days, styles, year, month, year, month, headerFill, SUMMARY_FILL, WHITE_BOLD, hourlyRate, true, DATA_SHEET_NAME);
 
-    // =====================
     // シート2: データ
-    // =====================
     const dataSheet = wb.addWorksheet(DATA_SHEET_NAME);
     dataSheet.columns = [
       { header: "日付", key: "date", width: 14 },
       { header: "曜日", key: "wd", width: 7 },
       { header: "稼働時間", key: "hours", width: 11 },
     ];
-
     const dataHeaderRow = dataSheet.getRow(1);
     dataHeaderRow.height = 20;
     dataHeaderRow.eachCell((cell) => {
@@ -537,13 +713,8 @@ export function WorkingHoursCalendar() {
       cell.alignment = CENTER;
       cell.border = allBorder;
     });
-
     for (const d of days) {
-      const row = dataSheet.addRow({
-        date: d.date,
-        wd: WEEKDAYS[d.weekday],
-        hours: d.isWorking ? d.hours : 0,
-      });
+      const row = dataSheet.addRow({ date: d.date, wd: WEEKDAYS[d.weekday], hours: d.isWorking ? d.hours : 0 });
       row.height = 18;
       const isSun = d.weekday === 0;
       const isSat = d.weekday === 6;
@@ -554,21 +725,17 @@ export function WorkingHoursCalendar() {
       row.getCell("hours").alignment = CENTER;
       row.eachCell((cell) => { cell.border = allBorder; });
     }
-
     const dataEndRow = days.length + 1;
     dataSheet.addRow([]);
-    const ds1 = dataSheet.addRow(["稼働日数", "",
-      { formula: `=COUNTIF(C2:C${dataEndRow},">0")`, result: workingDays }, "日"]);
-    const ds2 = dataSheet.addRow(["総稼働時間", "",
-      { formula: `=SUM(C2:C${dataEndRow})`, result: totalHours }, "時間"]);
+    const ds1 = dataSheet.addRow(["稼働日数", "", { formula: `=COUNTIF(C2:C${dataEndRow},">0")`, result: workingDays }, "日"]);
+    const ds2 = dataSheet.addRow(["総稼働時間", "", { formula: `=SUM(C2:C${dataEndRow})`, result: totalHours }, "時間"]);
     [ds1, ds2].forEach((r) => {
       r.getCell(1).font = { bold: true };
       r.getCell(3).font = { bold: true };
       r.fill = SUMMARY_FILL;
     });
     if (hourlyRate > 0) {
-      const ds3 = dataSheet.addRow(["月収（概算）", "",
-        { formula: `=C${ds2.number}*${hourlyRate}`, result: totalHours * hourlyRate }, "円"]);
+      const ds3 = dataSheet.addRow(["月収（概算）", "", { formula: `=C${ds2.number}*${hourlyRate}`, result: totalHours * hourlyRate }, "円"]);
       ds3.getCell(1).font = { bold: true };
       ds3.getCell(3).font = { bold: true, color: { argb: "FF059669" } };
       ds3.getCell(3).numFmt = "#,##0";
@@ -585,65 +752,10 @@ export function WorkingHoursCalendar() {
     ];
     const hHdr = holidaySheet.getRow(1);
     hHdr.height = 20;
-    hHdr.eachCell((cell) => {
-      cell.fill = headerFill;
-      cell.font = WHITE_BOLD;
-      cell.alignment = CENTER;
-      cell.border = allBorder;
-    });
-    const yearHolidays = Object.entries(holidays)
-      .filter(([date]) => date.startsWith(`${year}-`))
-      .sort(([a], [b]) => a.localeCompare(b));
-    for (const [dateStr, name] of yearHolidays) {
-      const [hy, hmo, hd] = dateStr.split("-").map(Number);
-      const hRow = holidaySheet.addRow({ date: new Date(hy, hmo - 1, hd), name });
-      hRow.height = 18;
-      hRow.getCell("date").numFmt = "yyyy/mm/dd";
-      hRow.getCell("date").alignment = CENTER;
-      hRow.eachCell((cell) => { cell.border = allBorder; });
-    }
+    // シート3: 祝日 / シート4: 年間
+    addHolidaySheet(wb, styles, WHITE_BOLD);
+    addAnnualSheet(wb, styles);
 
-    // =====================
-    // シート4: 年間休日カレンダー
-    // =====================
-    const annualSheet = wb.addWorksheet("年間");
-    const MONTH_COL_W = 7;
-    const COL_GAP = 2;
-    const MONTHS_PER_ROW = 3;
-
-    // 列幅設定（左余白1 + 3ヶ月 × (7日幅 + 2ギャップ)）
-    annualSheet.getColumn(1).width = 1.5;
-    for (let g = 0; g < MONTHS_PER_ROW; g++) {
-      const base = 2 + g * (MONTH_COL_W + COL_GAP);
-      for (let c = 0; c < MONTH_COL_W; c++) annualSheet.getColumn(base + c).width = 5;
-      if (g < MONTHS_PER_ROW - 1) {
-        for (let c = 0; c < COL_GAP; c++) annualSheet.getColumn(base + MONTH_COL_W + c).width = 1.5;
-      }
-    }
-
-    // 年タイトル
-    const yearTitleRow = annualSheet.addRow([`${year}年 年間休日カレンダー`]);
-    yearTitleRow.height = 26;
-    const totalCols = 1 + MONTHS_PER_ROW * (MONTH_COL_W + COL_GAP) - COL_GAP;
-    annualSheet.mergeCells(1, 1, 1, totalCols);
-    const ytCell = yearTitleRow.getCell(1);
-    ytCell.font = { bold: true, size: 15 };
-    ytCell.alignment = CENTER;
-    annualSheet.addRow([]);
-
-    let currentStartRow = 3;
-    for (let groupIdx = 0; groupIdx < 4; groupIdx++) {
-      let maxRows = 0;
-      for (let mIdx = 0; mIdx < MONTHS_PER_ROW; mIdx++) {
-        const m = groupIdx * MONTHS_PER_ROW + mIdx + 1;
-        const startCol = 2 + mIdx * (MONTH_COL_W + COL_GAP);
-        const rowsUsed = addMonthBlock(annualSheet, currentStartRow, startCol, year, m, holidays, styles);
-        maxRows = Math.max(maxRows, rowsUsed);
-      }
-      currentStartRow += maxRows + 2;
-    }
-
-    // ダウンロード
     const buffer = await wb.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     const url = URL.createObjectURL(blob);
@@ -652,7 +764,34 @@ export function WorkingHoursCalendar() {
     a.download = `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [days, hourlyRate, year, month, workingDays, totalHours, holidays]);
+  }, [days, hourlyRate, year, month, workingDays, totalHours, holidays, buildExcelStyles, addHolidaySheet, addAnnualSheet]);
+
+  const exportAnnualExcel = useCallback(async () => {
+    const { wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
+    const { headerFill } = styles;
+
+    // 12ヶ月分のカレンダーシート
+    for (let m = 1; m <= 12; m++) {
+      const monthDays = m === month
+        ? days
+        : generateMonthDays(year, m, holidays, defaultHours);
+      const sheet = wb.addWorksheet(`${m}月`);
+      buildMonthSheet(sheet, monthDays, styles, year, m, year, m, headerFill, SUMMARY_FILL, WHITE_BOLD, hourlyRate, false, "");
+    }
+
+    // 祝日 / 年間
+    addHolidaySheet(wb, styles, WHITE_BOLD);
+    addAnnualSheet(wb, styles);
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `稼働時間_${year}年間.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [year, month, days, holidays, defaultHours, hourlyRate, buildExcelStyles, addHolidaySheet, addAnnualSheet]);
 
   const editingDayInfo = editingDay ? days.find((d) => d.date === editingDay) : null;
 
@@ -914,7 +1053,13 @@ export function WorkingHoursCalendar() {
           onClick={exportExcel}
           className="rounded-lg border border-green-500 bg-green-50 px-4 py-2 text-sm text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40"
         >
-          📊 Excelで出力
+          📊 月間Excel出力
+        </button>
+        <button
+          onClick={exportAnnualExcel}
+          className="rounded-lg border border-teal-500 bg-teal-50 px-4 py-2 text-sm text-teal-700 hover:bg-teal-100 dark:bg-teal-900/20 dark:text-teal-400 dark:hover:bg-teal-900/40"
+        >
+          📅 年間Excel出力（12ヶ月）
         </button>
       </div>
 
