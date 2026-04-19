@@ -6,6 +6,18 @@ export const metadata: Metadata = {
   title: "Dev Tips - 無料オンラインツール",
   description:
     "開発者・配信者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+  openGraph: {
+    title: "Dev Tips - 無料オンラインツール",
+    description:
+      "開発者・配信者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+    url: "/",
+  },
+  twitter: {
+    title: "Dev Tips - 無料オンラインツール",
+    description:
+      "開発者・配信者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+  },
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {

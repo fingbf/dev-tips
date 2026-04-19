@@ -17,6 +17,18 @@ export const metadata: Metadata = {
     "VTuber",
     "ゲーム配信",
   ],
+  openGraph: {
+    title: "OBS配信用クロック | Dev Tips",
+    description:
+      "OBSのブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけで使える。",
+    url: "/tools/obs-timer",
+  },
+  twitter: {
+    title: "OBS配信用クロック | Dev Tips",
+    description:
+      "OBSのブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけで使える。",
+  },
+  alternates: { canonical: "/tools/obs-timer" },
 };
 
 export default function OBSTimerPage() {

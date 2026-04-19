@@ -16,6 +16,18 @@ export const metadata: Metadata = {
     "GitHub Actions",
     "スケジュール",
   ],
+  openGraph: {
+    title: "Cron式ジェネレーター | Dev Tips",
+    description:
+      "GUIでCron式を簡単に組み立てるツール。日本語で意味を解説し、次回実行日時も表示。Unix crontab / Quartz 両対応。",
+    url: "/tools/cron-generator",
+  },
+  twitter: {
+    title: "Cron式ジェネレーター | Dev Tips",
+    description:
+      "GUIでCron式を簡単に組み立てるツール。日本語で意味を解説し、次回実行日時も表示。Unix crontab / Quartz 両対応。",
+  },
+  alternates: { canonical: "/tools/cron-generator" },
 };
 
 export default function CronGeneratorPage() {

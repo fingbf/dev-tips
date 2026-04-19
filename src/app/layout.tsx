@@ -14,9 +14,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.vercel.app";
+
 export const metadata: Metadata = {
   title: "Dev Tips",
   description: "開発Tips・スニペット集",
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    siteName: "Dev Tips",
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary",
+  },
 };
 
 export default function RootLayout({
