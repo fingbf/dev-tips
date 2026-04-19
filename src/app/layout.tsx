@@ -75,6 +75,18 @@ export default function RootLayout({
               Dev Tips
             </Link>
             <div className="flex items-center gap-1">
+              <Link
+                href="/"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              >
+                Tips
+              </Link>
+              <Link
+                href="/tools"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              >
+                ツール
+              </Link>
               <ThemeToggle />
             </div>
           </div>
