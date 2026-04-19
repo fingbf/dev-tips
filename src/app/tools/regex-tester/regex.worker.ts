@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 const MAX_DISPLAY = 100;
 
 type MatchInfo = {
@@ -65,7 +67,7 @@ self.onmessage = (e: MessageEvent<{ pattern: string; flagStr: string; text: stri
     const segments = buildSegments(text, matches);
     const replaceResult = applyReplace(regex, text, replacement);
     self.postMessage({ ok: true, matches, segments, replaceResult });
-  } catch {
-    self.postMessage({ ok: false });
+  } catch (e) {
+    self.postMessage({ ok: false, error: e instanceof Error ? e.message : "不明なエラー" });
   }
 };

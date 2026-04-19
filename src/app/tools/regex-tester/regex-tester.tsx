@@ -332,14 +332,26 @@ export function RegexTester() {
     workerRef.current = worker;
     setWorkerStatus("running");
 
+    // アンマウントや次の effect 起動時に古いコールバックが state を更新しないようにするフラグ
+    let isCancelled = false;
+
+    const clearResults = () => {
+      setMatches([]);
+      setSegments([]);
+      setReplaceResult(null);
+    };
+
     // 500ms 以内に応答がなければ強制終了
     timeoutRef.current = setTimeout(() => {
+      if (isCancelled) return;
       worker.terminate();
       workerRef.current = null;
       setWorkerStatus("timeout");
+      clearResults();
     }, 500);
 
     worker.onmessage = (e: MessageEvent) => {
+      if (isCancelled) return;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       worker.terminate();
       workerRef.current = null;
@@ -347,25 +359,25 @@ export function RegexTester() {
         setMatches(e.data.matches);
         setSegments(e.data.segments);
         setReplaceResult(e.data.replaceResult);
-        setWorkerStatus("idle");
       } else {
-        setMatches([]);
-        setSegments([]);
-        setReplaceResult(null);
-        setWorkerStatus("idle");
+        clearResults();
       }
+      setWorkerStatus("idle");
     };
 
     worker.onerror = () => {
+      if (isCancelled) return;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       worker.terminate();
       workerRef.current = null;
+      clearResults();
       setWorkerStatus("idle");
     };
 
     worker.postMessage({ pattern: p, flagStr, text: t, replacement: r });
 
     return () => {
+      isCancelled = true;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       worker.terminate();
       workerRef.current = null;
@@ -397,7 +409,7 @@ export function RegexTester() {
   const isError = result !== null && !result.ok;
   const matchCount = matches.length;
   const hasPattern = pattern.length > 0;
-  const showHighlight = hasPattern && !isError && tab === "match" && workerStatus !== "timeout";
+  const showHighlight = hasPattern && !isError && tab === "match" && workerStatus === "idle" && segments.length > 0;
 
   return (
     <div className="space-y-4">
@@ -610,7 +622,7 @@ export function RegexTester() {
               <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
                 <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
                   <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">REPLACEMENT</span>
-                  <span className="ml-2 text-xs text-zinc-400">キャプチャグループは $1, $2 ... で参照可</span>
+                  <span className="ml-2 text-xs text-zinc-400">キャプチャグループは $1, $2 ... で参照可。g フラグなしは最初の1件のみ置換</span>
                 </div>
                 <input
                   type="text"
@@ -626,9 +638,13 @@ export function RegexTester() {
                   <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">RESULT</span>
                 </div>
                 <div className="bg-zinc-50 dark:bg-zinc-900 px-3 py-3 font-mono text-sm whitespace-pre-wrap break-words min-h-[80px]">
-                  {replaceResult !== null
-                    ? replaceResult || <span className="text-zinc-400 italic">（空文字列）</span>
-                    : <span className="text-zinc-400">パターンとテスト文字列を入力してください</span>}
+                  {workerStatus === "timeout" ? (
+                    <span className="text-orange-500 dark:text-orange-400">⚠ タイムアウト: パターンが複雑すぎます</span>
+                  ) : replaceResult !== null ? (
+                    replaceResult || <span className="text-zinc-400 italic">（空文字列）</span>
+                  ) : (
+                    <span className="text-zinc-400">パターンとテスト文字列を入力してください</span>
+                  )}
                 </div>
               </div>
             </>
