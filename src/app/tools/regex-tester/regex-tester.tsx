@@ -614,8 +614,8 @@ export function RegexTester() {
           )}
         </div>
 
-        {/* 右: マッチ詳細 */}
-        <div className="w-full lg:w-72 shrink-0">
+        {/* 右: マッチ詳細 + クイックリファレンス */}
+        <div className="w-full lg:w-72 shrink-0 space-y-3">
           {tab === "match" && (
             <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
               <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
@@ -665,30 +665,30 @@ export function RegexTester() {
               </div>
             </div>
           )}
-        </div>
-      </div>
 
-      {/* クイックリファレンス（全幅・6列グリッド） */}
-      <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
-        <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-          <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">QUICK REFERENCE</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y divide-zinc-100 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
-          {QUICK_REFERENCE.map(({ title, rows }) => (
-            <div key={title}>
-              <div className="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-medium tracking-wide text-[10px] uppercase">
-                {title}
-              </div>
-              <div className="px-3 py-2 space-y-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-                {rows.map(([sym, desc]) => (
-                  <div key={sym} className="flex gap-1.5 items-baseline">
-                    <span className="shrink-0 text-zinc-800 dark:text-zinc-200 w-16">{sym}</span>
-                    <span className="font-sans text-[11px] leading-tight">{desc}</span>
-                  </div>
-                ))}
-              </div>
+          {/* クイックリファレンス */}
+          <div className="rounded-lg border border-zinc-300 dark:border-zinc-600 overflow-hidden">
+            <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+              <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">QUICK REFERENCE</span>
             </div>
-          ))}
+            <div className="bg-white dark:bg-zinc-900 divide-y divide-zinc-100 dark:divide-zinc-800 text-xs font-mono">
+              {QUICK_REFERENCE.map(({ title, rows }) => (
+                <div key={title}>
+                  <div className="px-3 py-1 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-sans font-medium tracking-wide text-[10px] uppercase">
+                    {title}
+                  </div>
+                  <div className="px-3 py-1 space-y-0.5 text-zinc-600 dark:text-zinc-400">
+                    {rows.map(([sym, desc]) => (
+                      <div key={sym} className="flex gap-2">
+                        <span className="w-20 shrink-0 text-zinc-800 dark:text-zinc-200">{sym}</span>
+                        <span className="font-sans">{desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
