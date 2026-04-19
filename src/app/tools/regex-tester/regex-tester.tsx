@@ -633,24 +633,91 @@ export function RegexTester() {
             <div className="px-3 py-2 border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
               <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">QUICK REFERENCE</span>
             </div>
-            <div className="bg-white dark:bg-zinc-900 px-3 py-2 text-xs font-mono space-y-1 text-zinc-600 dark:text-zinc-400">
-              {[
-                [".", "改行以外の任意の1文字"],
-                ["\\d", "数字 [0-9]"],
-                ["\\w", "英数字・アンダースコア"],
-                ["\\s", "空白・タブ・改行"],
-                ["^", "行頭"],
-                ["$", "行末"],
-                ["*", "0回以上"],
-                ["+", "1回以上"],
-                ["?", "0または1回"],
-                ["(...)", "キャプチャグループ"],
-                ["$1, $2", "グループ参照（置換時）"],
-                ["|", "OR"],
-              ].map(([sym, desc]) => (
-                <div key={sym} className="flex gap-2">
-                  <span className="w-16 shrink-0 text-zinc-800 dark:text-zinc-200">{sym}</span>
-                  <span>{desc}</span>
+            <div className="bg-white dark:bg-zinc-900 divide-y divide-zinc-100 dark:divide-zinc-800 text-xs font-mono overflow-y-auto max-h-[520px]">
+              {([
+                {
+                  title: "文字クラス",
+                  rows: [
+                    [".", "改行以外の任意の1文字"],
+                    ["\\d", "数字 [0-9]"],
+                    ["\\D", "数字以外"],
+                    ["\\w", "英数字・アンダースコア"],
+                    ["\\W", "\\w 以外"],
+                    ["\\s", "空白・タブ・改行"],
+                    ["\\S", "空白以外"],
+                    ["[abc]", "a, b, c のいずれか"],
+                    ["[^abc]", "a, b, c 以外"],
+                    ["[a-z]", "a〜z の範囲"],
+                  ],
+                },
+                {
+                  title: "量指定子",
+                  rows: [
+                    ["*", "0回以上（最長マッチ）"],
+                    ["+", "1回以上（最長マッチ）"],
+                    ["?", "0または1回"],
+                    ["{n}", "ちょうどn回"],
+                    ["{n,}", "n回以上"],
+                    ["{n,m}", "n〜m回"],
+                    ["*?", "0回以上（最短マッチ）"],
+                    ["+?", "1回以上（最短マッチ）"],
+                  ],
+                },
+                {
+                  title: "アンカー",
+                  rows: [
+                    ["^", "行頭（mフラグで各行頭）"],
+                    ["$", "行末（mフラグで各行末）"],
+                    ["\\b", "単語の境界"],
+                    ["\\B", "単語の境界以外"],
+                  ],
+                },
+                {
+                  title: "グループ",
+                  rows: [
+                    ["(...)", "キャプチャグループ"],
+                    ["(?:...)", "非キャプチャグループ"],
+                    ["(?=...)", "肯定先読み"],
+                    ["(?!...)", "否定先読み"],
+                    ["(?<=...)", "肯定後読み"],
+                    ["(?<!...)", "否定後読み"],
+                    ["|", "OR（どちらか）"],
+                  ],
+                },
+                {
+                  title: "エスケープ",
+                  rows: [
+                    ["\\.", "ピリオド（文字として）"],
+                    ["\\(", "括弧（文字として）"],
+                    ["\\\\", "バックスラッシュ"],
+                    ["\\n", "改行"],
+                    ["\\t", "タブ"],
+                    ["\\uXXXX", "Unicode文字"],
+                  ],
+                },
+                {
+                  title: "置換時の参照",
+                  rows: [
+                    ["$1, $2", "キャプチャグループ参照"],
+                    ["$&", "マッチ全体"],
+                    ["$`", "マッチより前の文字列"],
+                    ["$'", "マッチより後の文字列"],
+                    ["$$", "$ リテラル"],
+                  ],
+                },
+              ] as { title: string; rows: string[][] }[]).map(({ title, rows }) => (
+                <div key={title}>
+                  <div className="px-3 py-1 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-sans font-medium tracking-wide text-[10px] uppercase">
+                    {title}
+                  </div>
+                  <div className="px-3 py-1 space-y-0.5 text-zinc-600 dark:text-zinc-400">
+                    {rows.map(([sym, desc]) => (
+                      <div key={sym} className="flex gap-2">
+                        <span className="w-20 shrink-0 text-zinc-800 dark:text-zinc-200">{sym}</span>
+                        <span className="font-sans">{desc}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
