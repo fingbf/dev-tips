@@ -273,6 +273,8 @@ const QUICK_REFERENCE = [
   },
 ] as { title: string; rows: string[][] }[];
 
+type WorkerStatus = "idle" | "running" | "timeout";
+
 function buildRegexResult(pattern: string, flags: Record<FlagKey, boolean>): RegexResult {
   if (!pattern) return null;
   const flagStr = (Object.keys(flags) as FlagKey[]).filter((k) => flags[k]).join("");
@@ -280,51 +282,6 @@ function buildRegexResult(pattern: string, flags: Record<FlagKey, boolean>): Reg
     return { ok: true, regex: new RegExp(pattern, flagStr) };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "無効な正規表現" };
-  }
-}
-
-function collectMatches(regex: RegExp, text: string): MatchInfo[] {
-  const matches: MatchInfo[] = [];
-  if (regex.global) {
-    const re = new RegExp(regex.source, regex.flags);
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(text)) !== null && matches.length < MAX_DISPLAY) {
-      matches.push({ fullMatch: m[0], index: m.index, groups: m.slice(1) });
-      if (m[0] === "") re.lastIndex++;
-    }
-  } else {
-    const re = new RegExp(regex.source, regex.flags);
-    const m = re.exec(text);
-    if (m) matches.push({ fullMatch: m[0], index: m.index, groups: m.slice(1) });
-  }
-  return matches;
-}
-
-function buildSegments(text: string, matches: MatchInfo[]): Segment[] {
-  if (matches.length === 0) return [{ text, isMatch: false, matchIndex: -1 }];
-  const segments: Segment[] = [];
-  let cursor = 0;
-  for (let i = 0; i < matches.length; i++) {
-    const { index, fullMatch } = matches[i];
-    if (index < cursor) continue;
-    if (index > cursor) {
-      segments.push({ text: text.slice(cursor, index), isMatch: false, matchIndex: -1 });
-    }
-    segments.push({ text: fullMatch, isMatch: true, matchIndex: i });
-    cursor = index + (fullMatch.length || 1);
-  }
-  if (cursor < text.length) {
-    segments.push({ text: text.slice(cursor), isMatch: false, matchIndex: -1 });
-  }
-  return segments;
-}
-
-function applyReplace(regex: RegExp, text: string, replacement: string): string {
-  try {
-    const re = new RegExp(regex.source, regex.flags);
-    return text.replace(re, replacement);
-  } catch {
-    return text;
   }
 }
 
@@ -336,8 +293,84 @@ export function RegexTester() {
   const [tab, setTab] = useState<TabKey>("match");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mirrorRef = useRef<HTMLDivElement>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const [workerStatus, setWorkerStatus] = useState<WorkerStatus>("idle");
+  const [matches, setMatches] = useState<MatchInfo[]>([]);
+  const [segments, setSegments] = useState<Segment[]>([]);
+  const [replaceResult, setReplaceResult] = useState<string | null>(null);
+
+  // debounce: 300ms 後にワーカーへ投げる入力をまとめる
+  const [debouncedInputs, setDebouncedInputs] = useState({ pattern, flags, testString, replacement });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedInputs({ pattern, flags, testString, replacement });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [pattern, flags, testString, replacement]);
+
+  // Worker: debounced 入力が変わったら別スレッドで正規表現を実行
+  useEffect(() => {
+    const { pattern: p, flags: f, testString: t, replacement: r } = debouncedInputs;
+
+    if (!p || !t) {
+      setWorkerStatus("idle");
+      setMatches([]);
+      setSegments([]);
+      setReplaceResult(null);
+      return;
+    }
+
+    // 前回の Worker とタイムアウトをクリア
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (workerRef.current) workerRef.current.terminate();
+
+    const flagStr = (Object.keys(f) as FlagKey[]).filter((k) => f[k]).join("");
+    const worker = new Worker(new URL("./regex.worker.ts", import.meta.url));
+    workerRef.current = worker;
+    setWorkerStatus("running");
+
+    // 500ms 以内に応答がなければ強制終了
+    timeoutRef.current = setTimeout(() => {
+      worker.terminate();
+      workerRef.current = null;
+      setWorkerStatus("timeout");
+    }, 500);
+
+    worker.onmessage = (e: MessageEvent) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      worker.terminate();
+      workerRef.current = null;
+      if (e.data.ok) {
+        setMatches(e.data.matches);
+        setSegments(e.data.segments);
+        setReplaceResult(e.data.replaceResult);
+        setWorkerStatus("idle");
+      } else {
+        setMatches([]);
+        setSegments([]);
+        setReplaceResult(null);
+        setWorkerStatus("idle");
+      }
+    };
+
+    worker.onerror = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      worker.terminate();
+      workerRef.current = null;
+      setWorkerStatus("idle");
+    };
+
+    worker.postMessage({ pattern: p, flagStr, text: t, replacement: r });
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      worker.terminate();
+      workerRef.current = null;
+    };
+  }, [debouncedInputs]);
 
   const toggleFlag = (key: FlagKey) => setFlags((f) => ({ ...f, [key]: !f[key] }));
 
@@ -349,27 +382,8 @@ export function RegexTester() {
     setOpenCategory(null);
   };
 
+  // エラー表示はパターン入力に即時反映（debounce なし）
   const result: RegexResult = useMemo(() => buildRegexResult(pattern, flags), [pattern, flags]);
-
-  const matches: MatchInfo[] = useMemo(() => {
-    if (!result || !result.ok || !testString) return [];
-    return collectMatches(result.regex, testString);
-  }, [result, testString]);
-
-  const segments: Segment[] = useMemo(() => {
-    if (!testString) return [];
-    return buildSegments(testString, matches);
-  }, [testString, matches]);
-
-  const replaceResult: string | null = useMemo(() => {
-    if (!result || !result.ok || !testString) return null;
-    return applyReplace(result.regex, testString, replacement);
-  }, [result, testString, replacement]);
-
-  const groupCount = useMemo(() => {
-    if (matches.length === 0) return 0;
-    return Math.max(...matches.map((m) => m.groups.length));
-  }, [matches]);
 
   useEffect(() => {
     const ta = textareaRef.current;
@@ -383,10 +397,7 @@ export function RegexTester() {
   const isError = result !== null && !result.ok;
   const matchCount = matches.length;
   const hasPattern = pattern.length > 0;
-  const showHighlight = hasPattern && !isError && tab === "match";
-
-  // suppress unused warning
-  void groupCount;
+  const showHighlight = hasPattern && !isError && tab === "match" && workerStatus !== "timeout";
 
   return (
     <div className="space-y-4">
@@ -445,11 +456,21 @@ export function RegexTester() {
           {hasPattern && !isError && (
             <span className={[
               "ml-auto text-xs px-2 py-0.5 rounded-full font-medium",
-              matchCount > 0
+              workerStatus === "timeout"
+                ? "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400"
+                : workerStatus === "running"
+                ? "bg-zinc-100 text-zinc-400 dark:bg-zinc-800"
+                : matchCount > 0
                 ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400"
                 : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
             ].join(" ")}>
-              {matchCount > 0 ? `${matchCount} match${matchCount > 1 ? "es" : ""}` : "no match"}
+              {workerStatus === "timeout"
+                ? "⚠ timeout"
+                : workerStatus === "running"
+                ? "..."
+                : matchCount > 0
+                ? `${matchCount} match${matchCount > 1 ? "es" : ""}`
+                : "no match"}
             </span>
           )}
         </div>
@@ -626,6 +647,12 @@ export function RegexTester() {
                   <p className="px-3 py-4 text-sm text-zinc-400">パターンを入力してください</p>
                 ) : isError ? (
                   <p className="px-3 py-4 text-sm text-red-400">正規表現が無効です</p>
+                ) : workerStatus === "timeout" ? (
+                  <p className="px-3 py-4 text-sm text-orange-500 dark:text-orange-400">
+                    ⚠ タイムアウト: パターンが複雑すぎます
+                  </p>
+                ) : workerStatus === "running" ? (
+                  <p className="px-3 py-4 text-sm text-zinc-400">計算中...</p>
                 ) : matchCount === 0 ? (
                   <p className="px-3 py-4 text-sm text-zinc-400">
                     {testString ? "マッチなし" : "テスト文字列を入力してください"}
