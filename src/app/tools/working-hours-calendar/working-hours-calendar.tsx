@@ -445,10 +445,7 @@ export function WorkingHoursCalendar() {
     const h = Number(searchParams.get("h"));
     return h > 0 && h <= 24 ? h : DEFAULT_HOURS;
   });
-  const [hourlyRate, setHourlyRate] = useState(() => {
-    const r = Number(searchParams.get("rate"));
-    return r > 0 ? r : 0;
-  });
+  const [hourlyRate, setHourlyRate] = useState(0);
   const [offDays, setOffDays] = useState<Set<string>>(() => {
     const raw = searchParams.get("off");
     return raw ? new Set(raw.split(",").filter(isValidDateStr)) : new Set();
@@ -472,7 +469,6 @@ export function WorkingHoursCalendar() {
 
   const [holidays, setHolidays] = useState<Record<string, string>>({});
   const [holidayError, setHolidayError] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [editingDay, setEditingDay] = useState<string | null>(null);
   const [editingHours, setEditingHours] = useState<number>(DEFAULT_HOURS);
   const [humorMode, setHumorMode] = useState(false);
@@ -515,14 +511,13 @@ export function WorkingHoursCalendar() {
 
   const updateUrl = useCallback(
     (params: {
-      y: number; m: number; h: number; rate: number;
+      y: number; m: number; h: number;
       off: Set<string>; on: Set<string>; dh: Record<string, number>;
     }) => {
       const p = new URLSearchParams();
       if (params.y !== initialYear) p.set("y", String(params.y));
       if (params.m !== initialMonth) p.set("m", String(params.m));
       if (params.h !== DEFAULT_HOURS) p.set("h", String(params.h));
-      if (params.rate > 0) p.set("rate", String(params.rate));
       if (params.off.size > 0) p.set("off", [...params.off].join(","));
       if (params.on.size > 0) p.set("on", [...params.on].join(","));
       const dhEntries = Object.entries(params.dh);
@@ -547,9 +542,9 @@ export function WorkingHoursCalendar() {
       setOnDays(newOn);
       setDayHours(newDh);
       setEditingDay(null);
-      updateUrl({ y: newYear, m: newMonth, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: newDh });
+      updateUrl({ y: newYear, m: newMonth, h: defaultHours, off: newOff, on: newOn, dh: newDh });
     },
-    [month, year, defaultHours, hourlyRate, updateUrl]
+    [month, year, defaultHours, updateUrl]
   );
 
   const days = useMemo<DayInfo[]>(
@@ -575,7 +570,7 @@ export function WorkingHoursCalendar() {
         if (isDefaultOff(d.date)) newOn.add(d.date);
         setOffDays(newOff);
         setOnDays(newOn);
-        updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: dayHours });
+        updateUrl({ y: year, m: month, h: defaultHours, off: newOff, on: newOn, dh: dayHours });
       } else {
         setEditingDay(d.date);
         setEditingHours(dayHours[d.date] ?? defaultHours);
@@ -589,8 +584,8 @@ export function WorkingHoursCalendar() {
     const newDh = { ...dayHours, [editingDay]: editingHours };
     setDayHours(newDh);
     setEditingDay(null);
-    updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: offDays, on: onDays, dh: newDh });
-  }, [editingDay, editingHours, dayHours, year, month, defaultHours, hourlyRate, offDays, onDays, updateUrl]);
+    updateUrl({ y: year, m: month, h: defaultHours, off: offDays, on: onDays, dh: newDh });
+  }, [editingDay, editingHours, dayHours, year, month, defaultHours, offDays, onDays, updateUrl]);
 
   const turnOffEditingDay = useCallback(() => {
     if (!editingDay) return;
@@ -604,8 +599,8 @@ export function WorkingHoursCalendar() {
     setOnDays(newOn);
     setDayHours(newDh);
     setEditingDay(null);
-    updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: newDh });
-  }, [editingDay, offDays, onDays, dayHours, isDefaultOff, year, month, defaultHours, hourlyRate, updateUrl]);
+    updateUrl({ y: year, m: month, h: defaultHours, off: newOff, on: newOn, dh: newDh });
+  }, [editingDay, offDays, onDays, dayHours, isDefaultOff, year, month, defaultHours, updateUrl]);
 
   const toggleWeekday = useCallback(
     (wd: number) => {
@@ -625,9 +620,9 @@ export function WorkingHoursCalendar() {
       setOffDays(newOff);
       setOnDays(newOn);
       setEditingDay(null);
-      updateUrl({ y: year, m: month, h: defaultHours, rate: hourlyRate, off: newOff, on: newOn, dh: dayHours });
+      updateUrl({ y: year, m: month, h: defaultHours, off: newOff, on: newOn, dh: dayHours });
     },
-    [days, offDays, onDays, isDefaultOff, dayHours, defaultHours, hourlyRate, year, month, updateUrl]
+    [days, offDays, onDays, isDefaultOff, dayHours, defaultHours, year, month, updateUrl]
   );
 
   const todayStr = useMemo(() => {
@@ -654,16 +649,6 @@ export function WorkingHoursCalendar() {
   const humorHourlyRate = incomeInYen !== null
     ? (totalHours > 0 ? incomeInYen / totalHours : null)
     : (hourlyRate > 0 ? hourlyRate : null);
-
-  const copyUrl = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  }, []);
 
   // 共通スタイル生成（月間・年間出力で使い回す）
   const buildExcelStyles = useCallback(async () => {
@@ -981,7 +966,7 @@ export function WorkingHoursCalendar() {
               onChange={(e) => {
                 const v = Math.min(24, Math.max(0.5, Number(e.target.value)));
                 setDefaultHours(v);
-                updateUrl({ y: year, m: month, h: v, rate: hourlyRate, off: offDays, on: onDays, dh: dayHours });
+                updateUrl({ y: year, m: month, h: v, off: offDays, on: onDays, dh: dayHours });
               }}
               className="w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
             />
@@ -1046,7 +1031,7 @@ export function WorkingHoursCalendar() {
                 onChange={(e) => {
                   const v = Math.max(0, Number(e.target.value));
                   setHourlyRate(v);
-                  updateUrl({ y: year, m: month, h: defaultHours, rate: v, off: offDays, on: onDays, dh: dayHours });
+                  updateUrl({ y: year, m: month, h: defaultHours, off: offDays, on: onDays, dh: dayHours });
                 }}
                 className="w-28 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-600 dark:bg-zinc-800"
               />
@@ -1267,12 +1252,6 @@ export function WorkingHoursCalendar() {
 
       {/* アクションボタン */}
       <div className="flex flex-wrap gap-3">
-        <button
-          onClick={copyUrl}
-          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
-        >
-          {copied ? "✅ コピーしました" : "🔗 URLをコピー（設定を共有）"}
-        </button>
         <button
           onClick={exportExcel}
           className="rounded-lg border border-green-500 bg-green-50 px-4 py-2 text-sm text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40"
