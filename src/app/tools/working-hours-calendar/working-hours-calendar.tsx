@@ -57,13 +57,6 @@ const PAYMENT_KINDS: PaymentKind[] = [
   { id: "tanuki",      emoji: "🦝", name: "たぬき",    unit: "匹",  pricePerUnit: 50000,  note: "なつき度・毛並みによる" },
 ];
 
-function formatPaymentAmount(income: number, kind: PaymentKind): string {
-  if (kind.id === "cash") return income.toLocaleString("ja-JP") + "円";
-  const amount = income / kind.pricePerUnit;
-  if (amount >= 10000) return `約${(amount / 10000).toFixed(1)}万${kind.unit}`;
-  if (amount >= 1000) return `約${Math.round(amount / 100) * 100}${kind.unit}`;
-  return `約${Math.round(amount)}${kind.unit}`;
-}
 
 type StyleSet = {
   grayFill: ExcelJS.Fill;
@@ -658,9 +651,9 @@ export function WorkingHoursCalendar() {
     ? directPaymentAmount * selectedPaymentKind.pricePerUnit
     : null;
   const humorIncome = incomeInYen ?? monthlyIncome;
-  const humorHourlyRate = incomeInYen !== null && totalHours > 0
-    ? incomeInYen / totalHours
-    : hourlyRate;
+  const humorHourlyRate = incomeInYen !== null
+    ? (totalHours > 0 ? incomeInYen / totalHours : null)
+    : (hourlyRate > 0 ? hourlyRate : null);
 
   const copyUrl = useCallback(async () => {
     try {
@@ -1015,13 +1008,13 @@ export function WorkingHoursCalendar() {
               {/* 月収入力（選択単位） */}
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <label htmlFor="direct-income" className="text-amber-700 dark:text-amber-400">
-                  月収
+                  {selectedPaymentKind.id === "cash" ? "月収" : "月間支給量"}
                 </label>
                 <input
                   id="direct-income"
                   type="number"
                   value={directPaymentAmount || ""}
-                  placeholder="金額を入力"
+                  placeholder={selectedPaymentKind.id === "cash" ? "例: 500000" : "個数を入力"}
                   min={0}
                   onChange={(e) => setDirectPaymentAmount(Math.max(0, Number(e.target.value)))}
                   className="w-32 rounded border border-amber-300 px-2 py-1 dark:border-amber-600 dark:bg-zinc-800"
@@ -1032,7 +1025,7 @@ export function WorkingHoursCalendar() {
                     = {formatMoney(incomeInYen)}
                   </span>
                 )}
-                {humorHourlyRate > 0 && (
+                {humorHourlyRate !== null && humorHourlyRate > 0 && (
                   <span className="text-xs text-amber-600 dark:text-amber-500">
                     （時給換算: {Math.round(humorHourlyRate).toLocaleString("ja-JP")}円/h）
                   </span>
@@ -1063,7 +1056,7 @@ export function WorkingHoursCalendar() {
 
           {/* 現物支給モードトグル */}
           <button
-            onClick={() => { setHumorMode((v) => !v); setDirectPaymentAmount(0); setPaymentKindId("cash"); }}
+            onClick={() => { setHumorMode((v) => !v); setDirectPaymentAmount(0); }}
             title={humorMode ? "通常モードに戻す" : "現物支給モードを試す"}
             className={[
               "ml-auto rounded-lg border px-3 py-1 text-sm transition-colors",
@@ -1254,13 +1247,15 @@ export function WorkingHoursCalendar() {
                     </p>
                   )}
                   <p className="mt-1 text-[10px] text-amber-500 dark:text-amber-600">
-                    {selectedPaymentKind.id !== "cash" && `≈ ${formatMoney(incomeInYen!)} / `}
+                    {selectedPaymentKind.id !== "cash" && incomeInYen !== null && `≈ ${formatMoney(incomeInYen)} / `}
                     ※{selectedPaymentKind.note}
                   </p>
                 </>
               );
             })() : (
-              <p className="mt-1 text-sm text-zinc-400">月収を入力すると表示</p>
+              <p className="mt-1 text-sm text-zinc-400">
+                {selectedPaymentKind.id === "cash" ? "月収を入力すると表示" : `月間${selectedPaymentKind.name}数を入力すると表示`}
+              </p>
             )
           ) : monthlyIncome !== null ? (
             <p className="mt-1 text-2xl font-bold">{formatMoney(monthlyIncome)}</p>
