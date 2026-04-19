@@ -756,6 +756,16 @@ export function WorkingHoursCalendar() {
         if (!d.isWorking) cell.fill = grayFill;
         cell.border = allBorder;
       });
+      // 祝日シートに手動追加された祝日も書式反映
+      dataSheet.addConditionalFormatting({
+        ref: `A${row.number}:C${row.number}`,
+        rules: [{
+          type: "expression",
+          priority: 1,
+          formulae: [`IFERROR(VLOOKUP($A${row.number},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+          style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
+        }],
+      });
     }
     const dataEndRow = days.length + 1;
     dataSheet.addRow([]);
@@ -842,6 +852,16 @@ export function WorkingHoursCalendar() {
         row.eachCell((cell) => {
           if (!d.isWorking) cell.fill = grayFill;
           cell.border = allBorder;
+        });
+        // 祝日シートに手動追加された祝日も書式反映
+        dataSheet.addConditionalFormatting({
+          ref: `A${row.number}:D${row.number}`,
+          rules: [{
+            type: "expression",
+            priority: 1,
+            formulae: [`IFERROR(VLOOKUP($A${row.number},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+            style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
+          }],
         });
       }
     }
