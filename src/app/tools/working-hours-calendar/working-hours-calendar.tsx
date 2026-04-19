@@ -49,6 +49,9 @@ type StyleSet = {
 const HOLIDAY_SHEET = "祝日";
 const EXCEL_RED_FONT = { color: { argb: "FFEF4444" } };
 const EXCEL_BLUE_FONT = { color: { argb: "FF3B82F6" } };
+// CF fill: fgColor+bgColor 両方指定で Excel バージョン互換性を確保
+const CF_HOLIDAY_FILL = { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: "FFE5E7EB" }, bgColor: { argb: "FFE5E7EB" } };
+const CF_HOLIDAY_FONT = { color: { argb: "FFEF4444" } };
 
 function addCalendarRow(
   sheet: ExcelJS.Worksheet,
@@ -102,10 +105,7 @@ function addCalendarRow(
         type: "expression",
         priority: 1,
         formulae: [`IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
-        style: {
-          fill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } },
-          font: { color: { argb: "FFEF4444" } },
-        },
+        style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
       }],
     });
   });
@@ -187,6 +187,17 @@ function addMonthBlock(
     if (isRest) cell.fill = weekday === 6 && !isHoliday ? blueFill : grayFill;
     if (weekday === 0 || isHoliday) cell.font = EXCEL_RED_FONT;
     else if (weekday === 6) cell.font = EXCEL_BLUE_FONT;
+
+    // 祝日シートに手動追加された祝日も書式反映
+    sheet.addConditionalFormatting({
+      ref: cell.address,
+      rules: [{
+        type: "expression",
+        priority: 1,
+        formulae: [`IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
+        style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
+      }],
+    });
 
     col++;
     if (col === 7) { col = 0; currentRow++; }
@@ -284,10 +295,7 @@ function addCalendarRowStatic(
         type: "expression",
         priority: 1,
         formulae: [`IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")<>""`],
-        style: {
-          fill: { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } },
-          font: { color: { argb: "FFEF4444" } },
-        },
+        style: { fill: CF_HOLIDAY_FILL, font: CF_HOLIDAY_FONT },
       }],
     });
   });
