@@ -576,7 +576,7 @@ export function WorkingHoursCalendar() {
         setEditingHours(dayHours[d.date] ?? defaultHours);
       }
     },
-    [offDays, onDays, dayHours, defaultHours, isDefaultOff, year, month, hourlyRate, updateUrl]
+    [offDays, onDays, dayHours, defaultHours, isDefaultOff, year, month, updateUrl]
   );
 
   const applyDayEdit = useCallback(() => {
@@ -1280,8 +1280,7 @@ export function WorkingHoursCalendar() {
           <li>5. 休み日をクリックすると稼働日に変更できます</li>
           <li>6. 時給を入力すると月収の概算が表示されます</li>
           <li>7. 🌰 現物支給モード：支給形態を選んで月収を個数で入力すると時給換算（個数/h）を表示</li>
-          <li>8. 「URLをコピー」で設定を保存・共有できます</li>
-          <li>9. 「Excelで出力」で数式付きの帳票をダウンロードできます</li>
+          <li>8. 「Excelで出力」で数式付きの帳票をダウンロードできます</li>
         </ol>
       </div>
     </div>
