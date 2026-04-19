@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import type ExcelJS from "exceljs";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 const DEFAULT_HOURS = 8;
@@ -37,6 +38,38 @@ function formatMoney(amount: number): string {
   return amount.toLocaleString("ja-JP") + "円";
 }
 
+function addCalendarRow(
+  sheet: ExcelJS.Worksheet,
+  week: (DayInfo | null)[],
+  border: Partial<ExcelJS.Borders>,
+  grayFill: ExcelJS.Fill,
+  blueFill: ExcelJS.Fill,
+  redFont: { color: { argb: string } },
+  blueFont: { color: { argb: string } },
+  center: Partial<ExcelJS.Alignment>,
+) {
+  const row = sheet.addRow(["", ...week.map((d) => {
+    if (!d) return "";
+    return d.isWorking ? `${d.day}\n${d.hours}h` : `${d.day}`;
+  })]);
+  row.height = 36;
+  row.alignment = { wrapText: true };
+  week.forEach((d, i) => {
+    const cell = row.getCell(i + 2);
+    cell.alignment = { ...center, wrapText: true };
+    cell.border = border;
+    if (!d) return;
+    const isSun = d.weekday === 0;
+    const isSat = d.weekday === 6;
+    if (!d.isWorking) {
+      cell.fill = grayFill;
+      cell.font = (isSun || d.isHoliday) ? redFont : isSat ? blueFont : { color: { argb: "FF9CA3AF" } };
+    } else {
+      if (isSat) cell.fill = blueFill;
+      cell.font = (isSun || d.isHoliday) ? redFont : isSat ? blueFont : {};
+    }
+  });
+}
 
 export function WorkingHoursCalendar() {
   const router = useRouter();
@@ -283,35 +316,171 @@ export function WorkingHoursCalendar() {
   }, []);
 
   const exportExcel = useCallback(async () => {
-    const XLSX = await import("xlsx");
-    const wb = XLSX.utils.book_new();
+    const ExcelJS = (await import("exceljs")).default;
+    const wb = new ExcelJS.Workbook();
 
-    const headers = ["日付", "曜日", "稼働時間"];
-    const dataRows = days.map((d) => [
-      d.date,
-      WEEKDAYS[d.weekday],
-      d.isWorking ? d.hours : 0,
-    ]);
+    // --- 共通スタイル定義 ---
+    const GRAY_FILL: ExcelJS.Fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE5E7EB" } };
+    const BLUE_FILL: ExcelJS.Fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFDBEAFE" } };
+    const HEADER_FILL: ExcelJS.Fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF374151" } };
+    const SUMMARY_FILL: ExcelJS.Fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFBEB" } };
+    const CENTER: Partial<ExcelJS.Alignment> = { horizontal: "center", vertical: "middle" };
+    const RED_FONT = { color: { argb: "FFEF4444" } };
+    const BLUE_FONT = { color: { argb: "FF3B82F6" } };
+    const WHITE_BOLD = { color: { argb: "FFFFFFFF" }, bold: true };
+    const allBorder: Partial<ExcelJS.Borders> = {
+      top: { style: "thin", color: { argb: "FFD1D5DB" } },
+      left: { style: "thin", color: { argb: "FFD1D5DB" } },
+      bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+      right: { style: "thin", color: { argb: "FFD1D5DB" } },
+    };
 
-    const dataEndRow = dataRows.length + 1;
-    const summaryRow = dataRows.length + 3;
-
-    const sheetData: (string | number)[][] = [
-      headers,
-      ...dataRows,
-      [],
-      ["稼働日数", `=COUNTIF(C2:C${dataEndRow},">0")`, "", "日"],
-      ["総稼働時間", `=SUM(C2:C${dataEndRow})`, "", "時間"],
+    // =====================
+    // シート1: カレンダー
+    // =====================
+    const calSheet = wb.addWorksheet("カレンダー");
+    calSheet.columns = [
+      { width: 2 },  // 余白
+      { width: 11 }, // 日
+      { width: 11 }, // 月
+      { width: 11 }, // 火
+      { width: 11 }, // 水
+      { width: 11 }, // 木
+      { width: 11 }, // 金
+      { width: 11 }, // 土
     ];
-    if (hourlyRate > 0) {
-      sheetData.push(["月収", `=B${summaryRow + 1}*${hourlyRate}`, "", "円"]);
+
+    // タイトル行
+    const titleRow = calSheet.addRow(["", `${year}年${month}月 稼働カレンダー`]);
+    titleRow.height = 24;
+    calSheet.mergeCells(`B${titleRow.number}:H${titleRow.number}`);
+    const titleCell = titleRow.getCell("B");
+    titleCell.font = { bold: true, size: 14 };
+    titleCell.alignment = CENTER;
+
+    calSheet.addRow([]); // 空行
+
+    // 曜日ヘッダー行
+    const wdNames = ["日", "月", "火", "水", "木", "金", "土"];
+    const wdRow = calSheet.addRow(["", ...wdNames]);
+    wdRow.height = 22;
+    wdRow.eachCell((cell, colNum) => {
+      if (colNum === 1) return;
+      cell.fill = HEADER_FILL;
+      cell.font = colNum === 2 ? { ...WHITE_BOLD, color: { argb: "FFFCA5A5" } }
+                : colNum === 8 ? { ...WHITE_BOLD, color: { argb: "FF93C5FD" } }
+                : WHITE_BOLD;
+      cell.alignment = CENTER;
+      cell.border = allBorder;
+    });
+
+    // カレンダーグリッド構築
+    const firstWd = days[0]?.weekday ?? 0;
+    let week: (DayInfo | null)[] = Array(firstWd).fill(null);
+    for (const d of days) {
+      week.push(d);
+      if (week.length === 7) {
+        addCalendarRow(calSheet, week, allBorder, GRAY_FILL, BLUE_FILL, RED_FONT, BLUE_FONT, CENTER);
+        week = [];
+      }
+    }
+    if (week.length > 0) {
+      while (week.length < 7) week.push(null);
+      addCalendarRow(calSheet, week, allBorder, GRAY_FILL, BLUE_FILL, RED_FONT, BLUE_FONT, CENTER);
     }
 
-    const ws = XLSX.utils.aoa_to_sheet(sheetData);
-    ws["!cols"] = [{ wch: 12 }, { wch: 6 }, { wch: 10 }];
-    XLSX.utils.book_append_sheet(wb, ws, `${year}年${month}月`);
-    XLSX.writeFile(wb, `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`);
-  }, [days, hourlyRate, year, month]);
+    calSheet.addRow([]);
+
+    // サマリー
+    const sumRow1 = calSheet.addRow(["", "稼働日数", workingDays, "日"]);
+    const sumRow2 = calSheet.addRow(["", "総稼働時間", totalHours, "時間"]);
+    [sumRow1, sumRow2].forEach((r) => {
+      r.height = 20;
+      r.getCell("B").font = { bold: true };
+      r.getCell("C").font = { bold: true };
+      r.getCell("B").fill = SUMMARY_FILL;
+      r.getCell("C").fill = SUMMARY_FILL;
+      r.getCell("D").fill = SUMMARY_FILL;
+    });
+    if (hourlyRate > 0) {
+      const sumRow3 = calSheet.addRow(["", "月収（概算）", totalHours * hourlyRate, "円"]);
+      sumRow3.height = 20;
+      sumRow3.getCell("B").font = { bold: true };
+      sumRow3.getCell("C").font = { bold: true };
+      sumRow3.getCell("B").fill = SUMMARY_FILL;
+      sumRow3.getCell("C").fill = SUMMARY_FILL;
+      sumRow3.getCell("D").fill = SUMMARY_FILL;
+      sumRow3.getCell("C").numFmt = "#,##0";
+    }
+
+    // =====================
+    // シート2: データ
+    // =====================
+    const dataSheet = wb.addWorksheet("データ");
+    dataSheet.columns = [
+      { header: "日付", key: "date", width: 14 },
+      { header: "曜日", key: "wd", width: 7 },
+      { header: "稼働時間", key: "hours", width: 11 },
+    ];
+
+    // ヘッダー行スタイル
+    const dataHeaderRow = dataSheet.getRow(1);
+    dataHeaderRow.height = 20;
+    dataHeaderRow.eachCell((cell) => {
+      cell.fill = HEADER_FILL;
+      cell.font = WHITE_BOLD;
+      cell.alignment = CENTER;
+      cell.border = allBorder;
+    });
+
+    // データ行
+    for (const d of days) {
+      const row = dataSheet.addRow({
+        date: d.date,
+        wd: WEEKDAYS[d.weekday],
+        hours: d.isWorking ? d.hours : 0,
+      });
+      row.height = 18;
+      const isRest = !d.isWorking;
+      const isSun = d.weekday === 0;
+      const isSat = d.weekday === 6;
+      if (isRest) row.fill = GRAY_FILL;
+      row.getCell("date").font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+      row.getCell("wd").font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
+      row.getCell("wd").alignment = CENTER;
+      row.getCell("hours").alignment = CENTER;
+      row.eachCell((cell) => { cell.border = allBorder; });
+    }
+
+    // データサマリー
+    const dataEndRow = days.length + 1;
+    dataSheet.addRow([]);
+    const ds1 = dataSheet.addRow(["稼働日数", "", workingDays, "日"]);
+    const ds2 = dataSheet.addRow(["総稼働時間", "", totalHours, "時間"]);
+    [ds1, ds2].forEach((r) => {
+      r.getCell(1).font = { bold: true };
+      r.getCell(3).font = { bold: true };
+      r.fill = SUMMARY_FILL;
+    });
+    if (hourlyRate > 0) {
+      const ds3 = dataSheet.addRow(["月収（概算）", "", totalHours * hourlyRate, "円"]);
+      ds3.getCell(1).font = { bold: true };
+      ds3.getCell(3).font = { bold: true, color: { argb: "FF059669" } };
+      ds3.getCell(3).numFmt = "#,##0";
+      ds3.fill = SUMMARY_FILL;
+    }
+    void dataEndRow;
+
+    // ダウンロード
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [days, hourlyRate, year, month, workingDays, totalHours]);
 
   const editingDayInfo = editingDay ? days.find((d) => d.date === editingDay) : null;
 
