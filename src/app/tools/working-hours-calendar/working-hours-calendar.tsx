@@ -46,18 +46,22 @@ type StyleSet = {
   center: Partial<ExcelJS.Alignment>;
 };
 
+const HOLIDAY_SHEET = "祝日";
+
 function addCalendarRow(
   sheet: ExcelJS.Worksheet,
   week: (DayInfo | null)[],
   styles: StyleSet,
   dataSheetName: string,
+  year: number,
+  month: number,
 ) {
   const { grayFill, blueFill, border, center } = styles;
   const RED_FONT = { color: { argb: "FFEF4444" } };
   const BLUE_FONT = { color: { argb: "FF3B82F6" } };
 
   const row = sheet.addRow(["", ...week.map(() => "")]);
-  row.height = 40;
+  row.height = 52;
 
   week.forEach((d, i) => {
     const cell = row.getCell(i + 2);
@@ -65,11 +69,18 @@ function addCalendarRow(
     cell.border = border;
     if (!d) return;
 
-    // データシートの行番号（ヘッダーが1行目なので day + 1）
+    // 祝日名と稼働時間を VLOOKUP / データシート参照で表示
     const dataRow = d.day + 1;
+    const dateRef = `DATE(${year},${month},${d.day})`;
+    const vlookup = `IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")`;
+    const hoursF = `IF('${dataSheetName}'!C${dataRow}>0,CHAR(10)&TEXT('${dataSheetName}'!C${dataRow},"0.##")&"h","")`;
     cell.value = {
-      formula: `=IF('${dataSheetName}'!C${dataRow}>0,${d.day}&CHAR(10)&TEXT('${dataSheetName}'!C${dataRow},"0.##")&"h","${d.day}")`,
-      result: d.isWorking ? `${d.day}\n${d.hours}h` : String(d.day),
+      formula: `=${d.day}&IF(${vlookup}="","",CHAR(10)&${vlookup})&${hoursF}`,
+      result: [
+        String(d.day),
+        ...(d.holidayName ? [d.holidayName] : []),
+        ...(d.isWorking ? [`${d.hours}h`] : []),
+      ].join("\n"),
     };
 
     const isSun = d.weekday === 0;
@@ -82,6 +93,15 @@ function addCalendarRow(
       cell.font = (isSun || d.isHoliday) ? RED_FONT : isSat ? BLUE_FONT : {};
     }
   });
+
+  // メモ行（各日に1セル）
+  const memoRow = sheet.addRow(["メモ", "", "", "", "", "", "", ""]);
+  memoRow.height = 24;
+  memoRow.getCell(1).font = { size: 8, color: { argb: "FFBDBDBD" } };
+  memoRow.getCell(1).alignment = { horizontal: "right", vertical: "middle" };
+  for (let c = 2; c <= 8; c++) {
+    memoRow.getCell(c).border = border;
+  }
 }
 
 // 年間カレンダー用：1ヶ月分のブロックを指定行・列に描画し、使用行数を返す
@@ -137,11 +157,18 @@ function addMonthBlock(
     const isRest = weekday === 0 || weekday === 6 || isHoliday;
 
     const calRow = sheet.getRow(currentRow);
-    calRow.height = 18;
+    calRow.height = 30;
     const cell = calRow.getCell(startCol + col);
-    cell.value = day;
-    cell.alignment = center;
+    cell.alignment = { ...center, wrapText: true };
     cell.border = border;
+
+    // 祝日名を VLOOKUP で参照
+    const dateRef = `DATE(${year},${month},${day})`;
+    const vlookup = `IFERROR(VLOOKUP(${dateRef},'${HOLIDAY_SHEET}'!$A:$B,2,FALSE),"")`;
+    cell.value = {
+      formula: `=${day}&IF(${vlookup}="","",CHAR(10)&${vlookup})`,
+      result: isHoliday ? `${day}\n${holidays[dateStr]}` : String(day),
+    };
 
     if (isRest) cell.fill = weekday === 6 && !isHoliday ? blueFill : grayFill;
     if (weekday === 0 || isHoliday) cell.font = RED_FONT;
@@ -458,13 +485,13 @@ export function WorkingHoursCalendar() {
     for (const d of days) {
       week.push(d);
       if (week.length === 7) {
-        addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME);
+        addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME, year, month);
         week = [];
       }
     }
     if (week.length > 0) {
       while (week.length < 7) week.push(null);
-      addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME);
+      addCalendarRow(calSheet, week, styles, DATA_SHEET_NAME, year, month);
     }
 
     calSheet.addRow([]);
@@ -549,7 +576,35 @@ export function WorkingHoursCalendar() {
     }
 
     // =====================
-    // シート3: 年間休日カレンダー
+    // シート3: 祝日データ
+    // =====================
+    const holidaySheet = wb.addWorksheet(HOLIDAY_SHEET);
+    holidaySheet.columns = [
+      { header: "日付", key: "date", width: 14 },
+      { header: "祝日名", key: "name", width: 22 },
+    ];
+    const hHdr = holidaySheet.getRow(1);
+    hHdr.height = 20;
+    hHdr.eachCell((cell) => {
+      cell.fill = headerFill;
+      cell.font = WHITE_BOLD;
+      cell.alignment = CENTER;
+      cell.border = allBorder;
+    });
+    const yearHolidays = Object.entries(holidays)
+      .filter(([date]) => date.startsWith(`${year}-`))
+      .sort(([a], [b]) => a.localeCompare(b));
+    for (const [dateStr, name] of yearHolidays) {
+      const [hy, hmo, hd] = dateStr.split("-").map(Number);
+      const hRow = holidaySheet.addRow({ date: new Date(hy, hmo - 1, hd), name });
+      hRow.height = 18;
+      hRow.getCell("date").numFmt = "yyyy/mm/dd";
+      hRow.getCell("date").alignment = CENTER;
+      hRow.eachCell((cell) => { cell.border = allBorder; });
+    }
+
+    // =====================
+    // シート4: 年間休日カレンダー
     // =====================
     const annualSheet = wb.addWorksheet("年間");
     const MONTH_COL_W = 7;
