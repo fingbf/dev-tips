@@ -34,4 +34,11 @@ export const tools: Tool[] = [
       "JSONを貼り付けるだけで整形・圧縮・バリデーション。入力データはサーバーに送信されず、ブラウザ内で完結。登録不要・無料。",
     icon: "📋",
   },
+  {
+    slug: "working-hours-calendar",
+    name: "稼働時間カレンダー",
+    description:
+      "月の稼働日・稼働時間を管理して総稼働時間と月収を算出。祝日自動除外・Excel出力対応。登録不要・無料。",
+    icon: "📅",
+  },
 ];
