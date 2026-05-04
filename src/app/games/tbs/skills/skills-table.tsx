@@ -127,7 +127,7 @@ export function SkillsTable() {
       });
       return { charId, label, list };
     }).filter((s) => s.list.length > 0);
-  }, [search, typeFilter]);
+  }, [search, typeFilter, emoFilter]);
 
   const totalCount = sections.reduce((n, s) => n + s.list.length, 0);
 
