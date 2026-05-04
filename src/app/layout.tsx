@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 const SITE_URL = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Dev Tips",
-  description: "開発Tips・スニペット集",
+  title: { template: "%s | Dev Tips", default: "Dev Tips" },
+  description: "無料オンラインツール・ゲーム攻略",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: "Dev Tips",
