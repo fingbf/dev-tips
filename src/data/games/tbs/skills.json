@@ -636,12 +636,11 @@
     "hasIcon": true
   },
   {
-    "id": 290,
-    "name": "憂心の鬼婆面",
-    "desc": "発動時の入力方向に応じて、指定した位置にお面を<data=LifeTime>秒間召喚する。自身がお面の範囲内にいる間、受けるダメージが<data=BuffValue>%減少し、<data=BuffDuration>秒間持続する。さらに、最大体力の<data=ShieldValue>%に相当するシールドを獲得し、<data=ShieldDuration>秒間持続する。<br>上：上方に生成。<br>下：その場に生成。<br>前（デフォルト）：前方に生成。",
-    "levelCount": 2,
+    "id": 340,
+    "name": "仇反人形",
+    "desc": "前方へ呪弾を放ち、命中した敵に<damage=BulletDamage>の霊力ダメージを与え、同時に自身の現在位置に人形を生成する。人形は受けたダメージの<data=DamageRatio>%をその敵に転送し、<data=DollExistTime>秒間持続する。",
+    "levelCount": 1,
     "levelRares": [
-      1,
       2
     ],
     "characters": [
@@ -701,11 +700,12 @@
     "hasIcon": true
   },
   {
-    "id": 340,
-    "name": "仇反人形",
-    "desc": "前方へ呪弾を放ち、命中した敵に<damage=BulletDamage>の霊力ダメージを与え、同時に自身の現在位置に人形を生成する。人形は受けたダメージの<data=DamageRatio>%をその敵に転送し、<data=DollExistTime>秒間持続する。",
-    "levelCount": 1,
+    "id": 290,
+    "name": "憂心の鬼婆面",
+    "desc": "発動時の入力方向に応じて、指定した位置にお面を<data=LifeTime>秒間召喚する。自身がお面の範囲内にいる間、受けるダメージが<data=BuffValue>%減少し、<data=BuffDuration>秒間持続する。さらに、最大体力の<data=ShieldValue>%に相当するシールドを獲得し、<data=ShieldDuration>秒間持続する。<br>上：上方に生成。<br>下：その場に生成。<br>前（デフォルト）：前方に生成。",
+    "levelCount": 2,
     "levelRares": [
+      1,
       2
     ],
     "characters": [
