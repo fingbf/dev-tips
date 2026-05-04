@@ -14,6 +14,7 @@ type Item = {
   emotion: number;
   setTags: { id: number; name: string }[];
   hasIcon: boolean;
+  note?: string;
 };
 
 const items = rawItems as Item[];
@@ -172,6 +173,9 @@ export function ItemsTable() {
                   </div>
                 </td>
                 <td className="max-w-xs px-3 py-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {item.note && (
+                    <div className="mb-1 text-amber-600 dark:text-amber-400">{item.note}</div>
+                  )}
                   {cleanDesc(item.desc)}
                 </td>
               </tr>

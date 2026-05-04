@@ -8,7 +8,8 @@
     "special": true,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "EasyモードでGame Startすると取得"
   },
   {
     "id": 0,
@@ -1686,7 +1687,8 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "多々良小傘がドロップ"
   },
   {
     "id": 156,
@@ -1697,7 +1699,8 @@
     "special": false,
     "emotion": 1,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "堀川雷鼓がドロップ"
   },
   {
     "id": 159,
@@ -1708,7 +1711,8 @@
     "special": false,
     "emotion": 1,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "堀川雷鼓がドロップ"
   },
   {
     "id": 157,
@@ -1724,7 +1728,8 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "雲居一輪がドロップ"
   },
   {
     "id": 78,
@@ -1762,7 +1767,8 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "藤原妹紅がドロップ"
   },
   {
     "id": 93,
@@ -1795,7 +1801,8 @@
     "special": false,
     "emotion": 3,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "メディスン・メランコリーがドロップ"
   },
   {
     "id": 72,
@@ -1806,7 +1813,8 @@
     "special": false,
     "emotion": 3,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "博麗霊夢がドロップ"
   },
   {
     "id": 18,
@@ -1822,7 +1830,8 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "博麗霊夢がドロップ"
   },
   {
     "id": 97,
@@ -1844,7 +1853,8 @@
     "special": false,
     "emotion": 4,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "紅美鈴がドロップ"
   },
   {
     "id": 120,
@@ -1860,7 +1870,8 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "小野塚小町がドロップ"
   },
   {
     "id": 121,
@@ -1876,6 +1887,7 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "note": "小野塚小町がドロップ"
   }
 ]
