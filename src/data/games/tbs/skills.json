@@ -32,6 +32,39 @@
     "hasIcon": true
   },
   {
+    "id": 240,
+    "name": "腐蝕光",
+    "desc": "前方へ<data=ShootNum>発の毒弾幕を連続して放ち、命中した敵に<damage=BaseDamage>の霊力ダメージを与え、「<term=Poison>」状態を付与する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 260,
+    "name": "腐蝕波動",
+    "desc": "「<term=Poison>」の最大重ね掛け数が3増加する。<br>前方へ毒ガス爆弾を投げ、命中した敵に<damage=BaseDamage>の霊力ダメージを与え、その敵の「<term=Poison>」層数に応じて追加で<term=AbnormalStatusDamage>を与える。同時に毒霧を発生させ、毒霧は範囲内の敵に毎秒<dps=FogDamage>の霊力ダメージを与え、「<term=Poison>」状態を付与する。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
     "id": 30,
     "name": "残像拳",
     "desc": "短時間の受け身状態に入る。その間に攻撃を受けると即座に姿を消し、入力方向（デフォルトは上方向）へ瞬間移動する。成功時、クールタイムは<data=SuccessCd>秒に設定され、さらに<data=InvincibleTime>秒間の<term=Invincible>状態を獲得する。",
@@ -84,9 +117,106 @@
     "hasIcon": true
   },
   {
-    "id": 60,
-    "name": "紅葉扇風",
-    "desc": "扇で小型の旋風を巻き起こし、前方へ飛ばして敵に<damage=BaseDamage>点の霊力ダメージを与える。",
+    "id": 310,
+    "name": "内桜",
+    "desc": "前方へ攻撃を放ち、命中した敵に<damage=BaseDamage>の物理ダメージを与える。この攻撃で敵が硬直状態に入った場合、その背後に霊気の壁を生成する。",
+    "levelCount": 1,
+    "levelRares": [
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 430,
+    "name": "亜空点穴",
+    "desc": "スキルボタンを押すと、入力方向へ瞬間移動する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 410,
+    "name": "凝神帰心",
+    "desc": "自身を「凝神帰心」状態にする。<data=Duration>秒間持続する。この状態中、「<term=Attack>」が敵に初めて命中した際、与えるダメージが<data=DamageAmp>%増加し、「<term=Toughness>」削減効率が<data=PoiseDamageExtraRatio>%上昇する。",
+    "levelCount": 1,
+    "levelRares": [
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 420,
+    "name": "強攻シールド",
+    "desc": "攻撃力の100%＋最大体力の8%に相当するシールドを獲得する。8秒間持続する。",
+    "levelCount": 1,
+    "levelRares": [
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 570,
+    "name": "パーフェクト回避",
+    "desc": "秦こころは短時間の構え状態に入り、受ける攻撃を自動で回避する。<br>回避に成功した場合、1秒間の<term=Invincible>状態を獲得し、クールダウン時間を1秒に設定する。同時に、今回の攻撃者に対して無限に重ね掛け可能な特殊印を付与する：与えるダメージが10%増加し、受けるダメージが20%増加する。なお、その攻撃者が秦こころにダメージを与えることに成功した場合、自身に付与されたすべての印は解除される。",
+    "levelCount": 1,
+    "levelRares": [
+      0
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 500,
+    "name": "霊気砲座",
+    "desc": "敵を自動追撃するお面を1枚召喚し、<damage=BaseDamage>点の霊力ダメージを与える（最大3枚まで同時存在）。持続時間は<data=LifeTime>秒。<br>対応する感情スキルを使用することで、お面の持続時間を<data=RefreshTime>秒延長できる（お面につき1回まで）。<br>「喜」：弾速が上昇し、貫通効果を得る。<br>「怒」：攻撃頻度が上昇する。<br>「哀」：弾幕サイズが拡大し、追尾性能を得る。<br>「楽」：命中時に爆発を発生させ、<damage=ExplosionDamage>点の物理ダメージを与える。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 550,
+    "name": "サイコキネシス",
+    "desc": "<data=Duration>秒間持続する法陣を展開し、毎秒<dps=BaseDamage>点の霊力ダメージを与える。法陣は「<term=ERASE>」を行うと同時に、敵弾をゼナーカードへと変換して対象を追尾させ、<damage=BulletDamage>点の霊力ダメージを与える。",
     "levelCount": 2,
     "levelRares": [
       1,
@@ -96,32 +226,14 @@
       1
     ],
     "special": false,
-    "emotion": 4,
+    "emotion": 0,
     "type": 0,
     "hasIcon": true
   },
   {
-    "id": 70,
-    "name": "サファイア彗星",
-    "desc": "自身を「サファイア彗星」状態にし、<data=Duration>秒間持続する。感情を切り替えるとこの状態は解除される。この状態中、通常攻撃が敵に命中すると、その位置に小型の彗星が1つ落下し、<damage=BaseDamage>点の霊力ダメージを与える。",
-    "levelCount": 3,
-    "levelRares": [
-      1,
-      2,
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 80,
-    "name": "神槍「スピア・ザ・グングニル」",
-    "desc": "神槍「スピア・ザ・グングニル」を前方へ投擲し、進路上の敵を貫いて<damage=BaseDamage>点の霊力ダメージを与えると同時に、軌道上のすべての弾幕を消去する。",
+    "id": 300,
+    "name": "至潔は穢れより生ず",
+    "desc": "蓬莱の玉の枝を召喚し、七色の玉を放つ。命中した対象に<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは物理および霊力ダメージのうち高い方を参照する。<br>発動時に最大で<data=CostLayer>層の穢れを消費し、スキル性能を強化する。穢れ層は最大<data=KillLayerRatio>倍まで蓄積される。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは蓬莱の玉の枝を満タンまで蓄積することで習得可能。",
     "levelCount": 1,
     "levelRares": [
       3
@@ -129,8 +241,8 @@
     "characters": [
       1
     ],
-    "special": false,
-    "emotion": 1,
+    "special": true,
+    "emotion": 0,
     "type": 0,
     "hasIcon": true
   },
@@ -152,12 +264,146 @@
     "hasIcon": true
   },
   {
-    "id": 100,
-    "name": "アルカリス",
-    "desc": "自身を「アルカリス」状態にする。再度発動するか、霊力が尽きる、または感情を切り替えると状態は解除される。 <br>この状態中、通常攻撃のたびに<data=PerManacost>点の霊力を消費し、通常攻撃は攻撃動作を伴わない3連の剣気斬撃へと変化する。各斬撃はそれぞれ<damage=BaseDamage>点の物理ダメージを与える。 <br>斬撃の速度は固定されており、攻撃速度10につき斬撃ダメージが1増加する。",
+    "id": 230,
+    "name": "救世太陽拳",
+    "desc": "二条の金色閃光を放つ。X字状の閃光は命中した敵に<damage=RayDamage>の霊力ダメージを与え、円形の光爆は範囲内の敵に<damage=CircleDamage>の霊力ダメージを与える。",
+    "levelCount": 2,
+    "levelRares": [
+      1,
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 250,
+    "name": "歓喜の獅子面",
+    "desc": "スキルボタンを長押しして獅子の面を取り出し、前方へ炎を噴射し続ける。ボタンを離すと獅子の面を回収する。<br>炎は範囲内の敵に毎秒<dps=BaseDamage>の霊力ダメージを与える。",
+    "levelCount": 2,
+    "levelRares": [
+      1,
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 470,
+    "name": "不規則水雷",
+    "desc": "前方へ大量の小さな水泡を放つ。水泡は停止後、触れた敵に<damage=BaseDamage>の霊力ダメージを与える。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 390,
+    "name": "人形芝居",
+    "desc": "発動時の入力方向に応じて、人形が異なる形態の攻撃を行う。<br>前（デフォルト）：人形を1体召喚し、前方へ弾幕を3発放つ。命中した敵に<damage=FrontDamage>の霊力ダメージを与える。<br>上：人形を1体召喚してエネルギー弾を放出し、範囲内の敵に毎秒<dps=UpDamage>の霊力ダメージを与える。<data=UpDuration>秒間持続する。<br>下：人形を1体召喚し、前方へ突き刺す攻撃を行い、進路上の敵に<damage=DownDamage>の霊力ダメージを与える。",
+    "levelCount": 3,
+    "levelRares": [
+      0,
+      1,
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 330,
+    "name": "超究武神御柱",
+    "desc": "御柱を1本、自身の背後に召喚して飛ばし、進路上の敵に<damage=ShootDamage>の霊力ダメージを与える。<br>召喚後<data=ComboResetTime>秒以内に再度スキルボタンを押すと、入力方向に従って御柱を回転飛行させ、範囲内の敵に毎秒<dps=RotateDamage>の霊力ダメージを与える。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 80,
+    "name": "神槍「スピア・ザ・グングニル」",
+    "desc": "神槍「スピア・ザ・グングニル」を前方へ投擲し、進路上の敵を貫いて<damage=BaseDamage>点の霊力ダメージを与えると同時に、軌道上のすべての弾幕を消去する。",
     "levelCount": 1,
     "levelRares": [
       3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 350,
+    "name": "狂喜の火男面",
+    "desc": "前方に火男面を投げつけ、命中した対象に対して毎秒<dps=ContinueDamage>の霊力ダメージを持続的に与え、さらに<data=StunDuration>秒間「<term=Stun>」を付与する。その後、花火が炸裂し、範囲内の敵に<damage=ExplosionDamage>の霊力ダメージを与える。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 130,
+    "name": "気功砲",
+    "desc": "真下へ強力な霊気砲を放ち、範囲内の敵に毎秒<dps=BaseDamage>点の霊力ダメージを与え、同時に<data=AddNuImprintLayer>層の「<term=AngerMark>」を付与する。さらに、対象を<data=StunTime>秒間の「<term=Stun>」状態にする。",
+    "levelCount": 1,
+    "levelRares": [
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 180,
+    "name": "怒れる忌狼の面",
+    "desc": "霊気を纏った狼の面へと化身し、敵に向かって突進する。進路上のすべての敵に<damage=BaseDamage>の霊力ダメージを与え、<term=AngerMark>を1層付与する。<br>化身中は移動方向とジャンプを自由に操作でき、再度スキルを使用すると即座に化身状態を解除する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
     ],
     "characters": [
       1
@@ -186,6 +432,24 @@
     "hasIcon": true
   },
   {
+    "id": 70,
+    "name": "サファイア彗星",
+    "desc": "自身を「サファイア彗星」状態にし、<data=Duration>秒間持続する。感情を切り替えるとこの状態は解除される。この状態中、通常攻撃が敵に命中すると、その位置に小型の彗星が1つ落下し、<damage=BaseDamage>点の霊力ダメージを与える。",
+    "levelCount": 3,
+    "levelRares": [
+      1,
+      2,
+      3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
     "id": 120,
     "name": "二百由旬の一閃",
     "desc": "チャージ状態に入る。チャージ中は「<term=AngerMark>」の持続時間が減少しない。チャージを解除すると、前方直線上の敵に瞬時の斬撃を放つ。チャージ時間が長いほど、斬撃の射程は伸び、与えるダメージも増加する。瞬斬攻撃のダメージは、対象が現在持つ「<term=AngerMark>」の層数に応じて追加で上昇する。 <br>最大チャージ段階に到達した場合、さらに散りゆく桜の弾幕が発生し、命中した敵に<damage=BulletDamage>点の霊力ダメージを与える。",
@@ -202,11 +466,44 @@
     "hasIcon": true
   },
   {
-    "id": 130,
-    "name": "気功砲",
-    "desc": "真下へ強力な霊気砲を放ち、範囲内の敵に毎秒<dps=BaseDamage>点の霊力ダメージを与え、同時に<data=AddNuImprintLayer>層の「<term=AngerMark>」を付与する。さらに、対象を<data=StunTime>秒間の「<term=Stun>」状態にする。",
+    "id": 100,
+    "name": "アルカリス",
+    "desc": "自身を「アルカリス」状態にする。再度発動するか、霊力が尽きる、または感情を切り替えると状態は解除される。 <br>この状態中、通常攻撃のたびに<data=PerManacost>点の霊力を消費し、通常攻撃は攻撃動作を伴わない3連の剣気斬撃へと変化する。各斬撃はそれぞれ<damage=BaseDamage>点の物理ダメージを与える。 <br>斬撃の速度は固定されており、攻撃速度10につき斬撃ダメージが1増加する。",
     "levelCount": 1,
     "levelRares": [
+      3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 360,
+    "name": "怒火燎原",
+    "desc": "前方へ火を連続して投げ放ち、触れた敵に<damage=BulletDamage>の物理ダメージを与える。続いて連鎖爆発を引き起こし、爆発は範囲内の敵に<damage=ExplosionDamage>の物理ダメージを与える。<br>自身が爆発範囲内にいる場合、与えるダメージが25%増加し、<data=BuffTime>秒間持続する。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 560,
+    "name": "奇刃の反響",
+    "desc": "短剣を1本投げ、命中した敵に<damage=BaseDamage>の物理ダメージを与え、さらに5本のナイフへと分裂して散射する。ナイフは進路上の敵に<damage=ForkRayDamage>の物理ダメージを与え、飛行中に地面や壁で反射する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
       1
     ],
     "characters": [
@@ -218,20 +515,36 @@
     "hasIcon": true
   },
   {
-    "id": 140,
-    "name": "重い気咆哮弾",
-    "desc": "前方に気弾を1発放ち、範囲内の敵に毎秒<dps=BaseDamage>霊力ダメージを与える。<br>現在失った体力と霊力に応じて気弾のダメージが上昇する。体力1失うごとに<data=HpDamage>%、霊力1失うごとに<data=ManaDamage>%上昇し、最大で<data=MaxDamage>%まで上昇する。",
-    "levelCount": 3,
+    "id": 450,
+    "name": "怒声の大蜘蛛面",
+    "desc": "土蜘蛛面を取り出し、前方に蛛網を放って範囲内の敵に<damage=BaseDamage>の物理ダメージを与える。<br>命中後<data=ComboResetTime>秒以内に再度スキルを発動すると、糸を強制的に断ち切って対象を自身のもとへ引き寄せ、<damage=SpiderlineDamage>点の物理ダメージを与える。引き寄せ時のダメージおよび破靭値は、対象の現在の「<term=AngerMark>」の層数に応じて追加で増加する。",
+    "levelCount": 2,
     "levelRares": [
       1,
-      2,
-      3
+      2
     ],
     "characters": [
       1
     ],
     "special": false,
-    "emotion": 3,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 460,
+    "name": "吼怒の妖狐面",
+    "desc": "妖狐面を用いてキツネ神を召喚し、噛みつき攻撃を行う。周囲の敵に<damage=BaseDamage>点の物理ダメージを与える。このスキルはすべての「<term=ANGERMARK>」を消費し、その層数に応じてダメージが増加する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 2,
     "type": 0,
     "hasIcon": true
   },
@@ -271,6 +584,24 @@
     "hasIcon": true
   },
   {
+    "id": 140,
+    "name": "重い気咆哮弾",
+    "desc": "前方に気弾を1発放ち、範囲内の敵に毎秒<dps=BaseDamage>霊力ダメージを与える。<br>現在失った体力と霊力に応じて気弾のダメージが上昇する。体力1失うごとに<data=HpDamage>%、霊力1失うごとに<data=ManaDamage>%上昇し、最大で<data=MaxDamage>%まで上昇する。",
+    "levelCount": 3,
+    "levelRares": [
+      1,
+      2,
+      3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 3,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
     "id": 170,
     "name": "反魂蝶",
     "desc": "現在位置に桜の木を1本召喚し、前方上空へ反魂蝶を3体放つ。反魂蝶は周囲の敵を追尾し、命中時に<damage=BaseDamage>の霊力ダメージを与え、自身の体力を<data=HealValue>回復する。",
@@ -287,175 +618,6 @@
     "emotion": 3,
     "type": 0,
     "hasIcon": true
-  },
-  {
-    "id": 180,
-    "name": "怒れる忌狼の面",
-    "desc": "霊気を纏った狼の面へと化身し、敵に向かって突進する。進路上のすべての敵に<damage=BaseDamage>の霊力ダメージを与え、<term=AngerMark>を1層付与する。<br>化身中は移動方向とジャンプを自由に操作でき、再度スキルを使用すると即座に化身状態を解除する。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 190,
-    "name": "強者の湮滅爆炎",
-    "desc": "爆炎弾を1発放ち、一定範囲内で現在体力が最も高い敵を自動追尾する。<br>爆炎弾は命中時に<damage=BaseDamage>の物理ダメージを与え、爆発を起こし、範囲内の他の敵に<damage=ExplosionDamage>の物理ダメージを与える。",
-    "levelCount": 3,
-    "levelRares": [
-      1,
-      2,
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 200,
-    "name": "強気高飛砲",
-    "desc": "前方に気弾を1発放ち、範囲内の敵に毎秒<dps=BaseDamage>霊力ダメージを与える。<br>現在の体力と霊力の割合に応じて気弾のダメージが上昇する。体力を1%持つごとに<data=HpDamage>%、霊力を1%持つごとに<data=ManaDamage>%上昇し、最大で<data=MaxDamage>%まで上昇する。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 210,
-    "name": "禁術「四重存在」",
-    "desc": "自身の攻撃力の<data=DamageRatio>%を継承する分身を1体召喚し、15秒間持続する。最大で同時に3体まで存在可能。指令を切り替えることで、すべての分身が自身の通常攻撃動作をリアルタイムで模倣し、チャージ強撃時には連続して同様の動作を行う。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 220,
-    "name": "仙人の竿打",
-    "desc": "大鯰を召喚して身に従え、共に戦う。スキルボタン長押しで大鯰を回収する。<br>大鯰が場に存在する間、<data=NormalAttackCD>秒ごとに周囲の敵をロックオンして直線突進を行い、進路上の敵に<damage=BaseDamage>の物理ダメージを与える。",
-    "levelCount": 3,
-    "levelRares": [
-      0,
-      1,
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 230,
-    "name": "救世太陽拳",
-    "desc": "二条の金色閃光を放つ。X字状の閃光は命中した敵に<damage=RayDamage>の霊力ダメージを与え、円形の光爆は範囲内の敵に<damage=CircleDamage>の霊力ダメージを与える。",
-    "levelCount": 2,
-    "levelRares": [
-      1,
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 240,
-    "name": "腐蝕光",
-    "desc": "前方へ<data=ShootNum>発の毒弾幕を連続して放ち、命中した敵に<damage=BaseDamage>の霊力ダメージを与え、「<term=Poison>」状態を付与する。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 250,
-    "name": "歓喜の獅子面",
-    "desc": "スキルボタンを長押しして獅子の面を取り出し、前方へ炎を噴射し続ける。ボタンを離すと獅子の面を回収する。<br>炎は範囲内の敵に毎秒<dps=BaseDamage>の霊力ダメージを与える。",
-    "levelCount": 2,
-    "levelRares": [
-      1,
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 260,
-    "name": "腐蝕波動",
-    "desc": "「<term=Poison>」の最大重ね掛け数が3増加する。<br>前方へ毒ガス爆弾を投げ、命中した敵に<damage=BaseDamage>の霊力ダメージを与え、その敵の「<term=Poison>」層数に応じて追加で<term=AbnormalStatusDamage>を与える。同時に毒霧を発生させ、毒霧は範囲内の敵に毎秒<dps=FogDamage>の霊力ダメージを与え、「<term=Poison>」状態を付与する。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 270,
-    "name": "焼却",
-    "desc": "",
-    "levelCount": 1,
-    "levelRares": [
-      0
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": false
   },
   {
     "id": 280,
@@ -491,73 +653,9 @@
     "hasIcon": true
   },
   {
-    "id": 300,
-    "name": "至潔は穢れより生ず",
-    "desc": "蓬莱の玉の枝を召喚し、七色の玉を放つ。命中した対象に<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは物理および霊力ダメージのうち高い方を参照する。<br>発動時に最大で<data=CostLayer>層の穢れを消費し、スキル性能を強化する。穢れ層は最大<data=KillLayerRatio>倍まで蓄積される。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは蓬莱の玉の枝を満タンまで蓄積することで習得可能。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": true,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 310,
-    "name": "内桜",
-    "desc": "前方へ攻撃を放ち、命中した敵に<damage=BaseDamage>の物理ダメージを与える。この攻撃で敵が硬直状態に入った場合、その背後に霊気の壁を生成する。",
-    "levelCount": 1,
-    "levelRares": [
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 320,
-    "name": "飛天斬",
-    "desc": "",
-    "levelCount": 1,
-    "levelRares": [
-      0
-    ],
-    "characters": [
-      1
-    ],
-    "special": true,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": false
-  },
-  {
-    "id": 330,
-    "name": "超究武神御柱",
-    "desc": "御柱を1本、自身の背後に召喚して飛ばし、進路上の敵に<damage=ShootDamage>の霊力ダメージを与える。<br>召喚後<data=ComboResetTime>秒以内に再度スキルボタンを押すと、入力方向に従って御柱を回転飛行させ、範囲内の敵に毎秒<dps=RotateDamage>の霊力ダメージを与える。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 340,
-    "name": "仇反人形",
-    "desc": "前方へ呪弾を放ち、命中した敵に<damage=BulletDamage>の霊力ダメージを与え、同時に自身の現在位置に人形を生成する。人形は受けたダメージの<data=DamageRatio>%をその敵に転送し、<data=DollExistTime>秒間持続する。",
+    "id": 480,
+    "name": "憂面「杞人地を憂う」",
+    "desc": "直近3秒以内に最後に命中した敵をロックし、その位置に2秒間持続する霊気の奔流を発生させ、範囲内の敵に毎秒<dps=BaseDamage>の霊力ダメージを与える。<br>この攻撃は空中にいる対象に対して、与えるダメージがさらに<data=ExtraDamage>%増加する。",
     "levelCount": 1,
     "levelRares": [
       2
@@ -567,38 +665,6 @@
     ],
     "special": false,
     "emotion": 3,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 350,
-    "name": "狂喜の火男面",
-    "desc": "前方に火男面を投げつけ、命中した対象に対して毎秒<dps=ContinueDamage>の霊力ダメージを持続的に与え、さらに<data=StunDuration>秒間「<term=Stun>」を付与する。その後、花火が炸裂し、範囲内の敵に<damage=ExplosionDamage>の霊力ダメージを与える。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 360,
-    "name": "怒火燎原",
-    "desc": "前方へ火を連続して投げ放ち、触れた敵に<damage=BulletDamage>の物理ダメージを与える。続いて連鎖爆発を引き起こし、爆発は範囲内の敵に<damage=ExplosionDamage>の物理ダメージを与える。<br>自身が爆発範囲内にいる場合、与えるダメージが25%増加し、<data=BuffTime>秒間持続する。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 2,
     "type": 0,
     "hasIcon": true
   },
@@ -619,6 +685,108 @@
     "hasIcon": true
   },
   {
+    "id": 440,
+    "name": "可惜身命",
+    "desc": "発動後、<data=ImmunityCount>回までダメージを無効化する効果を獲得し、<data=ImmunityTime>秒間持続する。無効化回数を使い切ると、<data=InvincibleTime>秒間「<term=INVINCIBLE>」状態となる。<br>発動後<data=ComboSkillResetTime>秒以内に再度スキルキーを押すと、前方へ突進し、進路上の敵に<damage=BaseDamage>点の物理ダメージを与える。このダメージは蓄積された被ダメージ量に応じて追加で増加する。",
+    "levelCount": 1,
+    "levelRares": [
+      3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 3,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 340,
+    "name": "仇反人形",
+    "desc": "前方へ呪弾を放ち、命中した敵に<damage=BulletDamage>の霊力ダメージを与え、同時に自身の現在位置に人形を生成する。人形は受けたダメージの<data=DamageRatio>%をその敵に転送し、<data=DollExistTime>秒間持続する。",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 3,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 200,
+    "name": "強気高飛砲",
+    "desc": "前方に気弾を1発放ち、範囲内の敵に毎秒<dps=BaseDamage>霊力ダメージを与える。<br>現在の体力と霊力の割合に応じて気弾のダメージが上昇する。体力を1%持つごとに<data=HpDamage>%、霊力を1%持つごとに<data=ManaDamage>%上昇し、最大で<data=MaxDamage>%まで上昇する。",
+    "levelCount": 2,
+    "levelRares": [
+      0,
+      1
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 4,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 220,
+    "name": "仙人の竿打",
+    "desc": "大鯰を召喚して身に従え、共に戦う。スキルボタン長押しで大鯰を回収する。<br>大鯰が場に存在する間、<data=NormalAttackCD>秒ごとに周囲の敵をロックオンして直線突進を行い、進路上の敵に<damage=BaseDamage>の物理ダメージを与える。",
+    "levelCount": 3,
+    "levelRares": [
+      0,
+      1,
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 4,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 190,
+    "name": "強者の湮滅爆炎",
+    "desc": "爆炎弾を1発放ち、一定範囲内で現在体力が最も高い敵を自動追尾する。<br>爆炎弾は命中時に<damage=BaseDamage>の物理ダメージを与え、爆発を起こし、範囲内の他の敵に<damage=ExplosionDamage>の物理ダメージを与える。",
+    "levelCount": 3,
+    "levelRares": [
+      1,
+      2,
+      3
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 4,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 60,
+    "name": "紅葉扇風",
+    "desc": "扇で小型の旋風を巻き起こし、前方へ飛ばして敵に<damage=BaseDamage>点の霊力ダメージを与える。",
+    "levelCount": 2,
+    "levelRares": [
+      1,
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 4,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
     "id": 380,
     "name": "極楽狂舞",
     "desc": "刀を抜き、前方へ連続して斬撃を放つ。各斬撃は範囲内の敵に<damage=BaseDamage>の物理ダメージを与える。",
@@ -635,20 +803,18 @@
     "hasIcon": true
   },
   {
-    "id": 390,
-    "name": "人形芝居",
-    "desc": "発動時の入力方向に応じて、人形が異なる形態の攻撃を行う。<br>前（デフォルト）：人形を1体召喚し、前方へ弾幕を3発放つ。命中した敵に<damage=FrontDamage>の霊力ダメージを与える。<br>上：人形を1体召喚してエネルギー弾を放出し、範囲内の敵に毎秒<dps=UpDamage>の霊力ダメージを与える。<data=UpDuration>秒間持続する。<br>下：人形を1体召喚し、前方へ突き刺す攻撃を行い、進路上の敵に<damage=DownDamage>の霊力ダメージを与える。",
-    "levelCount": 3,
+    "id": 210,
+    "name": "禁術「四重存在」",
+    "desc": "自身の攻撃力の<data=DamageRatio>%を継承する分身を1体召喚し、15秒間持続する。最大で同時に3体まで存在可能。指令を切り替えることで、すべての分身が自身の通常攻撃動作をリアルタイムで模倣し、チャージ強撃時には連続して同様の動作を行う。",
+    "levelCount": 1,
     "levelRares": [
-      0,
-      1,
-      2
+      3
     ],
     "characters": [
       1
     ],
     "special": false,
-    "emotion": 1,
+    "emotion": 4,
     "type": 0,
     "hasIcon": true
   },
@@ -669,76 +835,12 @@
     "hasIcon": true
   },
   {
-    "id": 410,
-    "name": "凝神帰心",
-    "desc": "自身を「凝神帰心」状態にする。<data=Duration>秒間持続する。この状態中、「<term=Attack>」が敵に初めて命中した際、与えるダメージが<data=DamageAmp>%増加し、「<term=Toughness>」削減効率が<data=PoiseDamageExtraRatio>%上昇する。",
-    "levelCount": 1,
-    "levelRares": [
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 420,
-    "name": "強攻シールド",
-    "desc": "攻撃力の100%＋最大体力の8%に相当するシールドを獲得する。8秒間持続する。",
-    "levelCount": 1,
-    "levelRares": [
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 430,
-    "name": "亜空点穴",
-    "desc": "スキルボタンを押すと、入力方向へ瞬間移動する。",
-    "levelCount": 2,
+    "id": 540,
+    "name": "風花圓舞",
+    "desc": "自身を中心に竜巻を発生させ、範囲内の敵に<damage=BaseDamage>の霊力ダメージを与える。",
+    "levelCount": 3,
     "levelRares": [
       0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 440,
-    "name": "可惜身命",
-    "desc": "発動後、<data=ImmunityCount>回までダメージを無効化する効果を獲得し、<data=ImmunityTime>秒間持続する。無効化回数を使い切ると、<data=InvincibleTime>秒間「<term=INVINCIBLE>」状態となる。<br>発動後<data=ComboSkillResetTime>秒以内に再度スキルキーを押すと、前方へ突進し、進路上の敵に<damage=BaseDamage>点の物理ダメージを与える。このダメージは蓄積された被ダメージ量に応じて追加で増加する。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 3,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 450,
-    "name": "怒声の大蜘蛛面",
-    "desc": "土蜘蛛面を取り出し、前方に蛛網を放って範囲内の敵に<damage=BaseDamage>の物理ダメージを与える。<br>命中後<data=ComboResetTime>秒以内に再度スキルを発動すると、糸を強制的に断ち切って対象を自身のもとへ引き寄せ、<damage=SpiderlineDamage>点の物理ダメージを与える。引き寄せ時のダメージおよび破靭値は、対象の現在の「<term=AngerMark>」の層数に応じて追加で増加する。",
-    "levelCount": 2,
-    "levelRares": [
       1,
       2
     ],
@@ -746,57 +848,7 @@
       1
     ],
     "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 460,
-    "name": "吼怒の妖狐面",
-    "desc": "妖狐面を用いてキツネ神を召喚し、噛みつき攻撃を行う。周囲の敵に<damage=BaseDamage>点の物理ダメージを与える。このスキルはすべての「<term=ANGERMARK>」を消費し、その層数に応じてダメージが増加する。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 470,
-    "name": "不規則水雷",
-    "desc": "前方へ大量の小さな水泡を放つ。水泡は停止後、触れた敵に<damage=BaseDamage>の霊力ダメージを与える。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 480,
-    "name": "憂面「杞人地を憂う」",
-    "desc": "直近3秒以内に最後に命中した敵をロックし、その位置に2秒間持続する霊気の奔流を発生させ、範囲内の敵に毎秒<dps=BaseDamage>の霊力ダメージを与える。<br>この攻撃は空中にいる対象に対して、与えるダメージがさらに<data=ExtraDamage>%増加する。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 3,
+    "emotion": 4,
     "type": 0,
     "hasIcon": true
   },
@@ -818,22 +870,6 @@
     "hasIcon": true
   },
   {
-    "id": 500,
-    "name": "霊気砲座",
-    "desc": "敵を自動追撃するお面を1枚召喚し、<damage=BaseDamage>点の霊力ダメージを与える（最大3枚まで同時存在）。持続時間は<data=LifeTime>秒。<br>対応する感情スキルを使用することで、お面の持続時間を<data=RefreshTime>秒延長できる（お面につき1回まで）。<br>「喜」：弾速が上昇し、貫通効果を得る。<br>「怒」：攻撃頻度が上昇する。<br>「哀」：弾幕サイズが拡大し、追尾性能を得る。<br>「楽」：命中時に爆発を発生させ、<damage=ExplosionDamage>点の物理ダメージを与える。",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
     "id": 510,
     "name": "驚愕の大飛出面",
     "desc": "前方に巨大なお面を設置し、爆発の予兆を発生させる。<data=DelayTime>秒後に爆発し、周囲の敵に<damage=BaseDamage>点の霊力ダメージを与える。このダメージは追加で20%のクリティカル率を持つ。",
@@ -847,122 +883,6 @@
     ],
     "special": false,
     "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 520,
-    "name": "対の詠唱者",
-    "desc": "",
-    "levelCount": 1,
-    "levelRares": [
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": false
-  },
-  {
-    "id": 530,
-    "name": "未熟な複製体",
-    "desc": "",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 1,
-    "type": 0,
-    "hasIcon": false
-  },
-  {
-    "id": 540,
-    "name": "風花圓舞",
-    "desc": "自身を中心に竜巻を発生させ、範囲内の敵に<damage=BaseDamage>の霊力ダメージを与える。",
-    "levelCount": 3,
-    "levelRares": [
-      0,
-      1,
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 4,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 550,
-    "name": "サイコキネシス",
-    "desc": "<data=Duration>秒間持続する法陣を展開し、毎秒<dps=BaseDamage>点の霊力ダメージを与える。法陣は「<term=ERASE>」を行うと同時に、敵弾をゼナーカードへと変換して対象を追尾させ、<damage=BulletDamage>点の霊力ダメージを与える。",
-    "levelCount": 2,
-    "levelRares": [
-      1,
-      2
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 560,
-    "name": "奇刃の反響",
-    "desc": "短剣を1本投げ、命中した敵に<damage=BaseDamage>の物理ダメージを与え、さらに5本のナイフへと分裂して散射する。ナイフは進路上の敵に<damage=ForkRayDamage>の物理ダメージを与え、飛行中に地面や壁で反射する。",
-    "levelCount": 2,
-    "levelRares": [
-      0,
-      1
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 570,
-    "name": "パーフェクト回避",
-    "desc": "秦こころは短時間の構え状態に入り、受ける攻撃を自動で回避する。<br>回避に成功した場合、1秒間の<term=Invincible>状態を獲得し、クールダウン時間を1秒に設定する。同時に、今回の攻撃者に対して無限に重ね掛け可能な特殊印を付与する：与えるダメージが10%増加し、受けるダメージが20%増加する。なお、その攻撃者が秦こころにダメージを与えることに成功した場合、自身に付与されたすべての印は解除される。",
-    "levelCount": 1,
-    "levelRares": [
-      0
-    ],
-    "characters": [
-      1
-    ],
-    "special": false,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 580,
-    "name": "至潔は穢れより生ず",
-    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して、<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方を参照する。<br>スキル発動時、最大で<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破するか、スペルカードを回収して得た穢れは<data=KillLayerRatio>倍の追加補正を受ける。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された時のみ習得可能。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      0
-    ],
-    "special": true,
-    "emotion": 0,
     "type": 0,
     "hasIcon": true
   },
@@ -983,57 +903,9 @@
     "hasIcon": true
   },
   {
-    "id": 600,
-    "name": "至潔は穢れより生ず",
-    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方の値を参照する。<br>スキル発動時、最大<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破する、またはスペルカードを回収して蓄積した穢れは<data=KillLayerRatio>倍の追加補正を得る。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された場合にのみ習得可能。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      0
-    ],
-    "special": true,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 610,
-    "name": "至潔は穢れより生ず",
-    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方の値を参照する。<br>スキル発動時、最大<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破する、またはスペルカードを回収して蓄積した穢れは<data=KillLayerRatio>倍の追加補正を得る。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された場合にのみ習得可能。",
-    "levelCount": 1,
-    "levelRares": [
-      3
-    ],
-    "characters": [
-      0
-    ],
-    "special": true,
-    "emotion": 0,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
     "id": 5000,
     "name": "霊焼却",
     "desc": "炎を爆発させ、自身は<data=InvincibleDuration>秒間<term=Invincible>状態を得る。同時に「<term=ERASE>」を発動し、周囲の敵に<damage=BaseDamage>の霊力ダメージを与え、「<term=Burn>」状態を付与する。",
-    "levelCount": 1,
-    "levelRares": [
-      1
-    ],
-    "characters": [
-      106
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 5010,
-    "name": "独楽屠",
-    "desc": "飛び蹴りを放ち、進路上の敵に<damage=BaseDamage>の物理ダメージを与える。",
     "levelCount": 1,
     "levelRares": [
       1
@@ -1080,24 +952,6 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
-  },
-  {
-    "id": 5040,
-    "name": "環爆炎符・発",
-    "desc": "自身の周りに1つの火の玉を召喚し、触れた敵に<damage=FireballDamage>の霊力ダメージを与える。",
-    "levelCount": 3,
-    "levelRares": [
-      0,
-      1,
-      2
-    ],
-    "characters": [
-      106
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 3,
     "hasIcon": true
   },
   {
@@ -1185,39 +1039,6 @@
     "hasIcon": true
   },
   {
-    "id": 5100,
-    "name": "炎の竹筒",
-    "desc": "バックステップやバックフリップ時に炎の竹筒を投げ、命中した敵に<damage=ExplodeDamage>の霊力ダメージを与え、1秒間「<term=Stun>」状態を付与する。",
-    "levelCount": 1,
-    "levelRares": [
-      1
-    ],
-    "characters": [
-      106
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 4,
-    "hasIcon": true
-  },
-  {
-    "id": 5110,
-    "name": "迦具土落",
-    "desc": "ダイブ攻撃の着地後、両側に2つの放物線状の火の玉を発射し、命中した敵に<damage=FireballDamage>の霊力ダメージを与える。",
-    "levelCount": 2,
-    "levelRares": [
-      1,
-      2
-    ],
-    "characters": [
-      106
-    ],
-    "special": false,
-    "emotion": 2,
-    "type": 3,
-    "hasIcon": true
-  },
-  {
     "id": 5120,
     "name": "地心の燃焔",
     "desc": "跳躍後に鳳凰に変身して降下し、着地点に巨大な炎の柱を生成する。この間、<term=Invincible>状態になる。炎の柱は周囲の敵を引き寄せ、触れた敵に毎秒<dps=FireColumn>の霊力ダメージを与える。",
@@ -1268,6 +1089,58 @@
     "hasIcon": true
   },
   {
+    "id": 5280,
+    "name": "不死不休",
+    "desc": "自身を「不死不休」状態にし、再度発動するか体力が1になると状態が解除される。<br>この状態では、「<term=Attack>」使用時に現在の体力を消費して記録し、総消費量に応じて物理ダメージと霊力ダメージが1:1の割合で増加する（上限<data=MaxDamageBoost>%）。<br>この状態によるダメージ増加が高いほど、毎秒追加で消費される体力も増加し、最大<data=HpCostPerSecond>点/秒となる。<br>総消費量が最大体力の<data=EffectTriggerThreshold>%に達し、かつ現在の体力が<data=HealHpThreshold>%未満の場合、「<term=Attack>」使用時に体力を回復する。",
+    "levelCount": 2,
+    "levelRares": [
+      2,
+      3
+    ],
+    "characters": [
+      106
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 5040,
+    "name": "環爆炎符・発",
+    "desc": "自身の周りに1つの火の玉を召喚し、触れた敵に<damage=FireballDamage>の霊力ダメージを与える。",
+    "levelCount": 3,
+    "levelRares": [
+      0,
+      1,
+      2
+    ],
+    "characters": [
+      106
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 3,
+    "hasIcon": true
+  },
+  {
+    "id": 5110,
+    "name": "迦具土落",
+    "desc": "ダイブ攻撃の着地後、両側に2つの放物線状の火の玉を発射し、命中した敵に<damage=FireballDamage>の霊力ダメージを与える。",
+    "levelCount": 2,
+    "levelRares": [
+      1,
+      2
+    ],
+    "characters": [
+      106
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 3,
+    "hasIcon": true
+  },
+  {
     "id": 5170,
     "name": "無辺の仇痛",
     "desc": "スキル使用時、視界内のすべての敵に<data=StackLayer>層の「<term=AngerMark>」を付与する。",
@@ -1313,6 +1186,38 @@
     "special": false,
     "emotion": 2,
     "type": 3,
+    "hasIcon": true
+  },
+  {
+    "id": 5290,
+    "name": "火中再生",
+    "desc": "体力が0になった際、即座に復活し、最大体力と最大霊力を100%回復する。1ゲームにつき1回のみ発動可能。",
+    "levelCount": 1,
+    "levelRares": [
+      3
+    ],
+    "characters": [
+      106
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 4,
+    "hasIcon": true
+  },
+  {
+    "id": 5100,
+    "name": "炎の竹筒",
+    "desc": "バックステップやバックフリップ時に炎の竹筒を投げ、命中した敵に<damage=ExplodeDamage>の霊力ダメージを与え、1秒間「<term=Stun>」状態を付与する。",
+    "levelCount": 1,
+    "levelRares": [
+      1
+    ],
+    "characters": [
+      106
+    ],
+    "special": false,
+    "emotion": 2,
+    "type": 4,
     "hasIcon": true
   },
   {
@@ -1444,13 +1349,108 @@
     "hasIcon": true
   },
   {
-    "id": 5280,
-    "name": "不死不休",
-    "desc": "自身を「不死不休」状態にし、再度発動するか体力が1になると状態が解除される。<br>この状態では、「<term=Attack>」使用時に現在の体力を消費して記録し、総消費量に応じて物理ダメージと霊力ダメージが1:1の割合で増加する（上限<data=MaxDamageBoost>%）。<br>この状態によるダメージ増加が高いほど、毎秒追加で消費される体力も増加し、最大<data=HpCostPerSecond>点/秒となる。<br>総消費量が最大体力の<data=EffectTriggerThreshold>%に達し、かつ現在の体力が<data=HealHpThreshold>%未満の場合、「<term=Attack>」使用時に体力を回復する。",
-    "levelCount": 2,
+    "id": 270,
+    "name": "焼却",
+    "desc": "",
+    "levelCount": 1,
     "levelRares": [
-      2,
+      0
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": false
+  },
+  {
+    "id": 320,
+    "name": "飛天斬",
+    "desc": "",
+    "levelCount": 1,
+    "levelRares": [
+      0
+    ],
+    "characters": [
+      1
+    ],
+    "special": true,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": false
+  },
+  {
+    "id": 520,
+    "name": "対の詠唱者",
+    "desc": "",
+    "levelCount": 1,
+    "levelRares": [
+      2
+    ],
+    "characters": [
+      1
+    ],
+    "special": false,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": false
+  },
+  {
+    "id": 580,
+    "name": "至潔は穢れより生ず",
+    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して、<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方を参照する。<br>スキル発動時、最大で<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破するか、スペルカードを回収して得た穢れは<data=KillLayerRatio>倍の追加補正を受ける。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された時のみ習得可能。",
+    "levelCount": 1,
+    "levelRares": [
       3
+    ],
+    "characters": [
+      0
+    ],
+    "special": true,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 600,
+    "name": "至潔は穢れより生ず",
+    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方の値を参照する。<br>スキル発動時、最大<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破する、またはスペルカードを回収して蓄積した穢れは<data=KillLayerRatio>倍の追加補正を得る。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された場合にのみ習得可能。",
+    "levelCount": 1,
+    "levelRares": [
+      3
+    ],
+    "characters": [
+      0
+    ],
+    "special": true,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 610,
+    "name": "至潔は穢れより生ず",
+    "desc": "蓬莱の玉の枝を召喚し、七色の玉を発射して<damage=BaseDamage>点の<term=Puredamage>を与える。このダメージは、自身の物理ダメージ増加と霊力ダメージ増加のうち高い方の値を参照する。<br>スキル発動時、最大<data=CostLayer>層の穢れを消費してスキルを強化する。蓬莱の玉の枝は最低でも100層の穢れを保持する。敵を撃破する、またはスペルカードを回収して蓄積した穢れは<data=KillLayerRatio>倍の追加補正を得る。<br><data=PerHealLayer>層ごとに体力を1回復し、穢れ1層につきこのスキルのダメージが<data=PerLayerDamageIncrease>%増加する。<br>このスキルは、蓬莱の玉の枝の穢れが最大まで蓄積された場合にのみ習得可能。",
+    "levelCount": 1,
+    "levelRares": [
+      3
+    ],
+    "characters": [
+      0
+    ],
+    "special": true,
+    "emotion": 0,
+    "type": 0,
+    "hasIcon": true
+  },
+  {
+    "id": 5010,
+    "name": "独楽屠",
+    "desc": "飛び蹴りを放ち、進路上の敵に<damage=BaseDamage>の物理ダメージを与える。",
+    "levelCount": 1,
+    "levelRares": [
+      1
     ],
     "characters": [
       106
@@ -1461,19 +1461,19 @@
     "hasIcon": true
   },
   {
-    "id": 5290,
-    "name": "火中再生",
-    "desc": "体力が0になった際、即座に復活し、最大体力と最大霊力を100%回復する。1ゲームにつき1回のみ発動可能。",
+    "id": 530,
+    "name": "未熟な複製体",
+    "desc": "",
     "levelCount": 1,
     "levelRares": [
       3
     ],
     "characters": [
-      106
+      1
     ],
     "special": false,
-    "emotion": 2,
-    "type": 4,
-    "hasIcon": true
+    "emotion": 1,
+    "type": 0,
+    "hasIcon": false
   }
 ]

@@ -33,38 +33,6 @@
     "hasIcon": true
   },
   {
-    "id": 3,
-    "name": "てるてる坊主",
-    "desc": "通常攻撃が敵に命中すると、目標地点に水柱を落とし <damage=Damage> の霊力ダメージを与える、クールダウン <data=AttackWaterCD> 秒。<br>自身が「喜」の感情状態のとき：スキル攻撃が敵に命中すると、周囲最大3体の敵に水柱を落とし <damage=Damage> の霊力ダメージを与える、クールダウン <data=XiWaterCD> 秒。",
-    "rare": 1,
-    "boss": true,
-    "special": false,
-    "emotion": 1,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 4,
-    "name": "妹紅の緞帯",
-    "desc": "ダッシュ時に火をまとい、進路上のすべての敵に<damage=Damage>の物理ダメージを与える。<br>自身が「怒」の感情状態のとき：ダッシュ回数が <data=DashCount> 増加する。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 2,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 5,
     "name": "封魔針一本",
     "desc": "通常攻撃時、前方へ封魔針を1本放ち、命中した敵に<damage=Damage>のダメージを与える、クールダウン <data=CD> 秒。",
@@ -136,102 +104,6 @@
     "hasIcon": true
   },
   {
-    "id": 9,
-    "name": "希望の面",
-    "desc": "希望の面を召喚する。通常攻撃またはスキル使用時、最も近い敵へ高速弾を3発連続で発射する（間隔0.3秒）、クールダウン1秒。",
-    "rare": 3,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 10,
-    "name": "姥面",
-    "desc": "姥面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて中速弾を5発発射する、クールダウン3秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 3,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 11,
-    "name": "火男面",
-    "desc": "火男面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて高速弾を1発発射する。弾は貫通能力を持つ、クールダウン2秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 1,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 12,
-    "name": "般若面",
-    "desc": "般若面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて弾幕を2発連続で発射する。各弾は <damage=Bullet> ダメージを与える。発射間隔0.3秒、クールダウン1.5秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 13,
-    "name": "福神面",
-    "desc": "福神面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて斬り能力を持つ弾を1発発射する、クールダウン1.5秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 4,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 14,
-    "name": "星のコイン",
-    "desc": "ダメージを与えた際、自身の周囲に五星レーザーを生成し、毎秒<dps=Damage>のダメージを与える。レーザーは<data=LifeTime>秒間持続し、クールダウンは<data=CD>秒。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 15,
     "name": "赤鬼玉",
     "desc": "最大体力が<attr=MaxHp>増加する。",
@@ -275,106 +147,6 @@
     "hasIcon": true
   },
   {
-    "id": 18,
-    "name": "陰陽玉",
-    "desc": "最大体力が <attr=MaxHp> 増加する。<br>攻撃を受けた時、攻撃者の方向へ陰陽玉を1発反射し、命中した敵に <damage=Damage> のダメージを与える。<br>自身が「哀」の感情状態のとき：体力が <data=ShieldHpPercent>% 未満になると、<data=ShieldBase> のシールドを獲得する。持続 <data=ShieldDuration> 秒、クールダウン <data=ShieldCD> 秒。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 3,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 19,
-    "name": "如来石鉢",
-    "desc": "ダメージを受けると衝撃波を発生させ、範囲内の対象に<damage=Damage>点の物理ダメージを与える。<br>5つの難問・強化：被弾時、そのダメージを無効化する。クールダウン<data=CD>秒。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 4,
-        "name": "5つの難問"
-      },
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 20,
-    "name": "暴君の髪飾り",
-    "desc": "スキル使用時に爆発を引き起こし、周囲の敵に<damage=Damage>のダメージを与える。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 21,
-    "name": "龍額玉",
-    "desc": "敵に攻撃が命中した時、対象の攻撃力を<data=AttackAmp>%低下させる。持続時間<data=Duration>秒。<br>5つの難問・強化：龍額玉の効果を持つ敵が受けるダメージが<data=HarmedIncrease>%増加する。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 4,
-        "name": "5つの難問"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 22,
-    "name": "蓬莱の玉の枝",
-    "desc": "敵を撃破すると汚れを1層蓄積し、エリート敵撃破時は<data=EliteLayer>層、ボススペルカード回収時は<data=BossLayer>層蓄積する。さらに、体力を<data=HealHpValue>回復するごとに1層蓄積され、最大<data=MaxLayer>層まで重ねられる。1層ごとに与ダメージが<data=PerLayerValue>%増加する。<br>5つの難問・強化：汚れの最大層数が<data=ExtraMaxLayer>増加する。最大層に達すると、枝が汚れを吸収し、美しい七色の玉の果実を結ぶ。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 4,
-        "name": "5つの難問"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 23,
-    "name": "燕の子安貝",
-    "desc": "体力が<data=HealHpLimit>未満のとき、毎秒<data=HealValue>点の体力を回復する。<br>5つの難問・強化：体力回復量が<data=HealIncrease>%増加する。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 4,
-        "name": "5つの難問"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 24,
     "name": "メディスン箱",
     "desc": "スキル攻撃が敵に命中すると、目標地点に毒霧を発生させる。範囲内の敵に毎秒 <dps=Damage> のダメージを与え、さらに <term=Poison> 状態を付与する、クールダウン <data=CD> 秒。",
@@ -383,22 +155,6 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 25,
-    "name": "火鼠の衣",
-    "desc": "最大体力が <attr=MaxHp> 増加する。<term=Burn> 状態を無効化する。<br>5つの難問・強化：自身が攻撃を受けた時、周囲の敵に <term=Burn> 状態を付与する、クールダウン <data=CD> 秒。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 4,
-        "name": "5つの難問"
-      }
-    ],
     "hasIcon": true
   },
   {
@@ -431,17 +187,6 @@
         "name": "蝕竜の虫"
       }
     ],
-    "hasIcon": true
-  },
-  {
-    "id": 28,
-    "name": "華光玉",
-    "desc": "通常攻撃が <data=HitCount> 回敵に命中するたび、命中地点に <term=BPoint> を1つ生成する。<br><term=BPoint> を拾うと攻撃力が <data=AttackAmpPerLayer>% 増加し、最大 <data=MaxLayer> まで重ね掛けできる。<br>自身が「楽」の感情状態のとき：この方式で生成される <term=BPoint> が毎回1つ追加される。",
-    "rare": 1,
-    "boss": true,
-    "special": false,
-    "emotion": 4,
-    "setTags": [],
     "hasIcon": true
   },
   {
@@ -548,17 +293,6 @@
     "name": "メイド長の髪飾り",
     "desc": "与えるダメージが <attr=DamageBoost> 増加する。",
     "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 39,
-    "name": "奇運アヴァランチ",
-    "desc": "攻撃が4回命中するごとに、次の攻撃が必ずクリティカルになる。<br>クリティカル発生時、コインを1枚生成する。",
-    "rare": 2,
     "boss": false,
     "special": false,
     "emotion": 0,
@@ -787,22 +521,6 @@
     "hasIcon": true
   },
   {
-    "id": 56,
-    "name": "半霊ドリル",
-    "desc": "通常攻撃時、半霊がドリル形態に変化して飛び出し、進路上の敵に持続的に<damage=Damage>のダメージを与える。ドリルが消失するまでは再発射できない。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 57,
     "name": "幽冥の蝶",
     "desc": "攻撃力が <attr=AtkBoost> 増加する。<br>クリティカル率が <attr=CritRate> 増加する。",
@@ -836,39 +554,6 @@
     "hasIcon": true
   },
   {
-    "id": 60,
-    "name": "動物霊",
-    "desc": "<data=CD>秒ごとに場に動物霊を生成し、接触すると以下の効果を得る：<br>「狼霊」：攻撃力が<data=WolfValue>%増加し、<data=Duration>秒間持続。<br>「カワウソ霊」：<data=OtterValue>のシールドを獲得し、<data=Duration>秒間持続。<br>「大鷲霊」：攻撃速度が<data=VultureValue>増加し、<data=Duration>秒間持続。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 61,
-    "name": "天人の桃",
-    "desc": "場上に<data=CD>秒ごとに漂う桃を生成し、接触すると<data=InvincibleTime>秒間<term=INVINCIBLE>状態に入る。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 62,
-    "name": "不死鳥の羽",
-    "desc": "死亡時に復活し、体力を30%回復する。発動後、このアイテムは消滅する。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 63,
     "name": "天狗の帽子",
     "desc": "ダッシュ回復時間が <attr=DashCDReduction> 減少する。",
@@ -891,86 +576,6 @@
     "hasIcon": true
   },
   {
-    "id": 65,
-    "name": "賢者の石「金」",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 66,
-    "name": "賢者の石「水」",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 67,
-    "name": "賢者の石「火」",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 68,
-    "name": "賢者の石「木」",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 69,
-    "name": "賢者の石「土」",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 70,
     "name": "雪妖の心",
     "desc": "通常攻撃が敵に命中した時、<data=Probability>% の確率で対象に <term=Freeze> 状態を付与する。持続 <data=FreezeDuration> 秒。",
@@ -989,17 +594,6 @@
     "boss": false,
     "special": false,
     "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 72,
-    "name": "御幣",
-    "desc": "最大体力が <attr=MaxHp> 増加する。<br>シールドを所持している間、受けるダメージが <data=DamageReduction>% 減少する。<br>自身が「哀」の感情状態のとき：攻撃が敵に命中すると、現在のシールド値の <data=ShieldRatio>% を追加ダメージとして与える。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 3,
     "setTags": [],
     "hasIcon": true
   },
@@ -1026,17 +620,6 @@
     "hasIcon": true
   },
   {
-    "id": 75,
-    "name": "花妖の陽傘",
-    "desc": "",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 76,
     "name": "黄ばんだ葉",
     "desc": "クリティカル率が <attr=CritRate> 増加する。",
@@ -1055,17 +638,6 @@
     "boss": false,
     "special": false,
     "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 78,
-    "name": "厄神のリボン",
-    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
     "setTags": [],
     "hasIcon": true
   },
@@ -1180,93 +752,6 @@
     "hasIcon": true
   },
   {
-    "id": 89,
-    "name": "洩矢の錆びた輪",
-    "desc": "通常攻撃を行う際、前方へランダムな方向に錆びた輪を1枚投擲する。錆びた輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収されることで再度発射可能となる。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      },
-      {
-        "id": 16,
-        "name": "洩矢の神具"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 90,
-    "name": "洩矢の玄鉄輪",
-    "desc": "通常攻撃時、追加で前方へランダムな方向に玄鉄輪を1枚投擲する。玄鉄輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収することで再度発射可能となる。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      },
-      {
-        "id": 16,
-        "name": "洩矢の神具"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 91,
-    "name": "洩矢の決闘輪",
-    "desc": "通常攻撃時、追加で前方へランダムな方向に決闘輪を1枚投擲する。決闘輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収することで再度発射可能となる。",
-    "rare": 3,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      },
-      {
-        "id": 16,
-        "name": "洩矢の神具"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 92,
-    "name": "鉄下駄",
-    "desc": "着地時に衝撃波を発生させ、周囲の敵に<damage=damage>のダメージを与える。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 93,
-    "name": "軍神酒",
-    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 94,
     "name": "軽やかの書",
     "desc": "ダッシュ回復時間が <attr=DashCDReduction> 減少する。",
@@ -1300,28 +785,6 @@
     "hasIcon": true
   },
   {
-    "id": 97,
-    "name": "リアルタイム反撃雷核",
-    "desc": "自身が攻撃を受けた後、攻撃者の位置に <term=Lightning> を落とす。<br>自身が「哀」の感情状態のとき：<term=Lightning> が敵に命中すると、対象の攻撃力を <data=AttackAmp>% 減少させる。持続 <data=Duration> 秒。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 3,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 98,
-    "name": "怒りの蓄積",
-    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。<br>自身が「怒」の感情状態のとき：「<term=AngerMark>」が <data=Layer> 層以上の敵に攻撃が命中すると、目標地点に <term=Lightning> を落とす、クールダウン <data=CD> 秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 99,
     "name": "ライオンハート",
     "desc": "クリティカルが発生しない攻撃を <data=HitCount> 回連続で行った場合、次の攻撃のクリティカル率が100%増加する。",
@@ -1330,76 +793,6 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 100,
-    "name": "神経の毒",
-    "desc": "通常攻撃またはスキル攻撃が敵に命中した際、それぞれ<data=Probability>%および<data=SkillProbability>%の確率で対象に<term=Poison>状態を付与する。<br>毒ダメージを与えた際、対象の<term=Poison>層数が10層に達すると毒爆発を引き起こし、<term=AbnormalStatusDamage>を与え、同一対象に対しては<data=CD>秒のクールダウンが発生する。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 12,
-        "name": "致命毒薬"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 101,
-    "name": "謎の物質",
-    "desc": "",
-    "rare": 2,
-    "boss": false,
-    "special": true,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": false
-  },
-  {
-    "id": 102,
-    "name": "エイジャの赤石",
-    "desc": "攻撃力が<attr=AtkBoost>増加する。<br>攻撃を受けた際、<data=BuffDuration>秒間、受けるダメージが0になる。効果終了後、<data=CD>秒のクールダウンが発生する。幻想道具を1つ獲得するごとに、この効果のクールダウンが<data=FantasyReduceCD>秒短縮され、最大<data=MaxReduceCD>秒まで減少する。<br>このアイテムは「5つの難問」シリーズをすべて揃えることでのみ入手可能であり、1回のプレイにつき1つしか獲得できない。",
-    "rare": 3,
-    "boss": false,
-    "special": true,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 103,
-    "name": "爆弾サツマイモ",
-    "desc": "通常攻撃時にポテト爆弾を1つ生成し、目標または障害物に接触すると爆発し、<damage=Damage>のダメージを与える。<br>クールダウンは<data=CD>秒。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 104,
-    "name": "爆弾サツマイモ",
-    "desc": "<data=ShootCount>回通常攻撃を行うごとに、追尾弾を1発発射する。命中時に爆発し、<damage=Damage>のダメージを与える。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
     "hasIcon": true
   },
   {
@@ -1490,17 +883,6 @@
     "hasIcon": true
   },
   {
-    "id": 112,
-    "name": "エーテルマント",
-    "desc": "スキル発動中、霊力を継続的に消費して <term=Invincible> 状態を得る。<br><term=Invincible> 状態の持続時間が長いほど消費する霊力も増加し、最大で毎秒 <data=MaxCostMana> 消費する。",
-    "rare": 3,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 113,
     "name": "赤龍剣",
     "desc": "敵に初めてダメージを与えた時、対象が受けるダメージが <data=DamageIncreaseValue>% 増加する。持続 <data=Duration> 秒。",
@@ -1508,17 +890,6 @@
     "boss": false,
     "special": false,
     "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 114,
-    "name": "暴怒の紋章",
-    "desc": "「<term=AngerMark>」の持続時間が100%延長される。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
     "setTags": [],
     "hasIcon": true
   },
@@ -1588,38 +959,6 @@
     "hasIcon": true
   },
   {
-    "id": 120,
-    "name": "魂喰いの死神鎌",
-    "desc": "敵を撃破した時、四方へ飛び散る魂を生成し、近くの敵を追尾する。命中した敵に <damage=Damage> ダメージを与える。<br>自身が「楽」の感情状態のとき：生成される魂の数が2倍になる。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 4,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 121,
-    "name": "忘川の死神鎌",
-    "desc": "<term=ChargeAttack> 時、追加で死神鎌による大斬撃を行う。<br>自身が「楽」の感情状態のとき：死神鎌の大斬撃は必ずクリティカルとなり、クリティカルダメージが <data=CritDamage>% 増加する。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 4,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 122,
     "name": "月光",
     "desc": "チャージ中にダッシュを行うと <term=ChargeLevel> が1段階上昇する。",
@@ -1639,70 +978,6 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 124,
-    "name": "裏・吹き荒ぶ春桜",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 1,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 125,
-    "name": "裏・パーフェクトサマーフリーズ",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 4,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 126,
-    "name": "裏・狂乱の秋風",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 3,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 127,
-    "name": "裏・深寒の冬棘",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 2,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
     "hasIcon": true
   },
   {
@@ -1728,22 +1003,6 @@
     "hasIcon": true
   },
   {
-    "id": 130,
-    "name": "延長アーム",
-    "desc": "通常攻撃時に<term=ERASE>の機械腕が出現し、<damage=Base>のダメージを与える。クールダウンは<data=CD>秒。",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 131,
     "name": "幸運ニンジンのネックレス",
     "desc": "クリティカルで敵を撃破した時、ドロップするお金量がランダムで<data=MinValue>%~<data=MaxValue>%増加する。",
@@ -1766,17 +1025,6 @@
     "hasIcon": true
   },
   {
-    "id": 133,
-    "name": "蛇と蛙の髪飾り",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 134,
     "name": "注連縄",
     "desc": "霊力消費が <attr=MpCostReduction> 減少する。<br>霊力上限が <attr=MaxMp> 減少する。",
@@ -1785,22 +1033,6 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 135,
-    "name": "釣瓶落とし",
-    "desc": "<data=CD>秒ごとにランダムな敵の上空からタルを落下させ、<damage=Base>のダメージを与え、さらに<data=StunDuration>秒間<term=Stun>状態を付与する。<br>この効果はエリート敵に対して<data=EliteProbability>%、ボスに対して<data=BossProbability>%の確率で発動する。",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
     "hasIcon": true
   },
   {
@@ -1834,22 +1066,6 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 139,
-    "name": "ヤタガラスの目",
-    "desc": "",
-    "rare": 3,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
     "hasIcon": true
   },
   {
@@ -1891,37 +1107,10 @@
     "hasIcon": true
   },
   {
-    "id": 143,
-    "name": "楓の円盾",
-    "desc": "",
-    "rare": 1,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
     "id": 144,
     "name": "天狗の大盾",
     "desc": "ダメージを受けた時、最大体力の <data=ShiledHPPercent>% + <data=ShieldBasicValue>のシールドを獲得する。持続 <data=ShieldDuration> 秒、クールダウン <data=CD> 秒。",
     "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 145,
-    "name": "兎の尻尾",
-    "desc": "",
-    "rare": 0,
     "boss": false,
     "special": false,
     "emotion": 0,
@@ -2048,66 +1237,6 @@
     "hasIcon": true
   },
   {
-    "id": 155,
-    "name": "ミスター帽子",
-    "desc": "",
-    "rare": 2,
-    "boss": false,
-    "special": false,
-    "emotion": 0,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 156,
-    "name": "重低音バスドラム",
-    "desc": "感情を切り替えた時、<term=ERASE>を行う波動を発生させる、クールダウン <data=CD> 秒。<br>自身が「喜」感情の時：消去された弾幕は <term=BPoint> に変換される。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 1,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 157,
-    "name": "浮世金輪",
-    "desc": "着地した時、その場に金輪を生成する。毎秒、周囲の敵に <dps=Damage> ダメージを与える。<br>自身が「怒」感情の時：金輪が強化され、毎秒周囲の敵に <dps=Damage> の物理ダメージを与える。",
-    "rare": 1,
-    "boss": true,
-    "special": false,
-    "emotion": 2,
-    "setTags": [
-      {
-        "id": 14,
-        "name": "特効強化"
-      }
-    ],
-    "hasIcon": true
-  },
-  {
-    "id": 158,
-    "name": "毒導線",
-    "desc": "付与する <term=Bleed>と<term=Poison>の持続時間が<data=ExtraDuration>秒延長される。<br>自身が「哀」感情の時：<term=PathosRetribution>発動時、追加で毒衝撃を1回発生させ、周囲の敵に<term=Poison>を2層付与する。",
-    "rare": 1,
-    "boss": true,
-    "special": false,
-    "emotion": 3,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
-    "id": 159,
-    "name": "雷神太鼓",
-    "desc": "敵にダメージを与えた時、その<data=DamageRatio>%を記録する（上限<data=MaxValue>点）。<br>スキル攻撃が敵に命中した時、記録値が上限に達している場合、その攻撃に記録値の100%分の追加ダメージを付与し、記録値をリセットする。<br>自身が「喜」感情の時：記録するダメージ割合が<data=XiDamageRatio>%に増加する。",
-    "rare": 2,
-    "boss": true,
-    "special": false,
-    "emotion": 1,
-    "setTags": [],
-    "hasIcon": true
-  },
-  {
     "id": 160,
     "name": "回天",
     "desc": "<term=ChargeAttack>のダメージが<data=ChargeDMGBoost>% 増加するが、チャージ時間が <data=ChargeSpeedReduce>% 増加する。",
@@ -2127,6 +1256,22 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 92,
+    "name": "鉄下駄",
+    "desc": "着地時に衝撃波を発生させ、周囲の敵に<damage=damage>のダメージを与える。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
     "hasIcon": true
   },
   {
@@ -2163,10 +1308,266 @@
     "hasIcon": true
   },
   {
-    "id": 165,
-    "name": "奇幻キノコ",
-    "desc": "<data=CD>秒ごとに周囲の敵に<data=Layer>層の<term=Poison>状態を付与する。",
+    "id": 167,
+    "name": "淬毒利刃",
+    "desc": "対象が同時に<term=Poison>および<term=Bleed>状態にある場合、受ける<term=AbnormalStatusDamage>が増加する。<br><term=Poison>1層ごとに<data=PerLayerDMGBoost>%増加する。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 21,
+    "name": "龍額玉",
+    "desc": "敵に攻撃が命中した時、対象の攻撃力を<data=AttackAmp>%低下させる。持続時間<data=Duration>秒。<br>5つの難問・強化：龍額玉の効果を持つ敵が受けるダメージが<data=HarmedIncrease>%増加する。",
     "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 4,
+        "name": "5つの難問"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 22,
+    "name": "蓬莱の玉の枝",
+    "desc": "敵を撃破すると汚れを1層蓄積し、エリート敵撃破時は<data=EliteLayer>層、ボススペルカード回収時は<data=BossLayer>層蓄積する。さらに、体力を<data=HealHpValue>回復するごとに1層蓄積され、最大<data=MaxLayer>層まで重ねられる。1層ごとに与ダメージが<data=PerLayerValue>%増加する。<br>5つの難問・強化：汚れの最大層数が<data=ExtraMaxLayer>増加する。最大層に達すると、枝が汚れを吸収し、美しい七色の玉の果実を結ぶ。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 4,
+        "name": "5つの難問"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 23,
+    "name": "燕の子安貝",
+    "desc": "体力が<data=HealHpLimit>未満のとき、毎秒<data=HealValue>点の体力を回復する。<br>5つの難問・強化：体力回復量が<data=HealIncrease>%増加する。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 4,
+        "name": "5つの難問"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 25,
+    "name": "火鼠の衣",
+    "desc": "最大体力が <attr=MaxHp> 増加する。<term=Burn> 状態を無効化する。<br>5つの難問・強化：自身が攻撃を受けた時、周囲の敵に <term=Burn> 状態を付与する、クールダウン <data=CD> 秒。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 4,
+        "name": "5つの難問"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 19,
+    "name": "如来石鉢",
+    "desc": "ダメージを受けると衝撃波を発生させ、範囲内の対象に<damage=Damage>点の物理ダメージを与える。<br>5つの難問・強化：被弾時、そのダメージを無効化する。クールダウン<data=CD>秒。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 4,
+        "name": "5つの難問"
+      },
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 102,
+    "name": "エイジャの赤石",
+    "desc": "攻撃力が<attr=AtkBoost>増加する。<br>攻撃を受けた際、<data=BuffDuration>秒間、受けるダメージが0になる。効果終了後、<data=CD>秒のクールダウンが発生する。幻想道具を1つ獲得するごとに、この効果のクールダウンが<data=FantasyReduceCD>秒短縮され、最大<data=MaxReduceCD>秒まで減少する。<br>このアイテムは「5つの難問」シリーズをすべて揃えることでのみ入手可能であり、1回のプレイにつき1つしか獲得できない。",
+    "rare": 3,
+    "boss": false,
+    "special": true,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 103,
+    "name": "爆弾サツマイモ",
+    "desc": "通常攻撃時にポテト爆弾を1つ生成し、目標または障害物に接触すると爆発し、<damage=Damage>のダメージを与える。<br>クールダウンは<data=CD>秒。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 104,
+    "name": "爆弾サツマイモ",
+    "desc": "<data=ShootCount>回通常攻撃を行うごとに、追尾弾を1発発射する。命中時に爆発し、<damage=Damage>のダメージを与える。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 135,
+    "name": "釣瓶落とし",
+    "desc": "<data=CD>秒ごとにランダムな敵の上空からタルを落下させ、<damage=Base>のダメージを与え、さらに<data=StunDuration>秒間<term=Stun>状態を付与する。<br>この効果はエリート敵に対して<data=EliteProbability>%、ボスに対して<data=BossProbability>%の確率で発動する。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 14,
+    "name": "星のコイン",
+    "desc": "ダメージを与えた際、自身の周囲に五星レーザーを生成し、毎秒<dps=Damage>のダメージを与える。レーザーは<data=LifeTime>秒間持続し、クールダウンは<data=CD>秒。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 60,
+    "name": "動物霊",
+    "desc": "<data=CD>秒ごとに場に動物霊を生成し、接触すると以下の効果を得る：<br>「狼霊」：攻撃力が<data=WolfValue>%増加し、<data=Duration>秒間持続。<br>「カワウソ霊」：<data=OtterValue>のシールドを獲得し、<data=Duration>秒間持続。<br>「大鷲霊」：攻撃速度が<data=VultureValue>増加し、<data=Duration>秒間持続。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 20,
+    "name": "暴君の髪飾り",
+    "desc": "スキル使用時に爆発を引き起こし、周囲の敵に<damage=Damage>のダメージを与える。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 61,
+    "name": "天人の桃",
+    "desc": "場上に<data=CD>秒ごとに漂う桃を生成し、接触すると<data=InvincibleTime>秒間<term=INVINCIBLE>状態に入る。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 130,
+    "name": "延長アーム",
+    "desc": "通常攻撃時に<term=ERASE>の機械腕が出現し、<damage=Base>のダメージを与える。クールダウンは<data=CD>秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 100,
+    "name": "神経の毒",
+    "desc": "通常攻撃またはスキル攻撃が敵に命中した際、それぞれ<data=Probability>%および<data=SkillProbability>%の確率で対象に<term=Poison>状態を付与する。<br>毒ダメージを与えた際、対象の<term=Poison>層数が10層に達すると毒爆発を引き起こし、<term=AbnormalStatusDamage>を与え、同一対象に対しては<data=CD>秒のクールダウンが発生する。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 12,
+        "name": "致命毒薬"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 56,
+    "name": "半霊ドリル",
+    "desc": "通常攻撃時、半霊がドリル形態に変化して飛び出し、進路上の敵に持続的に<damage=Damage>のダメージを与える。ドリルが消失するまでは再発射できない。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 112,
+    "name": "エーテルマント",
+    "desc": "スキル発動中、霊力を継続的に消費して <term=Invincible> 状態を得る。<br><term=Invincible> 状態の持続時間が長いほど消費する霊力も増加し、最大で毎秒 <data=MaxCostMana> 消費する。",
+    "rare": 3,
     "boss": false,
     "special": false,
     "emotion": 0,
@@ -2190,14 +1591,613 @@
     "hasIcon": true
   },
   {
-    "id": 167,
-    "name": "淬毒利刃",
-    "desc": "対象が同時に<term=Poison>および<term=Bleed>状態にある場合、受ける<term=AbnormalStatusDamage>が増加する。<br><term=Poison>1層ごとに<data=PerLayerDMGBoost>%増加する。",
+    "id": 165,
+    "name": "奇幻キノコ",
+    "desc": "<data=CD>秒ごとに周囲の敵に<data=Layer>層の<term=Poison>状態を付与する。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 90,
+    "name": "洩矢の玄鉄輪",
+    "desc": "通常攻撃時、追加で前方へランダムな方向に玄鉄輪を1枚投擲する。玄鉄輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収することで再度発射可能となる。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      },
+      {
+        "id": 16,
+        "name": "洩矢の神具"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 89,
+    "name": "洩矢の錆びた輪",
+    "desc": "通常攻撃を行う際、前方へランダムな方向に錆びた輪を1枚投擲する。錆びた輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収されることで再度発射可能となる。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      },
+      {
+        "id": 16,
+        "name": "洩矢の神具"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 91,
+    "name": "洩矢の決闘輪",
+    "desc": "通常攻撃時、追加で前方へランダムな方向に決闘輪を1枚投擲する。決闘輪は進行経路上の敵に継続的に<damage=Damage>点のダメージを与え、回収することで再度発射可能となる。",
+    "rare": 3,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      },
+      {
+        "id": 16,
+        "name": "洩矢の神具"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 3,
+    "name": "てるてる坊主",
+    "desc": "通常攻撃が敵に命中すると、目標地点に水柱を落とし <damage=Damage> の霊力ダメージを与える、クールダウン <data=AttackWaterCD> 秒。<br>自身が「喜」の感情状態のとき：スキル攻撃が敵に命中すると、周囲最大3体の敵に水柱を落とし <damage=Damage> の霊力ダメージを与える、クールダウン <data=XiWaterCD> 秒。",
+    "rare": 1,
+    "boss": true,
+    "special": false,
+    "emotion": 1,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 156,
+    "name": "重低音バスドラム",
+    "desc": "感情を切り替えた時、<term=ERASE>を行う波動を発生させる、クールダウン <data=CD> 秒。<br>自身が「喜」感情の時：消去された弾幕は <term=BPoint> に変換される。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 1,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 159,
+    "name": "雷神太鼓",
+    "desc": "敵にダメージを与えた時、その<data=DamageRatio>%を記録する（上限<data=MaxValue>点）。<br>スキル攻撃が敵に命中した時、記録値が上限に達している場合、その攻撃に記録値の100%分の追加ダメージを付与し、記録値をリセットする。<br>自身が「喜」感情の時：記録するダメージ割合が<data=XiDamageRatio>%に増加する。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 1,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 157,
+    "name": "浮世金輪",
+    "desc": "着地した時、その場に金輪を生成する。毎秒、周囲の敵に <dps=Damage> ダメージを与える。<br>自身が「怒」感情の時：金輪が強化され、毎秒周囲の敵に <dps=Damage> の物理ダメージを与える。",
+    "rare": 1,
+    "boss": true,
+    "special": false,
+    "emotion": 2,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 78,
+    "name": "厄神のリボン",
+    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 114,
+    "name": "暴怒の紋章",
+    "desc": "「<term=AngerMark>」の持続時間が100%延長される。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 4,
+    "name": "妹紅の緞帯",
+    "desc": "ダッシュ時に火をまとい、進路上のすべての敵に<damage=Damage>の物理ダメージを与える。<br>自身が「怒」の感情状態のとき：ダッシュ回数が <data=DashCount> 増加する。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 2,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 93,
+    "name": "軍神酒",
+    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 98,
+    "name": "怒りの蓄積",
+    "desc": "「<term=AngerMark>」の最大重ね掛け数が <attr=NuImprintIncreasement> 増加する。<br>自身が「怒」の感情状態のとき：「<term=AngerMark>」が <data=Layer> 層以上の敵に攻撃が命中すると、目標地点に <term=Lightning> を落とす、クールダウン <data=CD> 秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 158,
+    "name": "毒導線",
+    "desc": "付与する <term=Bleed>と<term=Poison>の持続時間が<data=ExtraDuration>秒延長される。<br>自身が「哀」感情の時：<term=PathosRetribution>発動時、追加で毒衝撃を1回発生させ、周囲の敵に<term=Poison>を2層付与する。",
+    "rare": 1,
+    "boss": true,
+    "special": false,
+    "emotion": 3,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 72,
+    "name": "御幣",
+    "desc": "最大体力が <attr=MaxHp> 増加する。<br>シールドを所持している間、受けるダメージが <data=DamageReduction>% 減少する。<br>自身が「哀」の感情状態のとき：攻撃が敵に命中すると、現在のシールド値の <data=ShieldRatio>% を追加ダメージとして与える。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 3,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 18,
+    "name": "陰陽玉",
+    "desc": "最大体力が <attr=MaxHp> 増加する。<br>攻撃を受けた時、攻撃者の方向へ陰陽玉を1発反射し、命中した敵に <damage=Damage> のダメージを与える。<br>自身が「哀」の感情状態のとき：体力が <data=ShieldHpPercent>% 未満になると、<data=ShieldBase> のシールドを獲得する。持続 <data=ShieldDuration> 秒、クールダウン <data=ShieldCD> 秒。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 3,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 97,
+    "name": "リアルタイム反撃雷核",
+    "desc": "自身が攻撃を受けた後、攻撃者の位置に <term=Lightning> を落とす。<br>自身が「哀」の感情状態のとき：<term=Lightning> が敵に命中すると、対象の攻撃力を <data=AttackAmp>% 減少させる。持続 <data=Duration> 秒。",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 3,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 28,
+    "name": "華光玉",
+    "desc": "通常攻撃が <data=HitCount> 回敵に命中するたび、命中地点に <term=BPoint> を1つ生成する。<br><term=BPoint> を拾うと攻撃力が <data=AttackAmpPerLayer>% 増加し、最大 <data=MaxLayer> まで重ね掛けできる。<br>自身が「楽」の感情状態のとき：この方式で生成される <term=BPoint> が毎回1つ追加される。",
+    "rare": 1,
+    "boss": true,
+    "special": false,
+    "emotion": 4,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 120,
+    "name": "魂喰いの死神鎌",
+    "desc": "敵を撃破した時、四方へ飛び散る魂を生成し、近くの敵を追尾する。命中した敵に <damage=Damage> ダメージを与える。<br>自身が「楽」の感情状態のとき：生成される魂の数が2倍になる。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 4,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 121,
+    "name": "忘川の死神鎌",
+    "desc": "<term=ChargeAttack> 時、追加で死神鎌による大斬撃を行う。<br>自身が「楽」の感情状態のとき：死神鎌の大斬撃は必ずクリティカルとなり、クリティカルダメージが <data=CritDamage>% 増加する。",
+    "rare": 2,
+    "boss": true,
+    "special": false,
+    "emotion": 4,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 9,
+    "name": "希望の面",
+    "desc": "希望の面を召喚する。通常攻撃またはスキル使用時、最も近い敵へ高速弾を3発連続で発射する（間隔0.3秒）、クールダウン1秒。",
+    "rare": 3,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 39,
+    "name": "奇運アヴァランチ",
+    "desc": "攻撃が4回命中するごとに、次の攻撃が必ずクリティカルになる。<br>クリティカル発生時、コインを1枚生成する。",
     "rare": 2,
     "boss": false,
     "special": false,
     "emotion": 0,
     "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 62,
+    "name": "不死鳥の羽",
+    "desc": "死亡時に復活し、体力を30%回復する。発動後、このアイテムは消滅する。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 65,
+    "name": "賢者の石「金」",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 66,
+    "name": "賢者の石「水」",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 67,
+    "name": "賢者の石「火」",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 68,
+    "name": "賢者の石「木」",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 69,
+    "name": "賢者の石「土」",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 75,
+    "name": "花妖の陽傘",
+    "desc": "",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 101,
+    "name": "謎の物質",
+    "desc": "",
+    "rare": 2,
+    "boss": false,
+    "special": true,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": false
+  },
+  {
+    "id": 133,
+    "name": "蛇と蛙の髪飾り",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 139,
+    "name": "ヤタガラスの目",
+    "desc": "",
+    "rare": 3,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 143,
+    "name": "楓の円盾",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 145,
+    "name": "兎の尻尾",
+    "desc": "",
+    "rare": 0,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 155,
+    "name": "ミスター帽子",
+    "desc": "",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
+    "id": 13,
+    "name": "福神面",
+    "desc": "福神面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて斬り能力を持つ弾を1発発射する、クールダウン1.5秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 4,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 125,
+    "name": "裏・パーフェクトサマーフリーズ",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 4,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 12,
+    "name": "般若面",
+    "desc": "般若面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて弾幕を2発連続で発射する。各弾は <damage=Bullet> ダメージを与える。発射間隔0.3秒、クールダウン1.5秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 127,
+    "name": "裏・深寒の冬棘",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 2,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 10,
+    "name": "姥面",
+    "desc": "姥面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて中速弾を5発発射する、クールダウン3秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 3,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 126,
+    "name": "裏・狂乱の秋風",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 3,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 11,
+    "name": "火男面",
+    "desc": "火男面を召喚する。通常攻撃またはスキル使用時、最も近い敵に向けて高速弾を1発発射する。弾は貫通能力を持つ、クールダウン2秒。",
+    "rare": 2,
+    "boss": false,
+    "special": false,
+    "emotion": 1,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
+    "hasIcon": true
+  },
+  {
+    "id": 124,
+    "name": "裏・吹き荒ぶ春桜",
+    "desc": "",
+    "rare": 1,
+    "boss": false,
+    "special": false,
+    "emotion": 1,
+    "setTags": [
+      {
+        "id": 14,
+        "name": "特効強化"
+      }
+    ],
     "hasIcon": true
   }
 ]
