@@ -77,7 +77,7 @@ function SkillRow({ skill, index }: { skill: Skill; index: number }) {
       <td className="px-3 py-2">
         <div className="flex flex-col gap-0.5">
           {skill.levelRares.map((r, i) => (
-            <span key={i} className={`text-xs font-bold ${RARE_CLASS[r]}`}>
+            <span key={i} className={`whitespace-nowrap text-xs font-bold ${RARE_CLASS[r]}`}>
               {skill.levelCount > 1 ? `Lv${i + 1}: ` : ""}{RARE_LABEL[r]}
             </span>
           ))}
