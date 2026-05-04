@@ -49,16 +49,18 @@ export function ItemsTable() {
   const [search, setSearch] = useState("");
   const [rareFilter, setRareFilter] = useState<number | null>(null);
   const [emoFilter, setEmoFilter] = useState<number | null>(null);
+  const [bossFilter, setBossFilter] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return items.filter((item) => {
       if (rareFilter !== null && item.rare !== rareFilter) return false;
       if (emoFilter !== null && item.emotion !== emoFilter) return false;
+      if (bossFilter && !item.boss) return false;
       if (q && !item.name.toLowerCase().includes(q) && !item.desc.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [search, rareFilter, emoFilter]);
+  }, [search, rareFilter, emoFilter, bossFilter]);
 
   return (
     <div>
@@ -93,6 +95,12 @@ export function ItemsTable() {
             </button>
           ))}
         </div>
+        <button
+          onClick={() => setBossFilter(!bossFilter)}
+          className={`rounded px-2 py-1 text-xs font-bold transition-opacity ${bossFilter ? "opacity-100 ring-1 ring-current" : "opacity-50 hover:opacity-80"} bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400`}
+        >
+          Boss
+        </button>
         <span className="ml-auto text-xs text-zinc-400">{filtered.length} 件</span>
       </div>
 
