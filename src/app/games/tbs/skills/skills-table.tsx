@@ -156,7 +156,7 @@ export function SkillsTable() {
           <div key={label}>
             <h2 className="mb-2 text-sm font-bold text-zinc-700 dark:text-zinc-300">
               {label}
-              <span className="ml-2 font-normal text-zinc-400">{list.length} 件</span>
+              <span className="ml-2 font-normal text-zinc-400">· {list.length} 件</span>
             </h2>
             <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
               <table className="w-full border-collapse text-sm">
