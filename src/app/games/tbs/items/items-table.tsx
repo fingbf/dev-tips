@@ -101,6 +101,7 @@ export function ItemsTable() {
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
+              <th className="w-8 px-2 py-2 text-right text-zinc-400">#</th>
               <th className="w-14 px-3 py-2 text-center">アイコン</th>
               <th className="px-3 py-2">名前</th>
               <th className="px-3 py-2">レア</th>
@@ -109,11 +110,12 @@ export function ItemsTable() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((item) => (
+            {filtered.map((item, i) => (
               <tr
                 key={item.id}
                 className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/40"
               >
+                <td className="px-2 py-2 text-right text-xs text-zinc-400">{i + 1}</td>
                 <td className="px-3 py-2 text-center">
                   {item.hasIcon ? (
                     <Image
