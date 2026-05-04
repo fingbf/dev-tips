@@ -107,6 +107,7 @@ function SkillRow({ skill, index }: { skill: Skill; index: number }) {
 export function SkillsTable() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<number | null>(null);
+  const [emoFilter, setEmoFilter] = useState<number | null>(null);
 
   const sections = useMemo(() => {
     const q = search.toLowerCase();
@@ -116,11 +117,11 @@ export function SkillsTable() {
           ? s.characters.length === 0 || s.characters.includes(0)
           : s.characters.includes(charId);
         if (!inChar) return false;
-        // type=1 は「通常」扱い (TYPE_LABEL同じ) なのでまとめてフィルタ
         if (typeFilter !== null) {
           const match = typeFilter === 0 ? (s.type === 0 || s.type === 1) : s.type === typeFilter;
           if (!match) return false;
         }
+        if (emoFilter !== null && s.emotion !== emoFilter) return false;
         if (q && !s.name.toLowerCase().includes(q) && !s.desc.toLowerCase().includes(q)) return false;
         return true;
       });
@@ -148,6 +149,17 @@ export function SkillsTable() {
               className={`rounded px-2 py-1 text-xs font-bold transition-opacity ${typeFilter === t ? "opacity-100 ring-1 ring-zinc-500" : "opacity-50 hover:opacity-80"} bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300`}
             >
               {TYPE_LABEL[t]}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1">
+          {([1, 2, 3, 4] as const).map((e) => (
+            <button
+              key={e}
+              onClick={() => setEmoFilter(emoFilter === e ? null : e)}
+              className={`rounded px-2 py-1 text-xs font-bold transition-opacity ${EMO_CLASS[e]} ${emoFilter === e ? "opacity-100 ring-1 ring-current" : "opacity-50 hover:opacity-80"}`}
+            >
+              {EMO_LABEL[e]}
             </button>
           ))}
         </div>
