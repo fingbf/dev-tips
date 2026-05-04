@@ -37,15 +37,6 @@ const EMO_CLASS: Record<number, string> = {
   4: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
 };
 
-function cleanDesc(text: string) {
-  return text
-    .replace(/<term=([^>]+)>/g, "[$1]")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\\t/g, " ")
-    .replace(/\n+/g, " ")
-    .trim();
-}
-
 const RARE_OPTIONS = [0, 1, 2, 3] as const;
 const EMO_OPTIONS = [0, 1, 2, 3, 4] as const;
 
@@ -61,7 +52,7 @@ export function ItemsTable() {
       if (rareFilter !== null && item.rare !== rareFilter) return false;
       if (emoFilter !== null && item.emotion !== emoFilter) return false;
       if (bossFilter && !item.boss) return false;
-      if (q && !item.name.toLowerCase().includes(q) && !item.desc.toLowerCase().includes(q)) return false;
+      if (q && !item.name.toLowerCase().includes(q)) return false;
       return true;
     });
   }, [search, rareFilter, emoFilter, bossFilter]);
@@ -72,7 +63,7 @@ export function ItemsTable() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <input
           type="search"
-          placeholder="名前・説明で検索..."
+          placeholder="名前で検索..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800"
@@ -117,7 +108,6 @@ export function ItemsTable() {
               <th className="px-3 py-2">名前</th>
               <th className="px-3 py-2">レア</th>
               <th className="px-3 py-2">タグ</th>
-              <th className="px-3 py-2">説明</th>
             </tr>
           </thead>
           <tbody>
@@ -127,7 +117,25 @@ export function ItemsTable() {
                 className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/40"
               >
                 <td className="px-2 py-2 text-right text-xs text-zinc-400">{i + 1}</td>
-                <td className="px-3 py-2 font-medium">{item.name}</td>
+                <td className="px-3 py-2">
+                  <div className="font-medium">{item.name}</div>
+                  {item.note && (
+                    <div className="mt-0.5 text-xs text-amber-600 dark:text-amber-400">{item.note}</div>
+                  )}
+                  {item.setTags.map((t) => {
+                    const ef = setEffects[String(t.id)];
+                    if (!ef) return null;
+                    return (
+                      <div
+                        key={t.id}
+                        className="mt-1 rounded-r border-l-2 px-2 py-0.5 text-xs font-bold"
+                        style={{ borderColor: ef.color, color: ef.color, background: `${ef.color}18` }}
+                      >
+                        {ef.name}
+                      </div>
+                    );
+                  })}
+                </td>
                 <td className="px-3 py-2">
                   <span className={`text-xs font-bold ${RARE_CLASS[item.rare]}`}>
                     {RARE_LABEL[item.rare]}
@@ -150,35 +158,7 @@ export function ItemsTable() {
                         特殊
                       </span>
                     )}
-                    {item.setTags.map((t) => (
-                      <span
-                        key={t.id}
-                        className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-                      >
-                        {t.name}
-                      </span>
-                    ))}
                   </div>
-                </td>
-                <td className="max-w-xs px-3 py-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-                  {item.note && (
-                    <div className="mb-1 text-amber-600 dark:text-amber-400">{item.note}</div>
-                  )}
-                  {cleanDesc(item.desc)}
-                  {item.setTags.map((t) => {
-                    const ef = setEffects[String(t.id)];
-                    if (!ef) return null;
-                    return (
-                      <div
-                        key={t.id}
-                        className="mt-1.5 rounded-r border-l-2 px-2 py-1"
-                        style={{ borderColor: ef.color, background: `${ef.color}18` }}
-                      >
-                        <span className="font-bold" style={{ color: ef.color }}>【{ef.name}】</span>{" "}
-                        {cleanDesc(ef.desc)}
-                      </div>
-                    );
-                  })}
                 </td>
               </tr>
             ))}

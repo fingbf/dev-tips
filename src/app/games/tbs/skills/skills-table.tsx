@@ -42,15 +42,6 @@ const SECTIONS: { charId: number; label: string }[] = [
 
 const TYPE_OPTIONS = [0, 3, 4] as const;
 
-function cleanDesc(text: string) {
-  return text
-    .replace(/<term=([^>]+)>/g, "[$1]")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\\t/g, " ")
-    .replace(/\n+/g, " ")
-    .trim();
-}
-
 function SkillRow({ skill, index }: { skill: Skill; index: number }) {
   return (
     <tr className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/40">
@@ -82,9 +73,6 @@ function SkillRow({ skill, index }: { skill: Skill; index: number }) {
           )}
         </div>
       </td>
-      <td className="max-w-xs px-3 py-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-        {cleanDesc(skill.desc)}
-      </td>
     </tr>
   );
 }
@@ -107,7 +95,7 @@ export function SkillsTable() {
           if (!match) return false;
         }
         if (emoFilter !== null && s.emotion !== emoFilter) return false;
-        if (q && !s.name.toLowerCase().includes(q) && !s.desc.toLowerCase().includes(q)) return false;
+        if (q && !s.name.toLowerCase().includes(q)) return false;
         return true;
       });
       return { charId, label, list };
@@ -121,7 +109,7 @@ export function SkillsTable() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <input
           type="search"
-          placeholder="名前・説明で検索..."
+          placeholder="名前で検索..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800"
@@ -167,7 +155,6 @@ export function SkillsTable() {
                     <th className="px-3 py-2">種別</th>
                     <th className="px-3 py-2">レア</th>
                     <th className="px-3 py-2">タグ</th>
-                    <th className="px-3 py-2">説明</th>
                   </tr>
                 </thead>
                 <tbody>
