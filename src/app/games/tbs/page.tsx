@@ -4,7 +4,8 @@ import { tbs } from "@/data/games/tbs/meta";
 
 export const metadata: Metadata = {
   title: `${tbs.title} | ゲーム攻略 | Dev Tips`,
-  description: `${tbs.title}（${tbs.subtitle}）の攻略データベース。アイテム・スキル・実績の一覧。`,
+  description: `${tbs.title}（${tbs.subtitle}）の攻略データベース。アイテム・スキルの一覧。`,
+  alternates: { canonical: `/games/${tbs.slug}` },
 };
 
 export default function TbsPage() {

@@ -5,6 +5,7 @@ import { tbs } from "@/data/games/tbs/meta";
 export const metadata: Metadata = {
   title: "ゲーム攻略 | Dev Tips",
   description: "ゲーム攻略情報・データベース",
+  alternates: { canonical: "/games" },
 };
 
 const games = [tbs];

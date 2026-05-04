@@ -6,6 +6,7 @@ import { ItemsTable } from "./items-table";
 export const metadata: Metadata = {
   title: `アイテム一覧 | ${tbs.title} | ゲーム攻略 | Dev Tips`,
   description: `${tbs.title}（${tbs.subtitle}）の全プロップ一覧。レア度・感情・セットタグで絞り込み可能。`,
+  alternates: { canonical: `/games/${tbs.slug}/items` },
 };
 
 export default function TbsItemsPage() {

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "開発ツール | Dev Tips",
   description:
     "開発者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+  alternates: { canonical: "/tools" },
 };
 
 export default function ToolsPage() {
