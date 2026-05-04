@@ -122,19 +122,6 @@ export function ItemsTable() {
                   {item.note && (
                     <div className="mt-0.5 text-xs text-amber-600 dark:text-amber-400">{item.note}</div>
                   )}
-                  {item.setTags.map((t) => {
-                    const ef = setEffects[String(t.id)];
-                    if (!ef) return null;
-                    return (
-                      <div
-                        key={t.id}
-                        className="mt-1 rounded-r border-l-2 px-2 py-0.5 text-xs font-bold"
-                        style={{ borderColor: ef.color, color: ef.color, background: `${ef.color}18` }}
-                      >
-                        {ef.name}
-                      </div>
-                    );
-                  })}
                 </td>
                 <td className="px-3 py-2">
                   <span className={`text-xs font-bold ${RARE_CLASS[item.rare]}`}>
@@ -158,6 +145,19 @@ export function ItemsTable() {
                         特殊
                       </span>
                     )}
+                    {item.setTags.map((t) => {
+                      const ef = setEffects[String(t.id)];
+                      if (!ef) return null;
+                      return (
+                        <span
+                          key={t.id}
+                          className="rounded px-1.5 py-0.5 text-xs font-bold"
+                          style={{ color: ef.color, background: `${ef.color}20` }}
+                        >
+                          {ef.name}
+                        </span>
+                      );
+                    })}
                   </div>
                 </td>
               </tr>
