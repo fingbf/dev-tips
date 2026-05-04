@@ -25,10 +25,9 @@ export default function TbsPage() {
             className="group rounded-xl border border-zinc-200 bg-white p-5 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
           >
             <div className="mb-2 text-3xl">{p.emoji}</div>
-            <div className="mb-1 font-bold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
+            <div className="font-bold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
               {p.label}
             </div>
-            <div className="text-sm text-zinc-500 dark:text-zinc-400">{p.description}</div>
           </Link>
         ))}
       </div>
