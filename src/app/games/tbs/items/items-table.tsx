@@ -3,6 +3,10 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import rawItems from "@/data/games/tbs/items.json";
+import rawSetEffects from "@/data/games/tbs/set-effects.json";
+
+type SetEffect = { id: number; name: string; color: string; desc: string };
+const setEffects = rawSetEffects as Record<string, SetEffect>;
 
 type Item = {
   id: number;
@@ -177,6 +181,20 @@ export function ItemsTable() {
                     <div className="mb-1 text-amber-600 dark:text-amber-400">{item.note}</div>
                   )}
                   {cleanDesc(item.desc)}
+                  {item.setTags.map((t) => {
+                    const ef = setEffects[String(t.id)];
+                    if (!ef) return null;
+                    return (
+                      <div
+                        key={t.id}
+                        className="mt-1.5 rounded-r border-l-2 px-2 py-1"
+                        style={{ borderColor: ef.color, background: `${ef.color}18` }}
+                      >
+                        <span className="font-bold" style={{ color: ef.color }}>【{ef.name}】</span>{" "}
+                        {cleanDesc(ef.desc)}
+                      </div>
+                    );
+                  })}
                 </td>
               </tr>
             ))}
