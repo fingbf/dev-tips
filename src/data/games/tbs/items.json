@@ -1,5 +1,16 @@
 [
   {
+    "id": 9999,
+    "name": "蓬莱の薬",
+    "desc": "体力が0になった時、即座に復活し最大体力の100%を回復する。復活するたび、受けるダメージが5%減少する（最大50%）。",
+    "rare": 3,
+    "boss": false,
+    "special": true,
+    "emotion": 0,
+    "setTags": [],
+    "hasIcon": true
+  },
+  {
     "id": 0,
     "name": "銀の短剣",
     "desc": "<term=Attack>攻撃が命中した時、一定確率で<data=MinDamage>~<data=MaxDamage> の追加ダメージを与える。",
