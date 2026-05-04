@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
 import rawSkills from "@/data/games/tbs/skills.json";
 
 type Skill = {
@@ -56,20 +55,6 @@ function SkillRow({ skill, index }: { skill: Skill; index: number }) {
   return (
     <tr className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/40">
       <td className="px-2 py-2 text-right text-xs text-zinc-400">{index}</td>
-      <td className="px-3 py-2 text-center">
-        {skill.hasIcon ? (
-          <Image
-            src={`/games/tbs/icons/skills/${skill.id}.png`}
-            alt={skill.name}
-            width={40}
-            height={40}
-            className="mx-auto"
-            style={{ imageRendering: "pixelated" }}
-          />
-        ) : (
-          <span className="text-xs text-zinc-400">—</span>
-        )}
-      </td>
       <td className="px-3 py-2 font-medium">{skill.name}</td>
       <td className="px-3 py-2 text-xs text-zinc-500 dark:text-zinc-400">
         {TYPE_LABEL[skill.type]}
@@ -178,7 +163,6 @@ export function SkillsTable() {
                 <thead>
                   <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400">
                     <th className="w-8 px-2 py-2 text-right text-zinc-400">#</th>
-                    <th className="w-14 px-3 py-2 text-center">アイコン</th>
                     <th className="px-3 py-2">名前</th>
                     <th className="px-3 py-2">種別</th>
                     <th className="px-3 py-2">レア</th>
