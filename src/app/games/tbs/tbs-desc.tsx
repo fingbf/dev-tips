@@ -13,6 +13,9 @@ function formatVal(v: number | string): string {
 export function DescText({ raw, params }: { raw: string; params?: Params }) {
   if (!raw) return null;
   const parts = raw.split(TAG_RE);
+  const paramLower = params
+    ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k.toLowerCase(), v]))
+    : undefined;
   return (
     <span className="whitespace-pre-line text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
       {parts.map((part, i) => {
@@ -28,7 +31,7 @@ export function DescText({ raw, params }: { raw: string; params?: Params }) {
         const dataMatch = part.match(/^<(?:data|damage|attr|dps)=([^>]+)>$/i);
         if (dataMatch) {
           const key = dataMatch[1];
-          const val = params?.[key];
+          const val = paramLower?.[key.toLowerCase()];
           if (val !== undefined) {
             return (
               <span key={i} className="font-medium text-zinc-600 dark:text-zinc-300">
