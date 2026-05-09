@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import rawSkills from "@/data/games/tbs/skills.json";
+import { DescText, mergeSkillParams } from "../tbs-desc";
 
 type Skill = {
   id: number;
@@ -14,6 +15,7 @@ type Skill = {
   emotion: number;
   type: number;
   hasIcon: boolean;
+  levelParams?: Record<string, number | string>[];
 };
 
 const skills = rawSkills as Skill[];
@@ -46,7 +48,14 @@ function SkillRow({ skill, index }: { skill: Skill; index: number }) {
   return (
     <tr className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900/40">
       <td className="px-2 py-2 text-right text-xs text-zinc-400">{index}</td>
-      <td className="px-3 py-2 font-medium">{skill.name}</td>
+      <td className="px-3 py-2">
+        <div className="font-medium">{skill.name}</div>
+        {skill.desc && (
+          <div className="mt-0.5">
+            <DescText raw={skill.desc} params={skill.levelParams ? mergeSkillParams(skill.levelParams) : undefined} />
+          </div>
+        )}
+      </td>
       <td className="px-3 py-2 text-xs text-zinc-500 dark:text-zinc-400">
         {TYPE_LABEL[skill.type]}
       </td>

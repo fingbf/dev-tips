@@ -9,7 +9,11 @@
     "emotion": 0,
     "setTags": [],
     "hasIcon": true,
-    "note": "EasyモードでGame Startすると取得"
+    "note": "EasyモードでGame Startすると取得",
+    "params": {
+      "DamageReductionPerLayer": 0.05,
+      "MaxLayer": 10
+    }
   },
   {
     "id": 0,
@@ -20,7 +24,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MinDamage": 1,
+      "MaxDamage": 3
+    }
   },
   {
     "id": 1,
@@ -31,7 +39,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1,
+      "HealHpPercent": 3,
+      "HpLimit": 30
+    }
   },
   {
     "id": 2,
@@ -42,7 +55,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ShieldValue": 15,
+      "ShieldDuration": 3,
+      "CD": 5
+    }
   },
   {
     "id": 5,
@@ -62,7 +80,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 1,
+      "Damage": 17
+    }
   },
   {
     "id": 6,
@@ -82,7 +104,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 1,
+      "Damage": 10
+    }
   },
   {
     "id": 7,
@@ -102,7 +128,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Damage": 10,
+      "7Damage": 12
+    }
   },
   {
     "id": 8,
@@ -113,7 +143,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ExtraDashes": 2
+    }
   },
   {
     "id": 15,
@@ -129,7 +162,10 @@
         "name": "赤鬼青鬼"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxHp": 10
+    }
   },
   {
     "id": 16,
@@ -145,7 +181,10 @@
         "name": "赤鬼青鬼"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxMp": 7
+    }
   },
   {
     "id": 17,
@@ -156,7 +195,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 20
+    }
   },
   {
     "id": 24,
@@ -167,7 +209,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 2,
+      "Damage": 4
+    }
   },
   {
     "id": 26,
@@ -183,7 +229,11 @@
         "name": "蝕竜の虫"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageIncrease": 20,
+      "Radius": 3
+    }
   },
   {
     "id": 27,
@@ -199,7 +249,10 @@
         "name": "蝕竜の虫"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 40
+    }
   },
   {
     "id": 29,
@@ -210,7 +263,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.2
+    }
   },
   {
     "id": 30,
@@ -232,7 +288,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 20
+    }
   },
   {
     "id": 32,
@@ -243,7 +302,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 5,
+      "ExtraDamageRatio": 100,
+      "BleedProbability": 15
+    }
   },
   {
     "id": 33,
@@ -254,7 +318,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 40
+    }
   },
   {
     "id": 34,
@@ -265,7 +332,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxHp": 25,
+      "LowestHPPercent": 30,
+      "MaxDamageReduction": 30,
+      "MaxDamageReductionShield": 50
+    }
   },
   {
     "id": 35,
@@ -276,7 +349,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 1,
+      "HpLimit": 20,
+      "HealHPPercent": 2,
+      "CostManaPercent": 5
+    }
   },
   {
     "id": 36,
@@ -287,7 +366,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MpRegenBoost": 0.25
+    }
   },
   {
     "id": 37,
@@ -298,7 +380,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.3,
+      "AtkSpeedBoost": -5
+    }
   },
   {
     "id": 38,
@@ -309,7 +395,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageBoost": 0.16
+    }
   },
   {
     "id": 40,
@@ -320,7 +409,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 30
+    }
   },
   {
     "id": 41,
@@ -336,7 +428,14 @@
         "name": "妖力機関"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 15,
+      "CostMana": 5,
+      "BuffDuration": 5,
+      "CD": 5,
+      "BuffValue": 30
+    }
   },
   {
     "id": 42,
@@ -352,7 +451,15 @@
         "name": "妖力機関"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1,
+      "Probability": 20,
+      "CostMana": 5,
+      "BuffDuration": 6,
+      "CD": 5,
+      "BuffValue": 40
+    }
   },
   {
     "id": 43,
@@ -368,7 +475,19 @@
         "name": "妖力機関"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.25,
+      "Probability": 30,
+      "CostMana": 5,
+      "BuffDuration": 7,
+      "CD": 5,
+      "BuffValue": 55,
+      "MidHakkeroBuffValue": 40,
+      "SmallHakkeroBuffValue": 30,
+      "SuitCostMana": 8,
+      "SuitDuration": 8
+    }
   },
   {
     "id": 44,
@@ -379,7 +498,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "NormalEnemyHp": 30,
+      "EliteEnemyHp": 15,
+      "BossHp": 10
+    }
   },
   {
     "id": 45,
@@ -390,7 +514,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 9,
+      "FreezeDuration": 3
+    }
   },
   {
     "id": 46,
@@ -401,7 +529,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "IcebreakDamageBoost": 0.2,
+      "Probability": 5,
+      "FreezeDuration": 3
+    }
   },
   {
     "id": 47,
@@ -412,7 +545,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 20
+    }
   },
   {
     "id": 48,
@@ -428,7 +564,10 @@
         "name": "雷嵐"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 50
+    }
   },
   {
     "id": 49,
@@ -439,7 +578,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 3
+    }
   },
   {
     "id": 50,
@@ -455,7 +597,10 @@
         "name": "雷嵐"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageRatioAmp": 20
+    }
   },
   {
     "id": 51,
@@ -471,7 +616,11 @@
         "name": "雷嵐"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageBoost": 0.15,
+      "DamageIncrease": 50
+    }
   },
   {
     "id": 52,
@@ -487,7 +636,12 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "IcebreakDamageBoost": 0.3,
+      "FreezeDuration": 2,
+      "Damage": 24
+    }
   },
   {
     "id": 53,
@@ -498,7 +652,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 30,
+      "FreezeDuration": 3
+    }
   },
   {
     "id": 54,
@@ -514,7 +672,11 @@
         "name": "魂魄二刀流"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 4,
+      "AttackSpeed": 5
+    }
   },
   {
     "id": 55,
@@ -530,7 +692,13 @@
         "name": "魂魄二刀流"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 4,
+      "MaxLayer": 10,
+      "CritRate": 1,
+      "CritDamage": 1
+    }
   },
   {
     "id": 57,
@@ -541,7 +709,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1,
+      "CritRate": 0.04
+    }
   },
   {
     "id": 58,
@@ -552,7 +724,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxHp": 25,
+      "AttackAmpRatio": 0.2
+    }
   },
   {
     "id": 59,
@@ -563,7 +739,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1
+    }
   },
   {
     "id": 63,
@@ -574,7 +753,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DashCDReduction": 0.2
+    }
   },
   {
     "id": 64,
@@ -585,7 +767,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 10
+    }
   },
   {
     "id": 70,
@@ -596,7 +781,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 15,
+      "FreezeDuration": 3
+    }
   },
   {
     "id": 71,
@@ -607,7 +796,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BuffDuration": 1,
+      "MaxValue": 50,
+      "BasicValue": 20,
+      "Increase": 5
+    }
   },
   {
     "id": 73,
@@ -618,7 +813,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ExtraDashes": 1,
+      "Duration": 4,
+      "BuffValue": 10,
+      "MaxLayer": 6
+    }
   },
   {
     "id": 74,
@@ -629,7 +830,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ExtraDashes": 1
+    }
   },
   {
     "id": 76,
@@ -640,7 +844,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CritRate": 0.04
+    }
   },
   {
     "id": 77,
@@ -651,7 +858,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AllDamageAmp": 3,
+      "HpLose": 5
+    }
   },
   {
     "id": 79,
@@ -662,7 +873,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageResist": 0.07
+    }
   },
   {
     "id": 80,
@@ -673,7 +887,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ManaCost": 3,
+      "HpTriggerLimit": 5,
+      "ManaLimit": 20
+    }
   },
   {
     "id": 81,
@@ -684,7 +903,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1,
+      "AttackAmp": 7
+    }
   },
   {
     "id": 82,
@@ -695,7 +918,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ExtraJumps": 1,
+      "Duration": 5,
+      "BuffValue": 10
+    }
   },
   {
     "id": 83,
@@ -706,7 +934,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ShieldDuration": 3,
+      "ManaPercent": 10,
+      "CD": 5
+    }
   },
   {
     "id": 84,
@@ -717,7 +950,15 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BaseAttackAmp": 20,
+      "BaseDamageReduction": 15,
+      "OverAttackAmp": 10,
+      "OverDamageReduction": 3,
+      "UnderAttackAmp": 5,
+      "UnderDamageReduction": 6
+    }
   },
   {
     "id": 85,
@@ -728,7 +969,16 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.1,
+      "Lv1HpPercent": 80,
+      "Lv2HpPercent": 40,
+      "Lv1AttackSpeed": 10,
+      "Lv1AttackAmp": 20,
+      "Lv2AttackSpeed": 20,
+      "Lv2AttackAmp": 40
+    }
   },
   {
     "id": 86,
@@ -739,7 +989,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MinDistance": 1,
+      "MaxDistance": 3,
+      "MaxCritRate": 25
+    }
   },
   {
     "id": 87,
@@ -750,7 +1005,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability77": 7,
+      "Probability7": 77,
+      "Damage77": 77,
+      "Damage7": 7
+    }
   },
   {
     "id": 88,
@@ -772,7 +1033,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DashCDReduction": 0.3
+    }
   },
   {
     "id": 95,
@@ -794,7 +1058,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "GoldMultiplier": 20
+    }
   },
   {
     "id": 99,
@@ -805,7 +1072,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "HitCount": 4
+    }
   },
   {
     "id": 105,
@@ -816,7 +1086,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CDRatio": 20
+    }
   },
   {
     "id": 106,
@@ -832,7 +1105,10 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Damage": 14
+    }
   },
   {
     "id": 107,
@@ -843,7 +1119,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CurrentCost": 200
+    }
   },
   {
     "id": 108,
@@ -854,7 +1133,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CritRate": -0.15,
+      "CritDamage": 0.8
+    }
   },
   {
     "id": 109,
@@ -865,7 +1148,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "PerDamageGold": 1
+    }
   },
   {
     "id": 110,
@@ -876,7 +1162,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BuffDuration": 5,
+      "BuffValue": 10
+    }
   },
   {
     "id": 111,
@@ -892,7 +1182,10 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Damage": 14
+    }
   },
   {
     "id": 113,
@@ -903,7 +1196,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 7,
+      "DamageIncreaseValue": 30
+    }
   },
   {
     "id": 115,
@@ -914,7 +1211,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 0.2
+    }
   },
   {
     "id": 116,
@@ -925,7 +1225,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BuffValue": 40,
+      "BuffDuration": 10
+    }
   },
   {
     "id": 117,
@@ -936,7 +1240,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageBoost": 0.6,
+      "DamageResist": -1
+    }
   },
   {
     "id": 118,
@@ -952,7 +1260,12 @@
         "name": "致命毒薬"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxPoisonLayer": 10,
+      "AdditionalLayer": 1,
+      "Probability": 15
+    }
   },
   {
     "id": 119,
@@ -968,7 +1281,11 @@
         "name": "致命毒薬"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 50,
+      "ProbabilityRatio": 30
+    }
   },
   {
     "id": 122,
@@ -990,7 +1307,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ChargeSpeedBoost": 20,
+      "AddMoveSpeed": 20
+    }
   },
   {
     "id": 128,
@@ -1001,7 +1322,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageBoost": 0.5,
+      "MaxMana": 10
+    }
   },
   {
     "id": 129,
@@ -1012,7 +1337,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxDamageAmpLayer": 100,
+      "MaxChargeTime": 4
+    }
   },
   {
     "id": 131,
@@ -1023,7 +1352,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MinValue": 50,
+      "MaxValue": 150
+    }
   },
   {
     "id": 132,
@@ -1045,7 +1378,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxMp": -10,
+      "MpCostReduction": 0.2,
+      "AddProbability": 5
+    }
   },
   {
     "id": 136,
@@ -1056,7 +1394,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageIncrease": 100
+    }
   },
   {
     "id": 137,
@@ -1067,7 +1408,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 10,
+      "HitCount": 5,
+      "StunDuration": 2,
+      "BuffDuration": 20
+    }
   },
   {
     "id": 138,
@@ -1078,7 +1425,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ExtraJumps": 1
+    }
   },
   {
     "id": 140,
@@ -1094,7 +1444,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 10,
+      "Damage": 120
+    }
   },
   {
     "id": 141,
@@ -1105,7 +1459,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxHpDamage": 10
+    }
   },
   {
     "id": 142,
@@ -1116,7 +1473,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Probability": 30,
+      "InvincibleDuration": 1
+    }
   },
   {
     "id": 144,
@@ -1127,7 +1488,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 20,
+      "ShieldDuration": 8,
+      "ShiledHPPercent": 10,
+      "ShieldBasicValue": 10
+    }
   },
   {
     "id": 146,
@@ -1138,7 +1505,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkSpeedBoost": 10
+    }
   },
   {
     "id": 147,
@@ -1165,7 +1535,12 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 5,
+      "FreezeDuration": 2,
+      "Base": 17
+    }
   },
   {
     "id": 149,
@@ -1176,7 +1551,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "JumpForce": 13
+    }
   },
   {
     "id": 150,
@@ -1192,7 +1570,10 @@
         "name": "東方紅緑青"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageResist": 20
+    }
   },
   {
     "id": 151,
@@ -1208,7 +1589,10 @@
         "name": "東方紅緑青"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DamageBoost": 30
+    }
   },
   {
     "id": 152,
@@ -1224,7 +1608,10 @@
         "name": "東方紅緑青"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CoinMultiplier": 50
+    }
   },
   {
     "id": 153,
@@ -1235,7 +1622,11 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ATKMultiplier": 1,
+      "MaxValue": 60
+    }
   },
   {
     "id": 154,
@@ -1246,7 +1637,13 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 5,
+      "MaxHPMultiplier": 5,
+      "CD": 10,
+      "ATKMultiplier": 100
+    }
   },
   {
     "id": 160,
@@ -1257,18 +1654,27 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ChargeSpeedReduce": 30,
+      "ChargeDMGBoost": 60
+    }
   },
   {
     "id": 161,
     "name": "鳥鳴",
-    "desc": "<term=ChargeAttack>が敵に命中した時、霊力を回復する。回復量はチャージレベルに応じて変化する：1段階<data=RecoveryMana_1>点、2段階<data=RecoveryMana_2>点、3段階<data=RecoveryMana_3>点。",
+    "desc": "<term=ChargeAttack>が敵に命中した時、霊力を回復する。回復量はチャージ段階に応じて変化する：1段階<data=RecoveryMana_1>点、2段階<data=RecoveryMana_2>点、3段階<data=RecoveryMana_3>点。",
     "rare": 1,
     "boss": false,
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "RecoveryMana_1": 3,
+      "RecoveryMana_2": 6,
+      "RecoveryMana_3": 9
+    }
   },
   {
     "id": 92,
@@ -1284,7 +1690,10 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "damage": 48
+    }
   },
   {
     "id": 162,
@@ -1295,18 +1704,27 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "DMGBoost": 50,
+      "MaxCount": 3
+    }
   },
   {
     "id": 163,
     "name": "蓄霊の卵",
-    "desc": "<term=ChargeAttack>が敵に命中した後、スキル使用時に霊力を消費しなくなる。効果時間はチャージレベルによって変化する：1段階 <data=BuffDuration_1>秒、2段階<data=BuffDuration_2>秒、3段階<data=BuffDuration_3>秒。",
+    "desc": "<term=ChargeAttack>が敵に命中した後、スキル使用時に霊力を消費しなくなる。効果時間はチャージ段階によって変化する：1段階 <data=BuffDuration_1>秒、2段階<data=BuffDuration_2>秒、3段階<data=BuffDuration_3>秒。",
     "rare": 2,
     "boss": false,
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BuffDuration_1": 1,
+      "BuffDuration_2": 2,
+      "BuffDuration_3": 4
+    }
   },
   {
     "id": 164,
@@ -1317,7 +1735,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "BossMana": 15,
+      "EliteMana": 5,
+      "NormalMana": 2
+    }
   },
   {
     "id": 167,
@@ -1328,7 +1751,10 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "PerLayerDMGBoost": 1
+    }
   },
   {
     "id": 21,
@@ -1344,7 +1770,12 @@
         "name": "5つの難問"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 3,
+      "AttackAmp": 20,
+      "HarmedIncrease": 10
+    }
   },
   {
     "id": 22,
@@ -1360,7 +1791,15 @@
         "name": "5つの難問"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxLayer": 100,
+      "PerLayerValue": 0.3,
+      "HealHpValue": 10,
+      "EliteLayer": 2,
+      "BossLayer": 3,
+      "ExtraMaxLayer": 100
+    }
   },
   {
     "id": 23,
@@ -1376,7 +1815,12 @@
         "name": "5つの難問"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "HealValue": 2,
+      "HealHpLimit": 30,
+      "HealIncrease": 30
+    }
   },
   {
     "id": 25,
@@ -1392,7 +1836,11 @@
         "name": "5つの難問"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "MaxHp": 15,
+      "CD": 2
+    }
   },
   {
     "id": 19,
@@ -1412,7 +1860,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 20,
+      "Damage": 36
+    }
   },
   {
     "id": 102,
@@ -1423,7 +1875,14 @@
     "special": true,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AtkBoost": 0.3,
+      "CD": 50,
+      "BuffDuration": 5,
+      "FantasyReduceCD": 7,
+      "MaxReduceCD": 35
+    }
   },
   {
     "id": 103,
@@ -1439,7 +1898,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 1,
+      "Damage": 17
+    }
   },
   {
     "id": 104,
@@ -1455,7 +1918,12 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "ShootCount": 4,
+      "Damage": 60,
+      "MissileDMG": 10
+    }
   },
   {
     "id": 135,
@@ -1471,7 +1939,16 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 10,
+      "StunDuration": 2,
+      "NormalProbability": 100,
+      "PowerfulProbability": 100,
+      "EliteProbability": 50,
+      "BossProbability": 25,
+      "Base": 17
+    }
   },
   {
     "id": 14,
@@ -1487,7 +1964,12 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 8,
+      "LifeTime": 5,
+      "Damage": 29
+    }
   },
   {
     "id": 60,
@@ -1498,7 +1980,15 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 8,
+      "Duration": 10,
+      "WolfValue": 30,
+      "OtterValue": 10,
+      "VultureValue": 20,
+      "AttractRadius": 2.5
+    }
   },
   {
     "id": 20,
@@ -1514,7 +2004,10 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Damage": 72
+    }
   },
   {
     "id": 61,
@@ -1525,7 +2018,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 8,
+      "InvincibleTime": 2,
+      "AttractRadius": 2.5
+    }
   },
   {
     "id": 130,
@@ -1541,7 +2039,11 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 1.5,
+      "Base": 24
+    }
   },
   {
     "id": 100,
@@ -1557,7 +2059,13 @@
         "name": "致命毒薬"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CD": 10,
+      "AttackRatio": 1,
+      "Probability": 15,
+      "SkillProbability": 30
+    }
   },
   {
     "id": 56,
@@ -1573,7 +2081,10 @@
         "name": "特効強化"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Damage": 11
+    }
   },
   {
     "id": 112,
@@ -1584,7 +2095,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "CostManaIncreaseTime": 0.1,
+      "CostManaIncreaseValue": 1,
+      "MaxCostMana": 6
+    }
   },
   {
     "id": 166,
@@ -1600,7 +2116,11 @@
         "name": "蝕竜の虫"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "PerLayerBoost": 1.5,
+      "MaxDamageBoost": 60
+    }
   },
   {
     "id": 165,
@@ -1611,7 +2131,12 @@
     "special": false,
     "emotion": 0,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Radius": 3,
+      "CD": 2,
+      "Layer": 1
+    }
   },
   {
     "id": 90,
@@ -1631,7 +2156,11 @@
         "name": "洩矢の神具"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AngleRange": 10,
+      "Damage": 24
+    }
   },
   {
     "id": 89,
@@ -1651,7 +2180,11 @@
         "name": "洩矢の神具"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AngleRange": 15,
+      "Damage": 17
+    }
   },
   {
     "id": 91,
@@ -1671,7 +2204,11 @@
         "name": "洩矢の神具"
       }
     ],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "AngleRange": 15,
+      "Damage": 36
+    }
   },
   {
     "id": 3,
@@ -1688,7 +2225,12 @@
       }
     ],
     "hasIcon": true,
-    "note": "多々良小傘がドロップ"
+    "note": "多々良小傘がドロップ",
+    "params": {
+      "AttackWaterCD": 5,
+      "XiWaterCD": 12,
+      "Damage": 12
+    }
   },
   {
     "id": 156,
@@ -1700,7 +2242,10 @@
     "emotion": 1,
     "setTags": [],
     "hasIcon": true,
-    "note": "堀川雷鼓がドロップ"
+    "note": "堀川雷鼓がドロップ",
+    "params": {
+      "CD": 5
+    }
   },
   {
     "id": 159,
@@ -1712,7 +2257,13 @@
     "emotion": 1,
     "setTags": [],
     "hasIcon": true,
-    "note": "堀川雷鼓がドロップ"
+    "note": "堀川雷鼓がドロップ",
+    "params": {
+      "MaxValue": 100,
+      "DamageRatio": 30,
+      "XiDamageRatio": 60,
+      "Line": 100
+    }
   },
   {
     "id": 157,
@@ -1729,7 +2280,10 @@
       }
     ],
     "hasIcon": true,
-    "note": "雲居一輪がドロップ"
+    "note": "雲居一輪がドロップ",
+    "params": {
+      "Damage": 10
+    }
   },
   {
     "id": 78,
@@ -1740,7 +2294,10 @@
     "special": false,
     "emotion": 2,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "NuImprintIncreasement": 2
+    }
   },
   {
     "id": 114,
@@ -1751,7 +2308,10 @@
     "special": false,
     "emotion": 2,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Multiplier": 2
+    }
   },
   {
     "id": 4,
@@ -1768,7 +2328,11 @@
       }
     ],
     "hasIcon": true,
-    "note": "藤原妹紅がドロップ"
+    "note": "藤原妹紅がドロップ",
+    "params": {
+      "DashCount": 1,
+      "Damage": 22
+    }
   },
   {
     "id": 93,
@@ -1779,7 +2343,10 @@
     "special": false,
     "emotion": 2,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "NuImprintIncreasement": 3
+    }
   },
   {
     "id": 98,
@@ -1790,7 +2357,12 @@
     "special": false,
     "emotion": 2,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "NuImprintIncreasement": 2,
+      "CD": 1,
+      "Layer": 5
+    }
   },
   {
     "id": 158,
@@ -1802,7 +2374,12 @@
     "emotion": 3,
     "setTags": [],
     "hasIcon": true,
-    "note": "メディスン・メランコリーがドロップ"
+    "note": "メディスン・メランコリーがドロップ",
+    "params": {
+      "ExtraDuration": 2,
+      "PoisonLayer": 2,
+      "Radius": 2.5
+    }
   },
   {
     "id": 72,
@@ -1814,7 +2391,12 @@
     "emotion": 3,
     "setTags": [],
     "hasIcon": true,
-    "note": "博麗霊夢がドロップ"
+    "note": "博麗霊夢がドロップ",
+    "params": {
+      "MaxHp": 20,
+      "ShieldRatio": 10,
+      "DamageReduction": 10
+    }
   },
   {
     "id": 18,
@@ -1831,7 +2413,15 @@
       }
     ],
     "hasIcon": true,
-    "note": "博麗霊夢がドロップ"
+    "note": "博麗霊夢がドロップ",
+    "params": {
+      "MaxHp": 15,
+      "ShieldCD": 10,
+      "ShieldBase": 5,
+      "ShieldHPPercent": 5,
+      "ShieldDuration": 5,
+      "Damage": 17
+    }
   },
   {
     "id": 97,
@@ -1842,7 +2432,11 @@
     "special": false,
     "emotion": 3,
     "setTags": [],
-    "hasIcon": true
+    "hasIcon": true,
+    "params": {
+      "Duration": 8,
+      "AttackAmp": 20
+    }
   },
   {
     "id": 28,
@@ -1854,7 +2448,12 @@
     "emotion": 4,
     "setTags": [],
     "hasIcon": true,
-    "note": "紅美鈴がドロップ"
+    "note": "紅美鈴がドロップ",
+    "params": {
+      "AttackAmpPerLayer": 0.5,
+      "MaxLayer": 80,
+      "HitCount": 10
+    }
   },
   {
     "id": 120,
@@ -1871,7 +2470,10 @@
       }
     ],
     "hasIcon": true,
-    "note": "小野塚小町がドロップ"
+    "note": "小野塚小町がドロップ",
+    "params": {
+      "Damage": 34
+    }
   },
   {
     "id": 121,
@@ -1888,6 +2490,14 @@
       }
     ],
     "hasIcon": true,
-    "note": "小野塚小町がドロップ"
+    "note": "小野塚小町がドロップ",
+    "params": {
+      "CritRate": 100,
+      "CritDamage": 50,
+      "HalfMoon": 46,
+      "FullMoon": 92,
+      "HalfMoonDash": 29,
+      "FullMoonDash": 58
+    }
   }
 ]

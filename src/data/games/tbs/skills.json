@@ -13,7 +13,14 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "BaseDamage": 46
+      }
+    ]
   },
   {
     "id": 20,
@@ -29,7 +36,16 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 13,
+        "ManaCost": 8,
+        "BackswingDuration": 0.2,
+        "InvincibleTime": 1.5,
+        "BaseDamage": 46
+      }
+    ]
   },
   {
     "id": 240,
@@ -46,7 +62,29 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "ShootNum": 3,
+        "ShootIntervalTime": 0.1,
+        "CheckAngle": 100,
+        "CheckSizeX": 7,
+        "CheckSizeY": 3,
+        "BaseDamage": 8
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "ShootNum": 4,
+        "ShootIntervalTime": 0.1,
+        "CheckAngle": 100,
+        "CheckSizeX": 7,
+        "CheckSizeY": 3,
+        "BaseDamage": 12
+      }
+    ]
   },
   {
     "id": 260,
@@ -62,7 +100,18 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "StackLayer": 3,
+        "FogAddPoisonLayer": 1,
+        "ExtraDamageRatio": 0.8,
+        "BaseDamage": 96,
+        "FogDamage": 24
+      }
+    ]
   },
   {
     "id": 30,
@@ -79,7 +128,28 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 5,
+        "ManaCost": 1,
+        "SuccessCd": 0.5,
+        "CounterattackDuration": 0.4,
+        "InvincibleTime": 0.5,
+        "DisappearTime": 0.3
+      },
+      {
+        "CD": 5,
+        "ManaCost": 1,
+        "SuccessCd": 0.5,
+        "CounterattackDuration": 0.4,
+        "InvincibleTime": 0.5,
+        "DisappearTime": 0.3,
+        "PerLayerAttackBoost": 15,
+        "AttackBuffDuration": 12,
+        "AttackBuffMaxLayer": 5
+      }
+    ]
   },
   {
     "id": 40,
@@ -96,7 +166,22 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "AttackDamage_1": 23,
+        "AttackDamage_2": 26
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "AttackDamage_1": 23,
+        "AttackDamage_2": 26,
+        "AttackDamage_3": 31
+      }
+    ]
   },
   {
     "id": 50,
@@ -114,12 +199,46 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "BackswingDuration": 0.2,
+        "BaseDamage": 60
+      },
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "Xi_MagicDamage": 30,
+        "Nu_PhysicalDamage": 25,
+        "Ai_DamageReduce": 15,
+        "Le_CritRate": 7,
+        "BackswingDuration": 0.2,
+        "Duration": 10,
+        "BaseDamage": 84
+      },
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "Xi_MagicDamage": 30,
+        "Nu_PhysicalDamage": 25,
+        "Ai_DamageReduce": 15,
+        "Le_CritRate": 7,
+        "Xi_ExtraDamage": 50,
+        "Nu_Imprint": 3,
+        "Ai_AttackReduce": 30,
+        "Le_Damage_Add": 15,
+        "BackswingDuration": 0.2,
+        "Duration": 10,
+        "BaseDamage": 108
+      }
+    ]
   },
   {
     "id": 310,
     "name": "内桜",
-    "desc": "前方へ攻撃を放ち、命中した敵に<damage=BaseDamage>の物理ダメージを与える。この攻撃で敵が硬直状態に入った場合、その背後に霊気の壁を生成する。",
+    "desc": "前方へ攻撃を放ち、命中した敵に<damage=BaseDamage>の物理ダメージを与える。この攻撃で敵が硬直状態になった場合、その背後に霊気の壁を生成する。",
     "levelCount": 1,
     "levelRares": [
       1
@@ -130,7 +249,19 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 5,
+        "ManaCost": 3,
+        "DashSpeed": 30,
+        "DashTime": 0.15,
+        "WallDistance": 4,
+        "FreezeFrameTime": 0.2,
+        "BackswingDuration": 0.2,
+        "BaseDamage": 60
+      }
+    ]
   },
   {
     "id": 430,
@@ -147,7 +278,34 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 3,
+        "ManaCost": 3,
+        "Distance": 20,
+        "ButtonKeepTime": 0.2,
+        "BlinkWaitDuration": 0.2,
+        "MoveDuration": 0.1,
+        "HorizontalDistance": 10,
+        "DiagonalDistance": 3,
+        "MarkLifeTime": 10,
+        "BaseDamage": 0
+      },
+      {
+        "CD": 3,
+        "ManaCost": 3,
+        "Distance": 30,
+        "ButtonKeepTime": 0.4,
+        "BlinkWaitDuration": 0.2,
+        "MoveDuration": 0.1,
+        "HorizontalDistance": 10,
+        "VerticalDistance": 5,
+        "DiagonalDistance": 3,
+        "MarkLifeTime": 10,
+        "BaseDamage": 48
+      }
+    ]
   },
   {
     "id": 410,
@@ -163,7 +321,16 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "Duration": 5,
+        "DamageAmp": 100,
+        "PoiseDamageExtraRatio": 100
+      }
+    ]
   },
   {
     "id": 420,
@@ -179,7 +346,17 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 15,
+        "ManaCost": 8,
+        "ShieldAttackRatio": 100,
+        "ShieldHpRatio": 8,
+        "ShieldDuration": 8,
+        "BackswingDuration": 0.05
+      }
+    ]
   },
   {
     "id": 570,
@@ -195,7 +372,20 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 5,
+        "ManaCost": 1,
+        "CounterDuratioon": 0.4,
+        "BackMoveSpeed": 8,
+        "BackMoveDuration": 0.4,
+        "InvincibleDuration": 1,
+        "SuccessCD": 1,
+        "PerLayerDamageBoost": 10,
+        "PerLayerDamageResist": 20
+      }
+    ]
   },
   {
     "id": 500,
@@ -211,7 +401,23 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 10,
+        "ShootCD": 1,
+        "LifeTime": 20,
+        "BulletSpeed": 6,
+        "BulletCount": 1,
+        "RefreshTime": 8,
+        "XiSpeedMultiplier": 1,
+        "NuShootCDMultiplier": 0.4,
+        "AiSizeMultiplier": 1,
+        "BaseDamage": 24,
+        "ExplosionDamage": 12
+      }
+    ]
   },
   {
     "id": 550,
@@ -228,7 +434,27 @@
     "special": false,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "BackswingDuration": 0.3,
+        "Radius": 2.5,
+        "Duration": 1,
+        "BaseDamage": 18,
+        "BulletDamage": 24
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "BackswingDuration": 0.3,
+        "Radius": 3,
+        "Duration": 1.5,
+        "BaseDamage": 24,
+        "BulletDamage": 29
+      }
+    ]
   },
   {
     "id": 300,
@@ -244,7 +470,21 @@
     "special": true,
     "emotion": 0,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 20,
+        "ManaCost": 20,
+        "CostLayer": 50,
+        "KillLayerRatio": 3,
+        "PerLayerDamageIncrease": 5,
+        "PerHealLayer": 5,
+        "RandomAngle": 15,
+        "BulletNum": 7,
+        "ShootIntervalTime": 0.03,
+        "BaseDamage": 72
+      }
+    ]
   },
   {
     "id": 90,
@@ -261,7 +501,31 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 4,
+        "BackswingDuration": 0.1,
+        "ComboSkillResetTime": 2,
+        "FreezeDuration": 2.5,
+        "RedBulletDamage": 52,
+        "RedExplosionDamage": 12,
+        "BlueBulletDamage": 31,
+        "BlueExplosionDamage": 6
+      },
+      {
+        "CD": 8,
+        "ManaCost": 4,
+        "BackswingDuration": 0.1,
+        "ComboSkillResetTime": 2,
+        "FreezeDuration": 2.5,
+        "RedBulletDamage": 76,
+        "RedExplosionDamage": 31,
+        "BlueBulletDamage": 33,
+        "BlueExplosionDamage": 6
+      }
+    ]
   },
   {
     "id": 230,
@@ -278,7 +542,23 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "BackswingDuration": 0.3,
+        "RayDamage": 128,
+        "CircleDamage": 19
+      },
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "BackswingDuration": 0.3,
+        "RayDamage": 208,
+        "CircleDamage": 31
+      }
+    ]
   },
   {
     "id": 250,
@@ -295,7 +575,28 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 4,
+        "ManaCost": 4,
+        "PerSecondCostMana": 5,
+        "FallModifier": 0.1,
+        "BaseCastTime": 0.5,
+        "LaserLength": 11,
+        "BaseDamage": 17
+      },
+      {
+        "CD": 4,
+        "ManaCost": 4,
+        "PerSecondCostMana": 5,
+        "FallModifier": 0.05,
+        "BurnRate": 20,
+        "BaseCastTime": 0.5,
+        "LaserLength": 11,
+        "BaseDamage": 25
+      }
+    ]
   },
   {
     "id": 470,
@@ -312,7 +613,28 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "BubbleCount": 6,
+        "BackswingDuration": 0.3,
+        "BubbleLife": 30,
+        "BaseDamage": 38
+      },
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "BackswingDuration": 0.3,
+        "BubbleCount": 2,
+        "SpliedCount": 4,
+        "BubbleLife": 15,
+        "SmallBubbleLife": 30,
+        "BaseDamage": 76,
+        "SmallDamage": 38
+      }
+    ]
   },
   {
     "id": 390,
@@ -330,7 +652,37 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 7,
+        "ManaCost": 6,
+        "CastDuration": 0.1,
+        "UpDuration": 2,
+        "FrontDamage": 19,
+        "UpDamage": 24,
+        "DownDamage": 74
+      },
+      {
+        "CD": 7,
+        "ManaCost": 6,
+        "CastDuration": 0.1,
+        "UpDuration": 3,
+        "FrontDamage": 14,
+        "UpDamage": 23,
+        "DownDamage": 33
+      },
+      {
+        "CD": 7,
+        "ManaCost": 6,
+        "CastDuration": 0.1,
+        "UpDuration": 3,
+        "FrontDuration": 1.5,
+        "UpDamage": 17,
+        "FrontDamage": 19,
+        "DownDamage": 25
+      }
+    ]
   },
   {
     "id": 330,
@@ -346,7 +698,19 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 7,
+        "ShootSpeed": 10,
+        "RotateMoveSpeed": 6.5,
+        "ComboResetTime": 5,
+        "ComboBackswingTime": 0.1,
+        "ShootDamage": 17,
+        "RotateDamage": 57
+      }
+    ]
   },
   {
     "id": 80,
@@ -362,7 +726,15 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 17,
+        "ManaCost": 15,
+        "CastDuration": 0.1,
+        "BaseDamage": 260
+      }
+    ]
   },
   {
     "id": 350,
@@ -378,7 +750,19 @@
     "special": false,
     "emotion": 1,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 13,
+        "ManaCost": 10,
+        "Speed": 14,
+        "ExplosionDelayTime": 0.5,
+        "ExplosionContinueHitTime": 1,
+        "StunDuration": 0.25,
+        "ContinueDamage": 4,
+        "ExplosionDamage": 128
+      }
+    ]
   },
   {
     "id": 130,
@@ -394,7 +778,20 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "StunTime": 1.5,
+        "AddNuImprintLayer": 1,
+        "CastDuration": 0.1,
+        "DurationTime": 0.7,
+        "JumpHeight": 3.5,
+        "JumpSpeed": 10,
+        "BaseDamage": 36
+      }
+    ]
   },
   {
     "id": 180,
@@ -411,7 +808,19 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "BaseDamage": 24
+      },
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "BaseDamage": 36
+      }
+    ]
   },
   {
     "id": 110,
@@ -429,7 +838,34 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "RaycastLength": 6,
+        "DisappearWaitTime": 0.2,
+        "DisappearDuration": 0.2,
+        "BaseDamage": 60
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "RaycastLength": 6,
+        "DisappearWaitTime": 0.2,
+        "DisappearDuration": 0.2,
+        "BaseDamage": 84
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "RaycastLength": 6,
+        "DisappearWaitTime": 0.2,
+        "DisappearDuration": 0.2,
+        "BaseDamage": 84,
+        "ExplosionDamage": 60
+      }
+    ]
   },
   {
     "id": 70,
@@ -447,7 +883,34 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Duration": 8,
+        "TriggerTime": 0.3,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 6
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Duration": 8,
+        "TriggerTime": 0.2,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 6
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Duration": 8,
+        "TriggerTime": 0.2,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 6,
+        "TrackBulletDamage": 10
+      }
+    ]
   },
   {
     "id": 120,
@@ -463,7 +926,23 @@
     "special": false,
     "emotion": 2,
     "type": 1,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "FallModifier": 0.07,
+        "ExtraDamageRatio_LV0": 0.2,
+        "ExtraDamageRatio_LV1": 0.4,
+        "ExtraDamageRatio_LV2": 0.7,
+        "BackswingDuration": 0.2,
+        "StorageInterval": 0.6,
+        "DamageInfo_LV0": 120,
+        "DamageInfo_LV1": 168,
+        "DamageInfo_LV2": 240,
+        "BulletDamage": 12
+      }
+    ]
   },
   {
     "id": 100,
@@ -479,7 +958,17 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 2,
+        "ManaCost": 0,
+        "PerManacost": 5,
+        "AttackSpeedRatio": 10,
+        "TriggerIntervalTime": 0.4,
+        "BaseDamage": 8
+      }
+    ]
   },
   {
     "id": 360,
@@ -495,7 +984,20 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "BaseSpeed": 2,
+        "IntervalSpeed": 5,
+        "CastDuration": 0.01,
+        "AttackAmp": 0.25,
+        "BuffTime": 9,
+        "BulletDamage": 2,
+        "ExplosionDamage": 72
+      }
+    ]
   },
   {
     "id": 560,
@@ -512,12 +1014,40 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 7,
+        "CastDuration": 0.1,
+        "BackswingDuration": 0.2,
+        "AimAngle": 100,
+        "AimX": 10,
+        "AimY": 4,
+        "ReboundDamageAmpCountLimit": 0,
+        "PerReboundDamageAmp": 0,
+        "BaseDamage": 26,
+        "ForkRayDamage": 6
+      },
+      {
+        "CD": 10,
+        "ManaCost": 7,
+        "CastDuration": 0.1,
+        "BackswingDuration": 0.2,
+        "AimAngle": 100,
+        "AimX": 10,
+        "AimY": 4,
+        "ReboundDamageAmpCountLimit": 4,
+        "PerReboundDamageAmp": 100,
+        "BaseDamage": 19,
+        "ForkRayDamage": 6
+      }
+    ]
   },
   {
     "id": 450,
     "name": "怒声の大蜘蛛面",
-    "desc": "土蜘蛛面を取り出し、前方に蛛網を放って範囲内の敵に<damage=BaseDamage>の物理ダメージを与える。<br>命中後<data=ComboResetTime>秒以内に再度スキルを発動すると、糸を強制的に断ち切って対象を自身のもとへ引き寄せ、<damage=SpiderlineDamage>点の物理ダメージを与える。引き寄せ時のダメージおよび破靭値は、対象の現在の「<term=AngerMark>」の層数に応じて追加で増加する。",
+    "desc": "土蜘蛛面を取り出し、前方に蛛網を放って範囲内の敵に<damage=BaseDamage>の物理ダメージを与える。<br>命中後<data=ComboResetTime>秒以内に再度スキルを発動すると、糸を強制的に断ち切って対象を自身のもとへ引き寄せ、<damage=SpiderlineDamage>点の物理ダメージを与える。引き寄せ時のダメージおよび体勢崩し値は、対象の現在の「<term=AngerMark>」の層数に応じて追加で増加する。",
     "levelCount": 2,
     "levelRares": [
       1,
@@ -529,7 +1059,35 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 13,
+        "ManaCost": 8,
+        "MaxDistance": 25,
+        "MaxBreakPoise": 6,
+        "ComboResetTime": 10,
+        "NuRatio": 40,
+        "BackswingDuration": 0.2,
+        "BaseHitCount": 1,
+        "BaseDamage": 24,
+        "SpiderlineDamage": 96,
+        "MultDamage": 34
+      },
+      {
+        "CD": 13,
+        "ManaCost": 8,
+        "MaxDistance": 25,
+        "MaxBreakPoise": 6,
+        "ComboResetTime": 10,
+        "NuRatio": 50,
+        "BackswingDuration": 0.2,
+        "BaseHitCount": 1,
+        "BaseDamage": 24,
+        "SpiderlineDamage": 120,
+        "MultDamage": 2
+      }
+    ]
   },
   {
     "id": 460,
@@ -546,7 +1104,31 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "BackswingDuration": 0.2,
+        "NuRatio": 60,
+        "StunLayer": 3,
+        "DamageAmpLayer": 6,
+        "BaseDamage": 60
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "BackswingDuration": 0.2,
+        "NuRatio": 100,
+        "StunTime": 1,
+        "DMGReduce": 20,
+        "DMGReduceTime": 8,
+        "RecoveryMana": 4,
+        "StunLayer": 3,
+        "DamageAmpLayer": 6,
+        "BaseDamage": 120
+      }
+    ]
   },
   {
     "id": 150,
@@ -563,7 +1145,26 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 4,
+        "SuccessCd": 2,
+        "InvincibleTime": 1.5,
+        "CounterDuration": 0.4,
+        "BaseDamage": 46
+      },
+      {
+        "CD": 8,
+        "ManaCost": 4,
+        "SuccessCd": 2,
+        "InvincibleTime": 1.5,
+        "CounterDuration": 0.4,
+        "BaseDamage": 51,
+        "BulletDamage": 27
+      }
+    ]
   },
   {
     "id": 160,
@@ -581,7 +1182,27 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 9,
+        "ReduceDamageRatio": 20,
+        "BackswingDuration": 0.1
+      },
+      {
+        "CD": 12,
+        "ManaCost": 9,
+        "ReduceDamageRatio": 30,
+        "BackswingDuration": 0.1
+      },
+      {
+        "CD": 12,
+        "ManaCost": 9,
+        "ReduceDamageRatio": 40,
+        "BackswingDuration": 0.1
+      }
+    ]
   },
   {
     "id": 140,
@@ -599,7 +1220,38 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "HpDamage": 1.5,
+        "ManaDamage": 3,
+        "MaxDamage": 75,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 14
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "HpDamage": 1.5,
+        "ManaDamage": 3,
+        "MaxDamage": 75,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 14
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "HpDamage": 2,
+        "ManaDamage": 3,
+        "MaxDamage": 100,
+        "BackswingDuration": 0.1,
+        "Lv3ChargeDuration": 0.1,
+        "Lv3BulletHeight": 8,
+        "BaseDamage": 16
+      }
+    ]
   },
   {
     "id": 170,
@@ -617,7 +1269,35 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "KillHeal": 0,
+        "HealValue": 1,
+        "BulletNum": 3,
+        "BackswingDuration": 0.2,
+        "BaseDamage": 22
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "KillHeal": 0,
+        "HealValue": 1,
+        "BulletNum": 5,
+        "BackswingDuration": 0.2,
+        "BaseDamage": 22
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "KillHeal": 0,
+        "HealValue": 1,
+        "BackswingDuration": 0.2,
+        "BaseDamage": 22
+      }
+    ]
   },
   {
     "id": 280,
@@ -633,7 +1313,16 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 6,
+        "ShieldRatio": 400,
+        "ChargeDuration": 0.1,
+        "BaseDamage": 116
+      }
+    ]
   },
   {
     "id": 340,
@@ -649,7 +1338,17 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "DollExistTime": 18,
+        "DamageRatio": 50,
+        "BackswingDuration": 0.15,
+        "BulletDamage": 22
+      }
+    ]
   },
   {
     "id": 480,
@@ -665,12 +1364,26 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 15,
+        "ManaCost": 10,
+        "CastDuration": 0.1,
+        "BackswingDuration": 0.1,
+        "HitTime": 2.1,
+        "ExtraDamage": 50,
+        "DistanceX": 13,
+        "DistanceY": 9,
+        "YOffset": -5,
+        "BaseDamage": 22
+      }
+    ]
   },
   {
     "id": 370,
     "name": "哀愁波動",
-    "desc": "前方に弾幕波を放ち、進路上の敵に<damage=BaseDamage>点のダメージを与える。さらに「<term=ERASE>」により接触した敵弾を消去する。<br>敵に命中した場合、最大体力の<data=ShieldMaxHPRatio>%＋<data=ShieldBaseValue>のシールドを獲得する。敵弾を消去した場合、さらに最大体力<data=BulletShieldMaxHPRatio>%＋<data=BulletShieldBaseValue>のシールドを追加で獲得する。シールドは<data=ShieldDuration>秒間持続する。",
+    "desc": "前方に弾幕波を放ち、進路上の敵に<damage=BaseDamage>点のダメージを与える。さらに「<term=ERASE>」により接触した敵弾を消去する。<br>敵に命中した場合、最大体力の<data=ShieldMaxHPRatio>%＋<data=ShieldBaseValue>のシールドを獲得する。弾消しを成功した場合、さらに最大体力<data=BulletShieldMaxHPRatio>%＋<data=BulletShieldBaseValue>のシールドを追加で獲得する。シールドは<data=ShieldDuration>秒間持続する。",
     "levelCount": 1,
     "levelRares": [
       2
@@ -681,7 +1394,22 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "ShieldMaxHPRatio": 8,
+        "ShieldBaseValue": 8,
+        "BulletShieldMaxHPRatio": 5,
+        "BulletShieldBaseValue": 5,
+        "ChargeDuration": 0.1,
+        "ShieldDuration": 8,
+        "Speed": 16,
+        "MaxShieldCount": 10,
+        "BaseDamage": 116
+      }
+    ]
   },
   {
     "id": 440,
@@ -697,7 +1425,21 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 20,
+        "ManaCost": 12,
+        "ImmunityTime": 5,
+        "ImmunityCount": 5,
+        "ComboSkillResetTime": 10,
+        "DashSpeed": 20,
+        "DashDuration": 0.3,
+        "ConversionRate": 10,
+        "InvincibleTime": 1,
+        "BaseDamage": 140
+      }
+    ]
   },
   {
     "id": 290,
@@ -714,7 +1456,36 @@
     "special": false,
     "emotion": 3,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "BuffDuration": 3,
+        "BuffValue": 30,
+        "ShieldValue": 10,
+        "ShieldDuration": 10,
+        "CastDuration": 0.1,
+        "StayTime": 0.25,
+        "ComboResetTime": 5,
+        "LifeTime": 10
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "BuffDuration": 3,
+        "BuffValue": 30,
+        "ShieldValue": 15,
+        "ShieldDuration": 10,
+        "MoveSpeed": 20,
+        "CastDuration": 0.03,
+        "StayTime": 0.25,
+        "ComboResetTime": 6,
+        "StunDuration": 1,
+        "LifeTime": 10,
+        "BaseDamage": 22
+      }
+    ]
   },
   {
     "id": 200,
@@ -731,7 +1502,27 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "HpDamage": 1,
+        "ManaDamage": 2,
+        "MaxDamage": 50,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 14
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "HpDamage": 1,
+        "ManaDamage": 2,
+        "MaxDamage": 100,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 14
+      }
+    ]
   },
   {
     "id": 220,
@@ -749,7 +1540,48 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 0,
+        "NormalAttackCD": 2,
+        "BaseDamage": 17
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "NormalAttackCD": 2,
+        "SummonCD": 0,
+        "SpecialAttackCD": 10,
+        "ChargeDuration": 0.1,
+        "CheckSizeX": 9,
+        "CheckSizeY": 6,
+        "CheckAngle": 120,
+        "MarkLife": 1,
+        "BaseDamage": 22,
+        "BulletDamage": 12,
+        "Lv2SpecialAttackDamage": 96,
+        "MarkDamage": 5
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "NormalAttackCD": 2,
+        "SummonCD": 0,
+        "SpecialAttackCD": 10,
+        "ChargeDuration": 0.1,
+        "CheckSizeX": 9,
+        "CheckSizeY": 8,
+        "CheckAngle": 120,
+        "MarkLife": 1,
+        "BaseDamage": 27,
+        "BulletDamage": 12,
+        "Lv2SpecialAttackDamage": 96,
+        "Lv3SpecialAttackDamage": 24,
+        "MarkDamage": 5
+      }
+    ]
   },
   {
     "id": 190,
@@ -767,7 +1599,34 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "CastDuration": 0.2,
+        "BaseDamage": 72,
+        "ExplosionDamage": 48
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "CastDuration": 0.1,
+        "BaseDamage": 72,
+        "ExplosionDamage": 48,
+        "SmallBulletDamage": 48,
+        "SmallExplosionDamage": 24
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "CastDuration": 0.08,
+        "BaseDamage": 72,
+        "ExplosionDamage": 48,
+        "SmallBulletDamage": 48,
+        "SmallExplosionDamage": 24
+      }
+    ]
   },
   {
     "id": 60,
@@ -784,7 +1643,24 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "CastDuration": 0.1,
+        "BackswingDuration": 0.1,
+        "BaseDamage": 144
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "CastDuration": 0.1,
+        "BackswingDuration": 0.1,
+        "WindSpeed": 8,
+        "BaseDamage": 144
+      }
+    ]
   },
   {
     "id": 380,
@@ -800,7 +1676,16 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "ChargeDuration": 0.3,
+        "CastDuration": 0.7,
+        "BaseDamage": 26
+      }
+    ]
   },
   {
     "id": 210,
@@ -816,7 +1701,18 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0.2,
+        "ManaCost": 10,
+        "DamageRatio": 50,
+        "AttackDamageIncrease": 0,
+        "PerManacost": 1,
+        "FollowInterval": 0.2,
+        "ExistenceDuration": 15
+      }
+    ]
   },
   {
     "id": 400,
@@ -832,7 +1728,16 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 15,
+        "ManaCost": 8,
+        "BuffValue": 50,
+        "BuffDuration": 6,
+        "BackswingDuration": 0.05
+      }
+    ]
   },
   {
     "id": 540,
@@ -850,7 +1755,31 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "CastDuration": 0.05,
+        "BaseDamage": 60
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "CastDuration": 0.05,
+        "TornadoDutation": 1,
+        "BaseDamage": 24,
+        "FinalDamage": 60
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "CastDuration": 0.05,
+        "TornadoDutation": 2,
+        "BaseDamage": 24,
+        "FinalDamage": 72
+      }
+    ]
   },
   {
     "id": 490,
@@ -867,7 +1796,29 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "UpDistance": 2.5,
+        "DecayTime": 1.5,
+        "DamageDecay": 20,
+        "BaseDamage": 5,
+        "SmallExplosionDamage": 19,
+        "ExplosionDamage": 120
+      },
+      {
+        "CD": 12,
+        "ManaCost": 8,
+        "UpDistance": 2.5,
+        "DecayTime": 1.5,
+        "DamageDecay": 20,
+        "BaseDamage": 5,
+        "SmallExplosionDamage": 19,
+        "ExplosionDamage": 168
+      }
+    ]
   },
   {
     "id": 510,
@@ -884,7 +1835,31 @@
     "special": false,
     "emotion": 4,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 6,
+        "CastDuration": 0.1,
+        "MoveDistance": 2,
+        "MoveSpeed": 30,
+        "DelayTime": 2,
+        "BuffDuration": 2,
+        "CritDamage": 100,
+        "BaseDamage": 96
+      },
+      {
+        "CD": 10,
+        "ManaCost": 6,
+        "CastDuration": 0.1,
+        "MoveDistance": 2,
+        "MoveSpeed": 30,
+        "DelayTime": 2,
+        "BuffDuration": 2,
+        "CritDamage": 100,
+        "BaseDamage": 120
+      }
+    ]
   },
   {
     "id": 590,
@@ -900,7 +1875,21 @@
     "special": true,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 20,
+        "ManaCost": 20,
+        "CostLayer": 50,
+        "KillLayerRatio": 3,
+        "PerLayerDamageIncrease": 5,
+        "PerHealLayer": 5,
+        "RandomAngle": 15,
+        "BulletNum": 7,
+        "ShootIntervalTime": 0.03,
+        "BaseDamage": 72
+      }
+    ]
   },
   {
     "id": 5000,
@@ -916,7 +1905,16 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 7,
+        "InvincibleDuration": 1.5,
+        "ChargeDuration": 0.4,
+        "BaseDamage": 48
+      }
+    ]
   },
   {
     "id": 5020,
@@ -934,7 +1932,31 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "BaseDamage": 24,
+        "ExplodeDamage": 36
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "FireColumn_TrackingField": 3,
+        "BaseDamage": 48,
+        "FireColumnDamage": 60
+      },
+      {
+        "CD": 8,
+        "ManaCost": 5,
+        "FireColumn_IntervalDistance": 1.6,
+        "FireColumn_SpawnInterval": 0.2,
+        "FireColumn_TrackingField": 5,
+        "BaseDamage": 60,
+        "FireColumnDamage": 60
+      }
+    ]
   },
   {
     "id": 5030,
@@ -952,7 +1974,32 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "FireballCount": 3,
+        "IntervalDistance": 2,
+        "TrackExtraLifetime": 0.3,
+        "FireballDamage": 24
+      },
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "FireballCount": 5,
+        "IntervalDistance": 1.5,
+        "TrackExtraLifetime": 0.3,
+        "FireballDamage": 24
+      },
+      {
+        "CD": 8,
+        "ManaCost": 6,
+        "FireballCount": 6,
+        "IntervalDistance": 1.8,
+        "FireballDamage": 24
+      }
+    ]
   },
   {
     "id": 5050,
@@ -969,7 +2016,21 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "ChargeInterval": 0.8,
+        "BaseDamage": 17
+      },
+      {
+        "CD": 10,
+        "ManaCost": 8,
+        "ChargeInterval": 0.4,
+        "BaseDamage": 17
+      }
+    ]
   },
   {
     "id": 5060,
@@ -985,7 +2046,17 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 10,
+        "ManaCost": 6,
+        "ShootInterval": 0.01,
+        "ShootCount": 20,
+        "ShootPointYOffset": 1.5,
+        "FireballDamage": 24
+      }
+    ]
   },
   {
     "id": 5070,
@@ -1001,7 +2072,18 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 18,
+        "ManaCost": 13,
+        "DamageCount": 5,
+        "DamageInterval": 0.2,
+        "Heal": 2,
+        "PhoenixDelay": 1.2,
+        "BurnDamage": 48
+      }
+    ]
   },
   {
     "id": 5080,
@@ -1019,7 +2101,51 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 4,
+        "ManaCost": 4,
+        "ShootAngleAbove": 70,
+        "ShootAngleBelow": 85,
+        "ShootInterval": 0.6,
+        "ShootManaCost": 1,
+        "RaycastRadius": 12,
+        "CountPerTurn": 3,
+        "ShootTurnInterval": 0.07,
+        "AtkSpeedRatio": 1,
+        "MinShootInterval": 0.3,
+        "FireballDamage": 12
+      },
+      {
+        "CD": 4,
+        "ManaCost": 4,
+        "ShootAngleAbove": 70,
+        "ShootAngleBelow": 85,
+        "ShootInterval": 0.6,
+        "ShootManaCost": 1,
+        "RaycastRadius": 12,
+        "CountPerTurn": 4,
+        "ShootTurnInterval": 0.07,
+        "AtkSpeedRatio": 1,
+        "MinShootInterval": 0.3,
+        "FireballDamage": 12
+      },
+      {
+        "CD": 4,
+        "ManaCost": 4,
+        "ShootAngleAbove": 70,
+        "ShootAngleBelow": 85,
+        "ShootInterval": 0.6,
+        "ShootManaCost": 1,
+        "RaycastRadius": 12,
+        "CountPerTurn": 5,
+        "ShootTurnInterval": 0.07,
+        "AtkSpeedRatio": 1,
+        "MinShootInterval": 0.3,
+        "FireballDamage": 24
+      }
+    ]
   },
   {
     "id": 5090,
@@ -1036,7 +2162,27 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 4,
+        "DashSpeed": 18,
+        "MinDashDuration": 0.5,
+        "MaxDashDuration": 0.5,
+        "BaseDamage": 12,
+        "ExplodeDamage": 48
+      },
+      {
+        "CD": 6,
+        "ManaCost": 5,
+        "DashSpeed": 24,
+        "MinDashDuration": 0.2,
+        "MaxDashDuration": 1.6,
+        "BaseDamage": 14,
+        "ExplodeDamage": 60
+      }
+    ]
   },
   {
     "id": 5120,
@@ -1052,7 +2198,25 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 15,
+        "ManaCost": 10,
+        "MinAdsorptionForce": 3,
+        "MaxAdsorptionForce": 5,
+        "AdsorptionFieldX": 20,
+        "AdsorptionFieldY": 12,
+        "JumpHeight": 2,
+        "JumpSpeed": 12,
+        "SwoopDelay": 0.6,
+        "SwoopSpeed": 16,
+        "AppearDelay": 0.6,
+        "FlySpeed": 16,
+        "FlyDuration": 0.25,
+        "FireColumn": 24
+      }
+    ]
   },
   {
     "id": 5150,
@@ -1070,7 +2234,30 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Layer": 1,
+        "Duration": 7,
+        "ExtraMaxLayer": 2
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Layer": 1,
+        "Duration": 9,
+        "ExtraMaxLayer": 3
+      },
+      {
+        "CD": 12,
+        "ManaCost": 7,
+        "Layer": 1,
+        "Duration": 12,
+        "ExtraMaxLayer": 4
+      }
+    ]
   },
   {
     "id": 5160,
@@ -1086,7 +2273,21 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 15,
+        "ManaCost": 0,
+        "CostHp": 40,
+        "Vulnerability": 0,
+        "AttackSpeedBoost": 40,
+        "DamageBoost": 40,
+        "ChargeSpeedBoost": 125,
+        "BaseDuration": 6,
+        "HpPercentForExtraDuration": 3,
+        "ExtraDuration": 1
+      }
+    ]
   },
   {
     "id": 5280,
@@ -1103,7 +2304,36 @@
     "special": false,
     "emotion": 2,
     "type": 0,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0.5,
+        "ManaCost": 0,
+        "EffectTriggerThreshold": 25,
+        "HealHpThreshold": 60,
+        "HpCostPerSecond": 6,
+        "DamageBoostPerHpPercent": 1,
+        "MaxDamageBoost": 40,
+        "AttackCostHpPercent": 1,
+        "ChargeOrSkillCostHpPercent": 5,
+        "AttackHealHp": 4,
+        "ChargeOrSkillHealHp": 15
+      },
+      {
+        "CD": 0.5,
+        "ManaCost": 0,
+        "EffectTriggerThreshold": 25,
+        "HealHpThreshold": 60,
+        "HpCostPerSecond": 6,
+        "DamageBoostPerHpPercent": 1.5,
+        "MaxDamageBoost": 60,
+        "AttackCostHpPercent": 1,
+        "ChargeOrSkillCostHpPercent": 5,
+        "AttackHealHp": 5,
+        "ChargeOrSkillHealHp": 18,
+        "ExtraPoise": 3
+      }
+    ]
   },
   {
     "id": 5040,
@@ -1121,7 +2351,33 @@
     "special": false,
     "emotion": 2,
     "type": 3,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "FireballCount": 1,
+        "RotatingSpeed": 200,
+        "RotatingRadius": 1.6,
+        "FireballDamage": 13
+      },
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "FireballCount": 2,
+        "RotatingSpeed": 200,
+        "RotatingRadius": 1.6,
+        "FireballDamage": 13
+      },
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "FireballCount": 3,
+        "RotatingSpeed": 200,
+        "RotatingRadius": 1.6,
+        "FireballDamage": 13
+      }
+    ]
   },
   {
     "id": 5110,
@@ -1138,7 +2394,26 @@
     "special": false,
     "emotion": 2,
     "type": 3,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "FireballInterval": 2.2,
+        "FireballCount": 2,
+        "ArriveTime": 0.66,
+        "FireballDamage": 12
+      },
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "FireballInterval": 2.2,
+        "FireballCount": 2,
+        "ArriveTime": 0.66,
+        "FireballDamage": 12,
+        "FireWaveDamage": 17
+      }
+    ]
   },
   {
     "id": 5170,
@@ -1154,7 +2429,16 @@
     "special": false,
     "emotion": 2,
     "type": 3,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "StackLayer": 3,
+        "CheckWidth": 20,
+        "CheckHeight": 12
+      }
+    ]
   },
   {
     "id": 5180,
@@ -1170,7 +2454,16 @@
     "special": false,
     "emotion": 2,
     "type": 3,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 6,
+        "ManaCost": 0,
+        "CheckWidth": 10,
+        "CheckHeight": 6,
+        "BaseDamage": 60
+      }
+    ]
   },
   {
     "id": 5190,
@@ -1186,7 +2479,14 @@
     "special": false,
     "emotion": 2,
     "type": 3,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 5,
+        "ManaCost": 0,
+        "BaseDamage": 60
+      }
+    ]
   },
   {
     "id": 5290,
@@ -1202,7 +2502,13 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0
+      }
+    ]
   },
   {
     "id": 5100,
@@ -1218,7 +2524,21 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 5,
+        "ManaCost": 0,
+        "FirecrackerCount": 4,
+        "FirecrackerThrowAngle": 90,
+        "FirecrackerThrowSpeed": 5.5,
+        "FirecrackerRotateSpeed": 6,
+        "FirecrackerThrowDuration": 0.3,
+        "FirecrackerTriggerDelayTime": 0.25,
+        "StunDuration": 1,
+        "ExplodeDamage": 8
+      }
+    ]
   },
   {
     "id": 5200,
@@ -1234,7 +2554,15 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "RechargeAmount": 1,
+        "RechargeInterval": 1
+      }
+    ]
   },
   {
     "id": 5210,
@@ -1250,7 +2578,14 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "DamageBoost": 1.5
+      }
+    ]
   },
   {
     "id": 5220,
@@ -1266,7 +2601,14 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "RebornCount": 1
+      }
+    ]
   },
   {
     "id": 5230,
@@ -1282,7 +2624,14 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "ExtraPoise": 1
+      }
+    ]
   },
   {
     "id": 5240,
@@ -1298,7 +2647,14 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "Probability": 15
+      }
+    ]
   },
   {
     "id": 5250,
@@ -1314,7 +2670,15 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "Delay": 0.2,
+        "BaseDamage": 22
+      }
+    ]
   },
   {
     "id": 5260,
@@ -1330,7 +2694,15 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "HealHpThreshold": 50,
+        "Heal": 5
+      }
+    ]
   },
   {
     "id": 5270,
@@ -1346,6 +2718,13 @@
     "special": false,
     "emotion": 2,
     "type": 4,
-    "hasIcon": true
+    "hasIcon": true,
+    "levelParams": [
+      {
+        "CD": 0,
+        "ManaCost": 0,
+        "DamageBoost": 30
+      }
+    ]
   }
 ]

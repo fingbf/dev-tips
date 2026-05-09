@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import rawItems from "@/data/games/tbs/items.json";
 import rawSetEffects from "@/data/games/tbs/set-effects.json";
+import { DescText } from "../tbs-desc";
 
 type SetEffect = { id: number; name: string; color: string; desc: string };
 const setEffects = rawSetEffects as Record<string, SetEffect>;
@@ -18,6 +19,7 @@ type Item = {
   setTags: { id: number; name: string }[];
   hasIcon: boolean;
   note?: string;
+  params?: Record<string, number | string>;
 };
 
 const items = rawItems as Item[];
@@ -119,6 +121,11 @@ export function ItemsTable() {
                 <td className="px-2 py-2 text-right text-xs text-zinc-400">{i + 1}</td>
                 <td className="px-3 py-2">
                   <div className="font-medium">{item.name}</div>
+                  {item.desc && (
+                    <div className="mt-0.5">
+                      <DescText raw={item.desc} params={item.params} />
+                    </div>
+                  )}
                   {item.note && (
                     <div className="mt-0.5 text-xs text-amber-600 dark:text-amber-400">{item.note}</div>
                   )}
