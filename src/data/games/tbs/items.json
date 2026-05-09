@@ -696,8 +696,8 @@
     "params": {
       "Duration": 4,
       "MaxLayer": 10,
-      "CritRate": 100,
-      "CritDamage": 100
+      "CritRate": 1,
+      "CritDamage": 1
     }
   },
   {
