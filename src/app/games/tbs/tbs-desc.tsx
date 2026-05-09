@@ -3,6 +3,12 @@ import termsData from "@/data/games/tbs/terms.json";
 const TERMS = termsData as Record<string, string>;
 const TAG_RE = /(<term=[^>]+>|<(?:data|damage|attr|dps)=[^>]+>|<br>)/gi;
 
+const PCTAGE_ATTR_KEYS = new Set(
+  ['DamageResist','CritRate','CritDamage','AtkBoost','DamageBoost',
+   'MpCostReduction','MpRegenBoost','DashCDReduction','IcebreakDamageBoost']
+  .map(k => k.toLowerCase())
+);
+
 type Params = Record<string, number | string>;
 
 function formatVal(v: number | string): string {
@@ -28,14 +34,16 @@ export function DescText({ raw, params }: { raw: string; params?: Params }) {
             </span>
           );
         }
-        const dataMatch = part.match(/^<(?:data|damage|attr|dps)=([^>]+)>$/i);
+        const dataMatch = part.match(/^<(data|damage|attr|dps)=([^>]+)>$/i);
         if (dataMatch) {
-          const key = dataMatch[1];
+          const tagType = dataMatch[1].toLowerCase();
+          const key = dataMatch[2];
           const val = paramLower?.[key.toLowerCase()];
           if (val !== undefined) {
+            const addPct = tagType === 'attr' && PCTAGE_ATTR_KEYS.has(key.toLowerCase());
             return (
               <span key={i} className="font-medium text-zinc-600 dark:text-zinc-300">
-                {formatVal(val)}
+                {formatVal(val)}{addPct ? '%' : ''}
               </span>
             );
           }

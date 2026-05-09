@@ -383,7 +383,7 @@
     "hasIcon": true,
     "params": {
       "AtkBoost": 30,
-      "AtkSpeedBoost": -5
+      "AtkSpeedBoost": 5
     }
   },
   {
@@ -1135,7 +1135,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CritRate": -15,
+      "CritRate": 15,
       "CritDamage": 80
     }
   },
@@ -1243,7 +1243,7 @@
     "hasIcon": true,
     "params": {
       "DamageBoost": 60,
-      "DamageResist": -100
+      "DamageResist": 100
     }
   },
   {
@@ -1381,7 +1381,7 @@
     "hasIcon": true,
     "params": {
       "AddProbability": 5,
-      "MaxMp": -10,
+      "MaxMp": 10,
       "MpCostReduction": 20
     }
   },
