@@ -11,7 +11,7 @@
     "hasIcon": true,
     "note": "EasyモードでGame Startすると取得",
     "params": {
-      "DamageReductionPerLayer": 0.05,
+      "DamageReductionPerLayer": 5,
       "MaxLayer": 10
     }
   },
@@ -41,9 +41,9 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1,
       "HealHpPercent": 3,
-      "HpLimit": 30
+      "HpLimit": 30,
+      "AtkBoost": 10
     }
   },
   {
@@ -82,8 +82,8 @@
     ],
     "hasIcon": true,
     "params": {
-      "CD": 1,
-      "Damage": 17
+      "Damage": 17,
+      "CD": 1
     }
   },
   {
@@ -106,8 +106,8 @@
     ],
     "hasIcon": true,
     "params": {
-      "CD": 1,
-      "Damage": 10
+      "Damage": 10,
+      "CD": 1
     }
   },
   {
@@ -211,8 +211,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CD": 2,
-      "Damage": 4
+      "Damage": 14,
+      "CD": 2
     }
   },
   {
@@ -265,7 +265,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.2
+      "AtkBoost": 20
     }
   },
   {
@@ -368,7 +368,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "MpRegenBoost": 0.25
+      "MpRegenBoost": 25
     }
   },
   {
@@ -382,7 +382,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.3,
+      "AtkBoost": 30,
       "AtkSpeedBoost": -5
     }
   },
@@ -397,7 +397,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DamageBoost": 0.16
+      "DamageBoost": 16
     }
   },
   {
@@ -453,12 +453,12 @@
     ],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1,
       "Probability": 20,
       "CostMana": 5,
       "BuffDuration": 6,
       "CD": 5,
-      "BuffValue": 40
+      "BuffValue": 40,
+      "AtkBoost": 10
     }
   },
   {
@@ -477,7 +477,6 @@
     ],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.25,
       "Probability": 30,
       "CostMana": 5,
       "BuffDuration": 7,
@@ -486,7 +485,8 @@
       "MidHakkeroBuffValue": 40,
       "SmallHakkeroBuffValue": 30,
       "SuitCostMana": 8,
-      "SuitDuration": 8
+      "SuitDuration": 8,
+      "AtkBoost": 25
     }
   },
   {
@@ -531,9 +531,9 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "IcebreakDamageBoost": 0.2,
       "Probability": 5,
-      "FreezeDuration": 3
+      "FreezeDuration": 3,
+      "IcebreakDamageBoost": 20
     }
   },
   {
@@ -618,8 +618,8 @@
     ],
     "hasIcon": true,
     "params": {
-      "DamageBoost": 0.15,
-      "DamageIncrease": 50
+      "DamageIncrease": 50,
+      "DamageBoost": 15
     }
   },
   {
@@ -638,9 +638,9 @@
     ],
     "hasIcon": true,
     "params": {
-      "IcebreakDamageBoost": 0.3,
+      "Damage": 24,
       "FreezeDuration": 2,
-      "Damage": 24
+      "IcebreakDamageBoost": 30
     }
   },
   {
@@ -696,8 +696,8 @@
     "params": {
       "Duration": 4,
       "MaxLayer": 10,
-      "CritRate": 1,
-      "CritDamage": 1
+      "CritRate": 100,
+      "CritDamage": 100
     }
   },
   {
@@ -711,8 +711,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1,
-      "CritRate": 0.04
+      "AtkBoost": 10,
+      "CritRate": 4
     }
   },
   {
@@ -726,8 +726,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "MaxHp": 25,
-      "AttackAmpRatio": 0.2
+      "AttackAmpRatio": 20,
+      "MaxHp": 25
     }
   },
   {
@@ -741,7 +741,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1
+      "AtkBoost": 10
     }
   },
   {
@@ -755,7 +755,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DashCDReduction": 0.2
+      "DashCDReduction": 20
     }
   },
   {
@@ -815,10 +815,10 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "ExtraDashes": 1,
       "Duration": 4,
       "BuffValue": 10,
-      "MaxLayer": 6
+      "MaxLayer": 6,
+      "ExtraDashes": 1
     }
   },
   {
@@ -846,7 +846,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CritRate": 0.04
+      "CritRate": 4
     }
   },
   {
@@ -875,7 +875,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DamageResist": 0.07
+      "DamageResist": 7
     }
   },
   {
@@ -905,8 +905,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1,
-      "AttackAmp": 7
+      "AttackAmp": 7,
+      "AtkBoost": 10
     }
   },
   {
@@ -920,9 +920,9 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "ExtraJumps": 1,
       "Duration": 5,
-      "BuffValue": 10
+      "BuffValue": 10,
+      "ExtraJumps": 1
     }
   },
   {
@@ -971,13 +971,13 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.1,
       "Lv1HpPercent": 80,
       "Lv2HpPercent": 40,
       "Lv1AttackSpeed": 10,
       "Lv1AttackAmp": 20,
       "Lv2AttackSpeed": 20,
-      "Lv2AttackAmp": 40
+      "Lv2AttackAmp": 40,
+      "AtkBoost": 10
     }
   },
   {
@@ -1035,7 +1035,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DashCDReduction": 0.3
+      "DashCDReduction": 30
     }
   },
   {
@@ -1135,8 +1135,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CritRate": -0.15,
-      "CritDamage": 0.8
+      "CritRate": -15,
+      "CritDamage": 80
     }
   },
   {
@@ -1213,7 +1213,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CD": 0.2
+      "CD": 20
     }
   },
   {
@@ -1242,8 +1242,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DamageBoost": 0.6,
-      "DamageResist": -1
+      "DamageBoost": 60,
+      "DamageResist": -100
     }
   },
   {
@@ -1324,8 +1324,8 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "DamageBoost": 0.5,
-      "MaxMana": 10
+      "MaxMana": 10,
+      "DamageBoost": 50
     }
   },
   {
@@ -1380,9 +1380,9 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
+      "AddProbability": 5,
       "MaxMp": -10,
-      "MpCostReduction": 0.2,
-      "AddProbability": 5
+      "MpCostReduction": 20
     }
   },
   {
@@ -1794,7 +1794,7 @@
     "hasIcon": true,
     "params": {
       "MaxLayer": 100,
-      "PerLayerValue": 0.3,
+      "PerLayerValue": 30,
       "HealHpValue": 10,
       "EliteLayer": 2,
       "BossLayer": 3,
@@ -1877,11 +1877,11 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "AtkBoost": 0.3,
       "CD": 50,
       "BuffDuration": 5,
       "FantasyReduceCD": 7,
-      "MaxReduceCD": 35
+      "MaxReduceCD": 35,
+      "AtkBoost": 30
     }
   },
   {
@@ -1900,8 +1900,8 @@
     ],
     "hasIcon": true,
     "params": {
-      "CD": 1,
-      "Damage": 17
+      "Damage": 17,
+      "CD": 1
     }
   },
   {
@@ -1966,9 +1966,9 @@
     ],
     "hasIcon": true,
     "params": {
+      "Damage": 28,
       "CD": 8,
-      "LifeTime": 5,
-      "Damage": 29
+      "LifeTime": 5
     }
   },
   {
@@ -1987,7 +1987,7 @@
       "WolfValue": 30,
       "OtterValue": 10,
       "VultureValue": 20,
-      "AttractRadius": 2.5
+      "AttractRadius": 2
     }
   },
   {
@@ -2022,7 +2022,7 @@
     "params": {
       "CD": 8,
       "InvincibleTime": 2,
-      "AttractRadius": 2.5
+      "AttractRadius": 2
     }
   },
   {
@@ -2041,8 +2041,8 @@
     ],
     "hasIcon": true,
     "params": {
-      "CD": 1.5,
-      "Base": 24
+      "Base": 24,
+      "CD": 2
     }
   },
   {
@@ -2097,7 +2097,7 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "CostManaIncreaseTime": 0.1,
+      "CostManaIncreaseTime": 10,
       "CostManaIncreaseValue": 1,
       "MaxCostMana": 6
     }
@@ -2118,7 +2118,7 @@
     ],
     "hasIcon": true,
     "params": {
-      "PerLayerBoost": 1.5,
+      "PerLayerBoost": 2,
       "MaxDamageBoost": 60
     }
   },
@@ -2282,7 +2282,7 @@
     "hasIcon": true,
     "note": "雲居一輪がドロップ",
     "params": {
-      "Damage": 10
+      "Damage": 37
     }
   },
   {
@@ -2330,8 +2330,8 @@
     "hasIcon": true,
     "note": "藤原妹紅がドロップ",
     "params": {
-      "DashCount": 1,
-      "Damage": 22
+      "Damage": 22,
+      "DashCount": 1
     }
   },
   {
@@ -2359,9 +2359,9 @@
     "setTags": [],
     "hasIcon": true,
     "params": {
-      "NuImprintIncreasement": 2,
       "CD": 1,
-      "Layer": 5
+      "Layer": 5,
+      "NuImprintIncreasement": 2
     }
   },
   {
@@ -2378,7 +2378,7 @@
     "params": {
       "ExtraDuration": 2,
       "PoisonLayer": 2,
-      "Radius": 2.5
+      "Radius": 2
     }
   },
   {
@@ -2450,7 +2450,7 @@
     "hasIcon": true,
     "note": "紅美鈴がドロップ",
     "params": {
-      "AttackAmpPerLayer": 0.5,
+      "AttackAmpPerLayer": 50,
       "MaxLayer": 80,
       "HitCount": 10
     }
@@ -2492,12 +2492,12 @@
     "hasIcon": true,
     "note": "小野塚小町がドロップ",
     "params": {
-      "CritRate": 100,
-      "CritDamage": 50,
       "HalfMoon": 46,
       "FullMoon": 92,
       "HalfMoonDash": 29,
-      "FullMoonDash": 58
+      "FullMoonDash": 58,
+      "CritRate": 100,
+      "CritDamage": 50
     }
   }
 ]
