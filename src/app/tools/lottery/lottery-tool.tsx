@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 type LotteryMode = "single" | "order" | "team";
 
@@ -56,7 +55,6 @@ function divideIntoTeams(items: string[], teamCount: number): string[][] {
 }
 
 export function LotteryTool() {
-  const searchParams = useSearchParams();
   const [mode, setMode] = useState<LotteryMode>("single");
   const [input, setInput] = useState("");
   const [bulkInput, setBulkInput] = useState("");
@@ -85,15 +83,15 @@ export function LotteryTool() {
 
   // URLパラメータから項目を復元
   useEffect(() => {
-    const itemsParam = searchParams.get("items");
+    const itemsParam = new URLSearchParams(window.location.search).get("items");
     if (itemsParam) {
       const MAX_ITEMS = 100;
-      const decoded = decodeURIComponent(itemsParam).split(",").filter(Boolean).slice(0, MAX_ITEMS);
+      const decoded = itemsParam.split(",").filter(Boolean).slice(0, MAX_ITEMS);
       if (decoded.length > 0) {
         setItems(decoded);
       }
     }
-  }, [searchParams]);
+  }, []);
 
   const MAX_ITEMS = 100;
 

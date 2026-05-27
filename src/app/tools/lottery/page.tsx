@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { LotteryTool } from "./lottery-tool";
 
 export const metadata: Metadata = {
@@ -31,9 +30,5 @@ export const metadata: Metadata = {
 };
 
 export default function LotteryPage() {
-  return (
-    <Suspense>
-      <LotteryTool />
-    </Suspense>
-  );
+  return <LotteryTool />;
 }
