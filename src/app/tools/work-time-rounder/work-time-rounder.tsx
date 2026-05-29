@@ -1,11 +1,20 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { convertLine } from "./work-time-rounder.utils";
+import { MAX_TIME_ROUND_LINES, MAX_TEXT_CHARS, INPUT_DEBOUNCE_MS } from "@/lib/inputLimits";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
-function convert(input: string): string {
-  return input.split("\n").map(convertLine).join("\n");
+function convert(input: string): { text: string; truncated: number } {
+  const lines = input.split("\n");
+  if (lines.length > MAX_TIME_ROUND_LINES) {
+    return {
+      text: lines.slice(0, MAX_TIME_ROUND_LINES).map(convertLine).join("\n"),
+      truncated: lines.length - MAX_TIME_ROUND_LINES,
+    };
+  }
+  return { text: lines.map(convertLine).join("\n"), truncated: 0 };
 }
 
 export function WorkTimeRounder() {
@@ -19,7 +28,9 @@ export function WorkTimeRounder() {
     };
   }, []);
 
-  const output = convert(input);
+  // 大量行貼り付け時に毎打鍵 convert させないよう debounce で間引く
+  const debouncedInput = useDebouncedValue(input, INPUT_DEBOUNCE_MS);
+  const { text: output, truncated } = useMemo(() => convert(debouncedInput), [debouncedInput]);
 
   const handleClear = useCallback(() => setInput(""), []);
 
@@ -99,8 +110,14 @@ export function WorkTimeRounder() {
             </div>
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value.length > MAX_TEXT_CHARS
+                  ? e.target.value.slice(0, MAX_TEXT_CHARS)
+                  : e.target.value;
+                setInput(v);
+              }}
               placeholder={"9:05\t18:47\n8:52\t17:33\n10:00,19:20"}
+              maxLength={MAX_TEXT_CHARS}
               className="flex-1 min-h-[400px] border border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-900 rounded p-3 font-mono text-sm text-zinc-900 dark:text-zinc-100 resize-none focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
               spellCheck={false}
             />
@@ -119,6 +136,11 @@ export function WorkTimeRounder() {
                 </button>
               )}
             </div>
+            {truncated > 0 && (
+              <p className="text-xs text-yellow-600 dark:text-yellow-400">
+                {MAX_TIME_ROUND_LINES} 行を超えたため、末尾 {truncated} 行は変換していません (出力テキストには含まれません)
+              </p>
+            )}
             <textarea
               readOnly
               value={output}

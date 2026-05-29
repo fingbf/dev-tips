@@ -2,11 +2,16 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
+import { MAX_TEXT_BYTES } from "@/lib/inputLimits";
 
 type IndentSize = 2 | 4;
 const MAX_WARN_SIZE = 500_000;
+const MAX_INPUT_SIZE = MAX_TEXT_BYTES;
 
 function processJson(input: string, indent: IndentSize | undefined): { result: string; error: string | null } {
+  if (input.length > MAX_INPUT_SIZE) {
+    return { result: "", error: `入力サイズが上限 ${MAX_INPUT_SIZE.toLocaleString()} 文字を超えています` };
+  }
   try {
     const parsed = JSON.parse(input);
     return { result: JSON.stringify(parsed, null, indent), error: null };
@@ -77,10 +82,13 @@ export function JsonFormatter() {
   const handlePaste = useCallback(async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setInput(text);
+      const trimmed = text.length > MAX_INPUT_SIZE ? text.slice(0, MAX_INPUT_SIZE) : text;
+      setInput(trimmed);
       setOutput("");
-      setError(null);
-      setSizeWarning(text.length > MAX_WARN_SIZE);
+      setError(text.length > MAX_INPUT_SIZE
+        ? `クリップボードのサイズが上限 ${MAX_INPUT_SIZE.toLocaleString()} 文字を超えたため、先頭を切り詰めました`
+        : null);
+      setSizeWarning(trimmed.length > MAX_WARN_SIZE);
     } catch {
       // 権限拒否の場合は無視（ユーザーは手動でペーストできる）
     }
@@ -163,11 +171,15 @@ export function JsonFormatter() {
             <textarea
               value={input}
               onChange={(e) => {
-                setInput(e.target.value);
+                const v = e.target.value.length > MAX_INPUT_SIZE
+                  ? e.target.value.slice(0, MAX_INPUT_SIZE)
+                  : e.target.value;
+                setInput(v);
                 setError(null);
-                setSizeWarning(e.target.value.length > MAX_WARN_SIZE);
+                setSizeWarning(v.length > MAX_WARN_SIZE);
               }}
               placeholder='{"key": "value"} を貼り付けてください'
+              maxLength={MAX_INPUT_SIZE}
               className="flex-1 min-h-[400px] border border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-900 rounded p-3 font-mono text-sm text-zinc-900 dark:text-zinc-100 resize-none focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
               spellCheck={false}
             />

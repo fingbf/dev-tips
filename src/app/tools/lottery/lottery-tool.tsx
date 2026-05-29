@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
+import { MAX_LOTTERY_ITEMS, MAX_LOTTERY_ITEM_CHARS } from "@/lib/inputLimits";
 
 type LotteryMode = "single" | "order" | "team";
 
@@ -36,10 +37,28 @@ const SLOT_COLORS = [
   "#6366f1",
 ];
 
+// 0 以上 max 未満の整数を crypto-grade RNG で生成 (rejection sampling で偏りを排除)
+function secureRandomInt(max: number): number {
+  if (max <= 0) return 0;
+  // Math.random() ベースのフォールバック (SSR / 古い環境)
+  if (typeof crypto === "undefined" || !crypto.getRandomValues) {
+    return Math.floor(Math.random() * max);
+  }
+  const range = 2 ** 32;
+  const limit = range - (range % max);
+  const buf = new Uint32Array(1);
+  let n: number;
+  do {
+    crypto.getRandomValues(buf);
+    n = buf[0];
+  } while (n >= limit);
+  return n % max;
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = secureRandomInt(i + 1);
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
@@ -85,21 +104,22 @@ export function LotteryTool() {
   useEffect(() => {
     const itemsParam = new URLSearchParams(window.location.search).get("items");
     if (itemsParam) {
-      const MAX_ITEMS = 100;
-      const decoded = itemsParam.split(",").filter(Boolean).slice(0, MAX_ITEMS);
+      const decoded = itemsParam
+        .split(",")
+        .map((s) => s.slice(0, MAX_LOTTERY_ITEM_CHARS))
+        .filter(Boolean)
+        .slice(0, MAX_LOTTERY_ITEMS);
       if (decoded.length > 0) {
         setItems(decoded);
       }
     }
   }, []);
 
-  const MAX_ITEMS = 100;
-
   const addItem = useCallback(() => {
-    const trimmed = input.trim();
+    const trimmed = input.trim().slice(0, MAX_LOTTERY_ITEM_CHARS);
     if (!trimmed) return;
     setItems((prev) => {
-      if (prev.length >= MAX_ITEMS || prev.includes(trimmed)) return prev;
+      if (prev.length >= MAX_LOTTERY_ITEMS || prev.includes(trimmed)) return prev;
       return [...prev, trimmed];
     });
     setInput("");
@@ -108,12 +128,12 @@ export function LotteryTool() {
   const addBulk = useCallback((text: string) => {
     const parsed = text
       .split(/[,\n、]/)
-      .map((s) => s.trim())
+      .map((s) => s.trim().slice(0, MAX_LOTTERY_ITEM_CHARS))
       .filter(Boolean);
     if (parsed.length > 0) {
       setItems((prev) => {
         const unique = parsed.filter((s) => !prev.includes(s));
-        return [...prev, ...unique].slice(0, MAX_ITEMS);
+        return [...prev, ...unique].slice(0, MAX_LOTTERY_ITEMS);
       });
     }
   }, []);
@@ -138,11 +158,11 @@ export function LotteryTool() {
     setOrderResult([]);
     setTeamResult([]);
 
-    const totalTicks = 20 + Math.floor(Math.random() * 10);
+    const totalTicks = 20 + secureRandomInt(10);
     const effectiveWinners = Math.min(winnerCount, items.length);
 
     function tick(count: number) {
-      const randomItem = items[Math.floor(Math.random() * items.length)];
+      const randomItem = items[secureRandomInt(items.length)];
       setSlotDisplay(randomItem);
 
       if (count >= totalTicks) {
@@ -583,14 +603,16 @@ export function LotteryTool() {
 {`function shuffle(arr) {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = secureRandomInt(i + 1); // crypto.getRandomValues + rejection sampling
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
 }`}
           </pre>
           <p className="mt-3">
-            乱数の生成にはブラウザ標準の<code className="rounded bg-zinc-200 px-1 dark:bg-zinc-800">Math.random()</code>を使用しており、
+            乱数の生成には Web Crypto API
+            （<code className="rounded bg-zinc-200 px-1 dark:bg-zinc-800">crypto.getRandomValues()</code>）
+            を使用し、modulo bias を rejection sampling で除去しています。
             全ての処理はブラウザ内で完結します（サーバーへのデータ送信は一切ありません）。
           </p>
         </div>

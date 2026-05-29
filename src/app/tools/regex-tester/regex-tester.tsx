@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import { MAX_REGEX_PATTERN_CHARS, MAX_TEXT_CHARS } from "@/lib/inputLimits";
 
 type FlagKey = "g" | "i" | "m" | "s";
 type TabKey = "match" | "replace";
@@ -366,8 +367,11 @@ export function RegexTester() {
     setOpenCategory(null);
   };
 
-  // エラー表示はパターン入力に即時反映（debounce なし）
-  const result: RegexResult = useMemo(() => buildRegexResult(pattern, flags), [pattern, flags]);
+  // エラー表示も debounced 値で評価 (極端に長いパターンの即時コンパイルで UI が固まるのを防ぐ)
+  const result: RegexResult = useMemo(
+    () => buildRegexResult(debouncedInputs.pattern, debouncedInputs.flags),
+    [debouncedInputs.pattern, debouncedInputs.flags]
+  );
 
   useEffect(() => {
     const ta = textareaRef.current;
@@ -477,10 +481,11 @@ export function RegexTester() {
             id="regex-pattern"
             type="text"
             value={pattern}
-            onChange={(e) => setPattern(e.target.value)}
+            onChange={(e) => setPattern(e.target.value.slice(0, MAX_REGEX_PATTERN_CHARS))}
             placeholder="\d+"
             spellCheck={false}
             autoComplete="off"
+            maxLength={MAX_REGEX_PATTERN_CHARS}
             className={[
               "flex-1 bg-transparent font-mono text-base focus:outline-none",
               isError ? "text-red-500 dark:text-red-400" : "text-zinc-900 dark:text-zinc-100",
@@ -587,10 +592,11 @@ export function RegexTester() {
                 ref={textareaRef}
                 id="regex-test-string"
                 value={testString}
-                onChange={(e) => setTestString(e.target.value)}
+                onChange={(e) => setTestString(e.target.value.slice(0, MAX_TEXT_CHARS))}
                 placeholder="テスト対象のテキストをここに入力...&#10;（サンプルを読み込んだ後も自由に編集できます）"
                 spellCheck={false}
                 rows={10}
+                maxLength={MAX_TEXT_CHARS}
                 className="relative w-full bg-transparent px-3 py-3 font-mono text-sm focus:outline-none resize-none"
                 style={{
                   lineHeight: "1.5rem",
@@ -612,9 +618,10 @@ export function RegexTester() {
                 <input
                   type="text"
                   value={replacement}
-                  onChange={(e) => setReplacement(e.target.value)}
+                  onChange={(e) => setReplacement(e.target.value.slice(0, MAX_REGEX_PATTERN_CHARS))}
                   placeholder="例: $1-$2  または  置換後の文字列"
                   spellCheck={false}
+                  maxLength={MAX_REGEX_PATTERN_CHARS}
                   className="w-full bg-white dark:bg-zinc-900 px-3 py-2 font-mono text-sm focus:outline-none"
                 />
               </div>

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type ExcelJS from "exceljs";
+import { MAX_CALENDAR_DH_ENTRIES } from "@/lib/inputLimits";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 const DEFAULT_HOURS = 8;
@@ -457,7 +458,8 @@ export function WorkingHoursCalendar() {
   const [dayHours, setDayHours] = useState<Record<string, number>>(() => {
     const raw = searchParams.get("dh");
     if (!raw) return {};
-    return raw.split(",").reduce((acc, s) => {
+    // 巨大クエリで初期化を重くしないよう、最大エントリ数で先頭から打ち切る
+    return raw.split(",").slice(0, MAX_CALENDAR_DH_ENTRIES).reduce((acc, s) => {
       const idx = s.lastIndexOf(":");
       if (idx < 0) return acc;
       const date = s.slice(0, idx);

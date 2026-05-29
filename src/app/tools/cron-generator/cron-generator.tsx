@@ -4,6 +4,8 @@ import { useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import cronstrue from "cronstrue/i18n";
 import { CronExpressionParser } from "cron-parser";
+import { MAX_CRON_CHARS, INPUT_DEBOUNCE_MS } from "@/lib/inputLimits";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
 type CronMode = "unix" | "quartz";
 
@@ -154,23 +156,26 @@ export function CronGenerator() {
   const [isManual, setIsManual] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // manual 入力時の重い解析 (cronstrue / cron-parser) を毎打鍵走らせず debounce
+  const debouncedManualInput = useDebouncedValue(manualInput, INPUT_DEBOUNCE_MS);
+
   const unixExpression = useMemo(() => {
     if (isManual) {
       if (mode === "quartz") {
-        return quartzToUnix(manualInput);
+        return quartzToUnix(debouncedManualInput);
       }
-      return manualInput;
+      return debouncedManualInput;
     }
     return `${minute} ${hour} ${dom} ${month} ${dow}`;
-  }, [isManual, manualInput, mode, minute, hour, dom, month, dow]);
+  }, [isManual, debouncedManualInput, mode, minute, hour, dom, month, dow]);
 
   const displayExpression = useMemo(() => {
-    if (isManual) return manualInput;
+    if (isManual) return debouncedManualInput;
     if (mode === "quartz") {
       return unixToQuartz(`${minute} ${hour} ${dom} ${month} ${dow}`);
     }
     return `${minute} ${hour} ${dom} ${month} ${dow}`;
-  }, [isManual, manualInput, mode, minute, hour, dom, month, dow]);
+  }, [isManual, debouncedManualInput, mode, minute, hour, dom, month, dow]);
 
   const description = useMemo(
     () => getDescription(displayExpression, mode),
@@ -361,8 +366,9 @@ export function CronGenerator() {
           <input
             type="text"
             value={manualInput}
-            onChange={(e) => setManualInput(e.target.value)}
+            onChange={(e) => setManualInput(e.target.value.slice(0, MAX_CRON_CHARS))}
             placeholder={mode === "unix" ? "* * * * *" : "0 * * * * ?"}
+            maxLength={MAX_CRON_CHARS}
             className="w-full rounded-md border border-zinc-300 bg-white px-4 py-2 font-mono text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
           />
         </div>
