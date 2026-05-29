@@ -7,18 +7,12 @@ import { MAX_TEXT_BYTES } from "@/lib/inputLimits";
 type IndentSize = 2 | 4;
 const MAX_WARN_SIZE = 500_000;
 const MAX_INPUT_SIZE = MAX_TEXT_BYTES;
+// Worker 応答待ちの上限。1MiB JSON でも余裕がある値
+const WORKER_TIMEOUT_MS = 10_000;
 
-function processJson(input: string, indent: IndentSize | undefined): { result: string; error: string | null } {
-  if (input.length > MAX_INPUT_SIZE) {
-    return { result: "", error: `入力サイズが上限 ${MAX_INPUT_SIZE.toLocaleString()} 文字を超えています` };
-  }
-  try {
-    const parsed = JSON.parse(input);
-    return { result: JSON.stringify(parsed, null, indent), error: null };
-  } catch (e) {
-    return { result: "", error: e instanceof Error ? e.message : "Invalid JSON" };
-  }
-}
+type WorkerResponse =
+  | { ok: true; result: string }
+  | { ok: false; error: string };
 
 export function JsonFormatter() {
   const [input, setInput] = useState("");
@@ -27,29 +21,94 @@ export function JsonFormatter() {
   const [indent, setIndent] = useState<IndentSize>(2);
   const [copied, setCopied] = useState(false);
   const [sizeWarning, setSizeWarning] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const workerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      if (workerTimerRef.current) clearTimeout(workerTimerRef.current);
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
     };
+  }, []);
+
+  // Worker でパース/整形を実行。前回の処理は terminate でキャンセル
+  const runWorker = useCallback((text: string, indentArg: IndentSize | undefined) => {
+    if (text.length > MAX_INPUT_SIZE) {
+      setOutput("");
+      setError(`入力サイズが上限 ${MAX_INPUT_SIZE.toLocaleString()} 文字を超えています`);
+      return;
+    }
+    if (workerRef.current) workerRef.current.terminate();
+    if (workerTimerRef.current) clearTimeout(workerTimerRef.current);
+
+    const worker = new Worker(new URL("./json.worker.ts", import.meta.url));
+    workerRef.current = worker;
+    setProcessing(true);
+
+    let cancelled = false;
+    workerTimerRef.current = setTimeout(() => {
+      if (cancelled) return;
+      cancelled = true;
+      worker.terminate();
+      workerRef.current = null;
+      setProcessing(false);
+      setOutput("");
+      setError("整形がタイムアウトしました。入力を小さくしてください");
+    }, WORKER_TIMEOUT_MS);
+
+    worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+      if (cancelled) return;
+      cancelled = true;
+      if (workerTimerRef.current) clearTimeout(workerTimerRef.current);
+      worker.terminate();
+      workerRef.current = null;
+      setProcessing(false);
+      if (e.data.ok) {
+        setOutput(e.data.result);
+        setError(null);
+      } else {
+        setOutput("");
+        setError(e.data.error);
+      }
+    };
+    worker.onerror = () => {
+      if (cancelled) return;
+      cancelled = true;
+      if (workerTimerRef.current) clearTimeout(workerTimerRef.current);
+      worker.terminate();
+      workerRef.current = null;
+      setProcessing(false);
+      setOutput("");
+      setError("整形中にエラーが発生しました");
+    };
+
+    worker.postMessage({ input: text, indent: indentArg });
   }, []);
 
   const handleFormat = useCallback(() => {
     if (!input.trim()) return;
-    const { result, error } = processJson(input, indent);
-    setOutput(result);
-    setError(error);
-  }, [input, indent]);
+    runWorker(input, indent);
+  }, [input, indent, runWorker]);
 
   const handleMinify = useCallback(() => {
     if (!input.trim()) return;
-    const { result, error } = processJson(input, undefined);
-    setOutput(result);
-    setError(error);
-  }, [input]);
+    runWorker(input, undefined);
+  }, [input, runWorker]);
 
   const handleClear = useCallback(() => {
+    // 処理中の Worker があれば強制終了 (クリア後に古い結果で出力欄が上書きされるのを防ぐ)
+    if (workerTimerRef.current) clearTimeout(workerTimerRef.current);
+    if (workerRef.current) {
+      workerRef.current.terminate();
+      workerRef.current = null;
+    }
+    setProcessing(false);
     setInput("");
     setOutput("");
     setError(null);
@@ -222,17 +281,17 @@ export function JsonFormatter() {
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleFormat}
-            disabled={!input.trim()}
+            disabled={!input.trim() || processing}
             className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-200 disabled:text-zinc-400 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-500 rounded font-medium transition-colors text-white"
           >
-            整形
+            {processing ? "整形中..." : "整形"}
           </button>
           <button
             onClick={handleMinify}
-            disabled={!input.trim()}
+            disabled={!input.trim() || processing}
             className="px-6 py-2.5 border border-zinc-300 bg-white hover:bg-zinc-50 disabled:bg-zinc-100 disabled:text-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 rounded font-medium transition-colors"
           >
-            圧縮（Minify）
+            {processing ? "処理中..." : "圧縮（Minify）"}
           </button>
         </div>
       </div>
