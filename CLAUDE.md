@@ -10,8 +10,8 @@
 
 ```
 変更完了
-  → code-reviewer エージェントでレビュー（フォアグラウンド実行）
-  → WARNING 以上の指摘があれば修正
+  → code-reviewer エージェント（Claude）＋ /codex-review（Codex gpt-5.5・別視点）の2モデルでレビュー（フォアグラウンド実行・指摘統合）
+  → WARNING 以上の指摘があれば修正（Claude/Codex どちらの指摘でも）
   → ユーザーへ結果報告
   → ユーザー確認後にコミット & プッシュ
 ```
