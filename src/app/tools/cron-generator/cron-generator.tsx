@@ -6,6 +6,7 @@ import cronstrue from "cronstrue/i18n";
 import { CronExpressionParser } from "cron-parser";
 import { MAX_CRON_CHARS, INPUT_DEBOUNCE_MS } from "@/lib/inputLimits";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
+import { unixToQuartz, quartzToUnix } from "./cron-generator.utils";
 
 type CronMode = "unix" | "quartz";
 
@@ -125,25 +126,6 @@ function formatDate(date: Date): string {
   });
 }
 
-function unixToQuartz(expression: string): string {
-  const parts = expression.trim().split(/\s+/);
-  if (parts.length !== 5) return expression;
-  const [min, hour, dom, month, dow] = parts;
-  // Quartz: SEC MIN HOUR DOM MONTH DOW
-  // Quartz では DOW に * がある場合は ? を使う（DOM と DOW の競合回避）
-  const quartzDow = dow === "*" ? "?" : dow;
-  const quartzDom = dom === "*" && quartzDow !== "?" ? "?" : dom;
-  return `0 ${min} ${hour} ${quartzDom} ${month} ${quartzDow}`;
-}
-
-function quartzToUnix(expression: string): string {
-  const parts = expression.trim().split(/\s+/);
-  if (parts.length !== 6) return expression;
-  const [, min, hour, dom, month, dow] = parts;
-  const unixDom = dom === "?" ? "*" : dom;
-  const unixDow = dow === "?" ? "*" : dow;
-  return `${min} ${hour} ${unixDom} ${month} ${unixDow}`;
-}
 
 export function CronGenerator() {
   const [mode, setMode] = useState<CronMode>("unix");

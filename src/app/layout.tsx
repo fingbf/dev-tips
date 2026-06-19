@@ -49,7 +49,7 @@ export default function RootLayout({
               })();`,
           }}
         />
-        {process.env.NEXT_PUBLIC_GA_ID && (
+        {/^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA_ID ?? "") && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
             <script

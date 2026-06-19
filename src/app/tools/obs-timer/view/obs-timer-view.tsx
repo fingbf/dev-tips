@@ -2,16 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import {
+  sanitizeHexColor,
+  sanitizeFontFamily,
+  hexToRgba,
+} from "./obs-timer-view.utils";
 
 function parseParams(params: URLSearchParams) {
   return {
-    color: params.get("color") ?? "#ffffff",
+    color: sanitizeHexColor(params.get("color"), "#ffffff"),
     fontSize: parseInt(params.get("fontSize") ?? "72", 10),
-    fontFamily: params.get("fontFamily") ?? "monospace",
+    fontFamily: sanitizeFontFamily(params.get("fontFamily")),
     showDate: params.get("showDate") !== "false",
     showDow: params.get("showDow") !== "false",
     showSeconds: params.get("showSeconds") !== "false",
-    bgColor: params.get("bgColor") ?? "transparent",
+    bgColor: sanitizeHexColor(params.get("bgColor"), "transparent"),
     bgOpacity: parseInt(params.get("bgOpacity") ?? "100", 10),
     bgPadding: parseInt(params.get("bgPadding") ?? "0", 10),
     bgRound: parseInt(params.get("bgRound") ?? "0", 10),
@@ -22,12 +27,6 @@ function parseParams(params: URLSearchParams) {
 
 const DOW_JA = ["日", "月", "火", "水", "木", "金", "土"];
 
-function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 function formatDateJa(date: Date): string {
   const y = date.getFullYear();
