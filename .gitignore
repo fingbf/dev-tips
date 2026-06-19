@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Claude Code ローカル設定・worktree
+.claude/
+.worktreeinclude
