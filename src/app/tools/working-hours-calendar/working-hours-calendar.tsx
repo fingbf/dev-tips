@@ -647,7 +647,6 @@ export function WorkingHoursCalendar() {
   const incomeInYen = humorMode && directPaymentAmount > 0
     ? directPaymentAmount * selectedPaymentKind.pricePerUnit
     : null;
-  const humorIncome = incomeInYen ?? monthlyIncome;
   const humorHourlyRate = incomeInYen !== null
     ? (totalHours > 0 ? incomeInYen / totalHours : null)
     : (hourlyRate > 0 ? hourlyRate : null);
@@ -737,7 +736,7 @@ export function WorkingHoursCalendar() {
   }, [year, holidays]);
 
   const exportExcel = useCallback(async () => {
-    const { ExcelJS, wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
+    const { wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();
     const DATA_SHEET_NAME = "データ";
     const { grayFill, headerFill, border: allBorder, center: CENTER } = styles;
 
@@ -816,7 +815,7 @@ export function WorkingHoursCalendar() {
     a.download = `稼働時間_${year}${String(month).padStart(2, "0")}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [days, hourlyRate, year, month, workingDays, totalHours, holidays, buildExcelStyles, addHolidaySheet, addAnnualSheet]);
+  }, [days, hourlyRate, year, month, workingDays, totalHours, buildExcelStyles, addHolidaySheet, addAnnualSheet]);
 
   const exportAnnualExcel = useCallback(async () => {
     const { wb, styles, SUMMARY_FILL, WHITE_BOLD } = await buildExcelStyles();

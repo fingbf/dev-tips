@@ -270,10 +270,6 @@ export function RegexTester() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const [workerStatus, setWorkerStatus] = useState<WorkerStatus>("idle");
-  const [matches, setMatches] = useState<MatchInfo[]>([]);
-  const [segments, setSegments] = useState<Segment[]>([]);
-  const [replaceResult, setReplaceResult] = useState<string | null>(null);
 
   // debounce: 300ms 後にワーカーへ投げる入力をまとめる
   const [debouncedInputs, setDebouncedInputs] = useState({ pattern, flags, testString, replacement });
@@ -284,17 +280,20 @@ export function RegexTester() {
     return () => clearTimeout(timer);
   }, [pattern, flags, testString, replacement]);
 
+  // Worker の結果。どの入力に対する結果かを inputs で保持し、表示状態はレンダー時に導出する
+  const [workerResult, setWorkerResult] = useState<{
+    inputs: typeof debouncedInputs;
+    timedOut: boolean;
+    matches: MatchInfo[];
+    segments: Segment[];
+    replaceResult: string | null;
+  } | null>(null);
+
   // Worker: debounced 入力が変わったら別スレッドで正規表現を実行
   useEffect(() => {
-    const { pattern: p, flags: f, testString: t, replacement: r } = debouncedInputs;
-
-    if (!p || !t) {
-      setWorkerStatus("idle");
-      setMatches([]);
-      setSegments([]);
-      setReplaceResult(null);
-      return;
-    }
+    const inputs = debouncedInputs;
+    const { pattern: p, flags: f, testString: t, replacement: r } = inputs;
+    if (!p || !t) return;
 
     // 前回の Worker とタイムアウトをクリア
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -303,24 +302,19 @@ export function RegexTester() {
     const flagStr = (Object.keys(f) as FlagKey[]).filter((k) => f[k]).join("");
     const worker = new Worker(new URL("./regex.worker.ts", import.meta.url));
     workerRef.current = worker;
-    setWorkerStatus("running");
 
     // アンマウントや次の effect 起動時に古いコールバックが state を更新しないようにするフラグ
     let isCancelled = false;
 
-    const clearResults = () => {
-      setMatches([]);
-      setSegments([]);
-      setReplaceResult(null);
-    };
+    const setEmptyResult = (timedOut: boolean) =>
+      setWorkerResult({ inputs, timedOut, matches: [], segments: [], replaceResult: null });
 
     // 500ms 以内に応答がなければ強制終了
     timeoutRef.current = setTimeout(() => {
       if (isCancelled) return;
       worker.terminate();
       workerRef.current = null;
-      setWorkerStatus("timeout");
-      clearResults();
+      setEmptyResult(true);
     }, 500);
 
     worker.onmessage = (e: MessageEvent) => {
@@ -329,13 +323,16 @@ export function RegexTester() {
       worker.terminate();
       workerRef.current = null;
       if (e.data.ok) {
-        setMatches(e.data.matches);
-        setSegments(e.data.segments);
-        setReplaceResult(e.data.replaceResult);
+        setWorkerResult({
+          inputs,
+          timedOut: false,
+          matches: e.data.matches,
+          segments: e.data.segments,
+          replaceResult: e.data.replaceResult,
+        });
       } else {
-        clearResults();
+        setEmptyResult(false);
       }
-      setWorkerStatus("idle");
     };
 
     worker.onerror = () => {
@@ -343,8 +340,7 @@ export function RegexTester() {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       worker.terminate();
       workerRef.current = null;
-      clearResults();
-      setWorkerStatus("idle");
+      setEmptyResult(false);
     };
 
     worker.postMessage({ pattern: p, flagStr, text: t, replacement: r });
@@ -356,6 +352,20 @@ export function RegexTester() {
       workerRef.current = null;
     };
   }, [debouncedInputs]);
+
+  // 入力が空なら結果なし。最新入力の結果がまだ届いていなければ running（前回の結果は表示し続ける）
+  const hasInputs = debouncedInputs.pattern !== "" && debouncedInputs.testString !== "";
+  const shownResult = hasInputs ? workerResult : null;
+  const workerStatus: WorkerStatus = !hasInputs
+    ? "idle"
+    : workerResult?.inputs !== debouncedInputs
+      ? "running"
+      : workerResult.timedOut
+        ? "timeout"
+        : "idle";
+  const matches = shownResult?.matches ?? [];
+  const segments = shownResult?.segments ?? [];
+  const replaceResult = shownResult?.replaceResult ?? null;
 
   const toggleFlag = (key: FlagKey) => setFlags((f) => ({ ...f, [key]: !f[key] }));
 

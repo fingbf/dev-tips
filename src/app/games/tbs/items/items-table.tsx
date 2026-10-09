@@ -40,7 +40,6 @@ const EMO_CLASS: Record<number, string> = {
 };
 
 const RARE_OPTIONS = [0, 1, 2, 3] as const;
-const EMO_OPTIONS = [0, 1, 2, 3, 4] as const;
 
 export function ItemsTable() {
   const [search, setSearch] = useState("");

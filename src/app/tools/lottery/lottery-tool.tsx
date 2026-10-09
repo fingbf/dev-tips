@@ -110,6 +110,8 @@ export function LotteryTool() {
         .filter(Boolean)
         .slice(0, MAX_LOTTERY_ITEMS);
       if (decoded.length > 0) {
+        // URL は静的プリレンダー時に読めないため、ハイドレーション後に一度だけ反映する
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setItems(decoded);
       }
     }
