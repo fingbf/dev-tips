@@ -17,13 +17,13 @@ export const metadata: Metadata = {
     "開発ツール",
   ],
   openGraph: {
-    title: "正規表現テスター | Dev Tips",
+    title: "正規表現テスター | Dev Tools",
     description:
       "正規表現のマッチをリアルタイムでハイライト表示。マッチ位置・キャプチャグループも一覧確認。",
     url: "/tools/regex-tester",
   },
   twitter: {
-    title: "正規表現テスター | Dev Tips",
+    title: "正規表現テスター | Dev Tools",
     description:
       "正規表現のマッチをリアルタイムでハイライト表示。マッチ位置・キャプチャグループも一覧確認。",
   },

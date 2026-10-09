@@ -15,15 +15,15 @@ export const metadata: Metadata = {
     "開発ツール",
   ],
   openGraph: {
-    title: "時間丸め変換ツール | Dev Tips",
+    title: "時間丸め変換ツール | Dev Tools",
     description:
       "開始時間を15分単位で切り上げ・終了時間を15分単位で切り下げ。タブ/カンマ区切りで複数行を一括変換。",
-    siteName: "Dev Tips",
+    siteName: "Dev Tools",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "時間丸め変換ツール | Dev Tips",
+    title: "時間丸め変換ツール | Dev Tools",
     description:
       "開始時間を15分単位で切り上げ・終了時間を15分単位で切り下げ。タブ/カンマ区切りで複数行を一括変換。",
   },

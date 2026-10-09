@@ -6,8 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.vercel.app";
 
   const entries: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/`, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
     { url: `${baseUrl}/games`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/games/${tbs.slug}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
   ];

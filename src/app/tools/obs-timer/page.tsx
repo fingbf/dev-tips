@@ -18,13 +18,13 @@ export const metadata: Metadata = {
     "ゲーム配信",
   ],
   openGraph: {
-    title: "OBS配信用クロック | Dev Tips",
+    title: "OBS配信用クロック | Dev Tools",
     description:
       "OBSのブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけで使える。",
     url: "/tools/obs-timer",
   },
   twitter: {
-    title: "OBS配信用クロック | Dev Tips",
+    title: "OBS配信用クロック | Dev Tools",
     description:
       "OBSのブラウザソースで使える無料クロック。現在時刻・配信経過時間・カウントダウン対応。URLをコピーするだけで使える。",
   },

@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     "エクセル",
   ],
   openGraph: {
-    title: "稼働時間カレンダー | Dev Tips",
+    title: "稼働時間カレンダー | Dev Tools",
     description:
       "月の稼働日・稼働時間を管理して総稼働時間と月収を算出。日本の祝日を自動除外。Excel出力対応。",
     url: "/tools/working-hours-calendar",
   },
   twitter: {
-    title: "稼働時間カレンダー | Dev Tips",
+    title: "稼働時間カレンダー | Dev Tools",
     description:
       "月の稼働日・稼働時間を管理して総稼働時間と月収を算出。日本の祝日を自動除外。Excel出力対応。",
   },

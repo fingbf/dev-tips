@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 const SITE_URL = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.vercel.app";
 
 export const metadata: Metadata = {
-  title: { template: "%s | Dev Tips", default: "Dev Tips" },
+  title: { template: "%s | Dev Tools", default: "Dev Tools" },
   description: "開発者向けの無料ツール集",
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    siteName: "Dev Tips",
+    siteName: "Dev Tools",
     type: "website",
     locale: "ja_JP",
   },
@@ -72,7 +72,7 @@ export default function RootLayout({
               href="/"
               className="rounded-md px-2 py-1.5 text-lg font-bold tracking-tight transition-colors hover:bg-zinc-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-zinc-800"
             >
-              Dev Tips
+              Dev Tools
             </Link>
             <div className="flex items-center gap-1">
               <Link
@@ -88,7 +88,7 @@ export default function RootLayout({
         <main className="mx-auto max-w-4xl px-4 py-8 md:px-6">{children}</main>
         <footer className="border-t border-zinc-200 dark:border-zinc-800">
           <div className="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-zinc-500">
-            Dev Tips
+            Dev Tools
           </div>
         </footer>
       </body>

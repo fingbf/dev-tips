@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // トップはツール一覧と同内容になるため /tools に一本化する
+  async redirects() {
+    return [{ source: "/", destination: "/tools", permanent: false }];
+  },
 };
 
 const withMDX = createMDX({

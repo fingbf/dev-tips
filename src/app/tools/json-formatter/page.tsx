@@ -16,15 +16,15 @@ export const metadata: Metadata = {
     "開発ツール",
   ],
   openGraph: {
-    title: "JSON整形ツール | Dev Tips",
+    title: "JSON整形ツール | Dev Tools",
     description:
       "JSONを貼り付けるだけで整形・圧縮・バリデーション。入力データはサーバーに送信されず、ブラウザ内で完結。",
-    siteName: "Dev Tips",
+    siteName: "Dev Tools",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "JSON整形ツール | Dev Tips",
+    title: "JSON整形ツール | Dev Tools",
     description:
       "JSONを貼り付けるだけで整形・圧縮・バリデーション。入力データはサーバーに送信されず、ブラウザ内で完結。",
   },
