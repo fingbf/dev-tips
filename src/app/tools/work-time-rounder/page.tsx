@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { WorkTimeRounder } from "./work-time-rounder";
 
 export const metadata: Metadata = {
-  title: "時間丸め変換ツール | Dev Tips",
+  title: "時間丸め変換ツール",
   description:
     "開始時間を15分単位で切り上げ・終了時間を15分単位で切り下げ。タブ区切り・カンマ区切りで複数行を一括変換。ブラウザ内完結・登録不要・無料。",
   keywords: [

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LotteryTool } from "./lottery-tool";
 
 export const metadata: Metadata = {
-  title: "抽選ツール - ルーレット・順番決め・チーム分け | Dev Tips",
+  title: "抽選ツール - ルーレット・順番決め・チーム分け",
   description:
     "無料の抽選ツール。ルーレット演出で1人を抽選、順番決め、チーム分けに対応。登録不要・ブラウザ完結。配信や飲み会、チーム分けに。",
   keywords: [

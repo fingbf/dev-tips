@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { RegexTester } from "./regex-tester";
 
 export const metadata: Metadata = {
-  title: "正規表現テスター | Dev Tips",
+  title: "正規表現テスター",
   description:
     "正規表現のマッチをリアルタイムでハイライト表示。マッチ位置・キャプチャグループも一覧確認。JavaScript の RegExp をブラウザ内で完結。登録不要・無料。",
   keywords: [

@@ -104,7 +104,7 @@ export function OBSTimerSettings() {
           href="/tools"
           className="hover:text-zinc-700 dark:hover:text-zinc-200"
         >
-          Tools
+          開発ツール
         </Link>
         <span className="mx-2">/</span>
         <span className="text-zinc-900 dark:text-zinc-100">

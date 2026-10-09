@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "404 - ページが見つかりません | Dev Tips",
+  title: "404 - ページが見つかりません",
 };
 
 export default function NotFound() {

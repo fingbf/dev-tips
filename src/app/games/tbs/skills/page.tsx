@@ -4,7 +4,7 @@ import { tbs } from "@/data/games/tbs/meta";
 import { SkillsTable } from "./skills-table";
 
 export const metadata: Metadata = {
-  title: `スキル一覧 | ${tbs.title} | ゲーム攻略 | Dev Tips`,
+  title: `スキル一覧 | ${tbs.title} | ゲーム攻略`,
   description: `${tbs.title}（${tbs.subtitle}）の全スキル一覧。キャラクター・種別で絞り込み可能。`,
   alternates: { canonical: `/games/${tbs.slug}/skills` },
 };

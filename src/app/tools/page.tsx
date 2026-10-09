@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ToolGrid } from "@/components/tool-grid";
 
 export const metadata: Metadata = {
-  title: "開発ツール | Dev Tips",
+  title: "開発ツール",
   description:
-    "開発者向けの無料オンラインツール集。ブラウザ完結・登録不要で今すぐ使えます。",
+    "開発者向けの無料ツール集。ブラウザ完結・登録不要で今すぐ使えます。",
   alternates: { canonical: "/tools" },
 };
 
@@ -14,7 +14,7 @@ export default function ToolsPage() {
       <div>
         <h1 className="mb-2 text-2xl font-bold md:text-3xl">開発ツール</h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          ブラウザ完結・登録不要の開発者向け無料ツール
+          ブラウザ完結・登録不要の開発者向け無料ツール。入力データはサーバーに送信されません。
         </p>
       </div>
 

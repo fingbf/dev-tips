@@ -18,7 +18,7 @@ const SITE_URL = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.verc
 
 export const metadata: Metadata = {
   title: { template: "%s | Dev Tips", default: "Dev Tips" },
-  description: "無料オンラインツール",
+  description: "開発者向けの無料ツール集",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: "Dev Tips",
@@ -79,7 +79,7 @@ export default function RootLayout({
                 href="/tools"
                 className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               >
-                ツール
+                開発ツール
               </Link>
               <ThemeToggle />
             </div>

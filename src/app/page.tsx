@@ -3,7 +3,7 @@ import { ToolGrid } from "@/components/tool-grid";
 
 export const metadata: Metadata = {
   title: "Dev Tips",
-  description: "無料オンラインツール",
+  description: "開発者向けの無料ツール集",
   alternates: { canonical: "/" },
 };
 

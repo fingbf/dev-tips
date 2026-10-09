@@ -3,7 +3,7 @@ import Link from "next/link";
 import { tbs } from "@/data/games/tbs/meta";
 
 export const metadata: Metadata = {
-  title: `${tbs.title} | ゲーム攻略 | Dev Tips`,
+  title: `${tbs.title} | ゲーム攻略`,
   description: `${tbs.title}（${tbs.subtitle}）の攻略データベース。アイテム・スキルの一覧。`,
   alternates: { canonical: `/games/${tbs.slug}` },
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JsonFormatter } from "./json-formatter";
 
 export const metadata: Metadata = {
-  title: "JSON整形ツール | Dev Tips",
+  title: "JSON整形ツール",
   description:
     "JSONを貼り付けるだけで整形・圧縮・バリデーション。入力データはサーバーに送信されず、ブラウザ内で完結。登録不要・無料。",
   keywords: [

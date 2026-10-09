@@ -227,7 +227,7 @@ export function LotteryTool() {
         </Link>
         <span className="mx-2">/</span>
         <Link href="/tools" className="hover:text-zinc-700 dark:hover:text-zinc-200">
-          ツール
+          開発ツール
         </Link>
         <span className="mx-2">/</span>
         <span className="text-zinc-900 dark:text-zinc-100">抽選ツール</span>
