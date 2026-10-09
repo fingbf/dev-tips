@@ -18,7 +18,7 @@ const SITE_URL = process.env.SITE_URL || "https://dev-tips-fingbfs-projects.verc
 
 export const metadata: Metadata = {
   title: { template: "%s | Dev Tips", default: "Dev Tips" },
-  description: "無料オンラインツール・ゲーム攻略",
+  description: "無料オンラインツール",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: "Dev Tips",

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Dev Tips",
-  description: "無料オンラインツール・ゲーム攻略",
+  description: "無料オンラインツール",
   alternates: { canonical: "/" },
 };
 
@@ -13,12 +13,6 @@ const sections = [
     emoji: "🛠",
     label: "ツール",
     desc: "ブラウザ完結・登録不要の無料オンラインツール",
-  },
-  {
-    href: "/games",
-    emoji: "🎮",
-    label: "ゲーム攻略",
-    desc: "攻略情報・データベース",
   },
 ];
 
